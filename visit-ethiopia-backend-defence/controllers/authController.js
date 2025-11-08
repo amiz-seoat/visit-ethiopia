@@ -20,8 +20,9 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-    sameSite: 'none', // Allow cross-site cookies
-    secure: true, // Required with SameSite=None
+    // For local development (HTTP) we use 'lax' and secure=false. In production use 'none' and secure=true
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: process.env.NODE_ENV === 'production',
   }
 
   res.cookie('jwt', token, cookieOptions)
