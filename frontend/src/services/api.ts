@@ -13,6 +13,10 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  const activeOrg = localStorage.getItem("activeOrganizationId");
+  if (activeOrg && !config.headers["X-Org-Context"]) {
+    config.headers["X-Org-Context"] = activeOrg;
+  }
   return config;
 });
 
@@ -38,8 +42,27 @@ export function getErrorMessage(error: unknown, fallback = "Something went wrong
     const status = error.response?.status;
     const message = error.response?.data?.message;
 
+    if (!error.response) {
+      return "We couldn't reach the server. Please check your connection and try again.";
+    }
+    if (status === 401) return message || "Please sign in to continue.";
     if (status === 403) return message || "You are not authorized to perform this action.";
     if (status === 404) return message || "The requested resource was not found.";
+    if (status === 409) {
+      if (message?.toLowerCase().includes("idempotency")) {
+        return message || "This booking request conflicts with an earlier request.";
+      }
+      if (
+        message?.toLowerCase().includes("spot") ||
+        message?.toLowerCase().includes("inventory") ||
+        message?.toLowerCase().includes("available") ||
+        message?.toLowerCase().includes("capacity")
+      ) {
+        return message || "This departure no longer has enough available seats.";
+      }
+      return message || "This request conflicts with the current booking state.";
+    }
+    if (status === 503) return message || "The server is temporarily unavailable. Please try again later.";
     if (status === 500) return message || "Server error. Please try again later.";
     if (message) return message;
   }

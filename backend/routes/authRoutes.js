@@ -19,6 +19,10 @@ import {
   getAllUsers,
   deleteUser,
 } from '../controllers/userController.js'
+import {
+  getUserOrganizations,
+  setActiveOrganization,
+} from '../controllers/organizationController.js'
 
 const router = express.Router()
 
@@ -45,6 +49,9 @@ router
   .get(protect, getMyProfile)
   .patch(protect, updateMyProfile)
   .delete(protect, deleteMyProfile)
+
+router.get('/me/organizations', protect, getUserOrganizations)
+router.post('/me/active-organization', protect, setActiveOrganization)
 
 router.route('/:id').get(protect, restrict('admin'), getUser)
 router.route('/:id').patch(protect, restrict('admin'), updateUserRole)

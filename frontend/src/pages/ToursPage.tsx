@@ -3,6 +3,7 @@ import { TourCard } from '../components/ui/TourCard';
 import { PageError, PageLoader } from '../components/ui/PageStatus';
 import { Search, Filter, Grid, List } from 'lucide-react';
 import { getTours } from '../api/tours';
+import { getMarketplaceTours } from '../api/organizationTours';
 import { getErrorMessage } from '../services/api';
 import type { Tour } from '../types';
 
@@ -25,12 +26,26 @@ export function ToursPage() {
       setLoading(true);
       setError('');
       try {
-        const { tours: data, total: count } = await getTours({
-          page,
-          limit: PAGE_SIZE,
-          status: 'active',
-          search: search || undefined,
-        });
+        let data: Tour[] = [];
+        let count = 0;
+        try {
+          const marketplace = await getMarketplaceTours({
+            page,
+            limit: PAGE_SIZE,
+            search: search || undefined,
+          });
+          data = marketplace.tours as Tour[];
+          count = marketplace.total;
+        } catch {
+          const legacy = await getTours({
+            page,
+            limit: PAGE_SIZE,
+            status: 'active',
+            search: search || undefined,
+          });
+          data = legacy.tours;
+          count = legacy.total;
+        }
         if (!cancelled) {
           setTours(data);
           setTotal(count);

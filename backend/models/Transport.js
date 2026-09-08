@@ -35,6 +35,11 @@ const TransportSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Organization',
+    default: null,
+  },
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   averageRating: { type: Number, default: 0 },
   status: {
@@ -45,6 +50,8 @@ const TransportSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 })
+
+TransportSchema.index({ organizationId: 1, status: 1 })
 
 const Transport = mongoose.model('Transport', TransportSchema)
 export default Transport

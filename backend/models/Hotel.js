@@ -43,6 +43,11 @@ const HotelSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    organizationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Organization',
+      default: null,
+    },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
     averageRating: { type: Number, default: 0 },
     isFeatured: { type: Boolean, default: false },
@@ -59,6 +64,8 @@ const HotelSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 )
+
+HotelSchema.index({ organizationId: 1, status: 1 })
 
 HotelSchema.pre('save', function (next) {
   this.updatedAt = Date.now()

@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Calendar, Tag, ChevronRight, Search } from 'lucide-react';
 import { getNews } from '../api/news';
 import { PageLoader } from '../components/ui/PageStatus';
 import type { NewsArticle } from '../types';
+
+function articleBlurb(article: NewsArticle) {
+  return article.excerpt || article.summary || '';
+}
 
 export function NewsPage() {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
@@ -20,10 +25,8 @@ export function NewsPage() {
   const filteredArticles = articles.filter((article) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
-    return (
-      article.title.toLowerCase().includes(q) ||
-      (article.excerpt?.toLowerCase().includes(q) ?? false)
-    );
+    const blurb = articleBlurb(article).toLowerCase();
+    return article.title.toLowerCase().includes(q) || blurb.includes(q);
   });
 
   return (
@@ -53,14 +56,18 @@ export function NewsPage() {
         {loading ? <PageLoader /> : unavailable ? (
           <div className="text-center py-16 text-gray-500">
             <p className="text-lg mb-2">News is temporarily unavailable.</p>
-            <p className="text-sm">The news service may not be configured yet. Please check back later.</p>
+            <p className="text-sm">Please check back later.</p>
           </div>
         ) : filteredArticles.length === 0 ? (
           <div className="text-center py-16 text-gray-500">No articles found.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredArticles.map((article) => (
-              <div key={article._id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <Link
+                key={article._id}
+                to={`/news/${article._id}`}
+                className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow block"
+              >
                 <div className="h-48 overflow-hidden">
                   <img
                     src={article.coverImage || article.image || 'https://images.unsplash.com/photo-1518002054494-3a6f870d4a8f?w=800'}
@@ -75,11 +82,13 @@ export function NewsPage() {
                     </span>
                   )}
                   <h2 className="font-bold text-lg mb-2">{article.title}</h2>
-                  {article.excerpt && <p className="text-gray-600 text-sm mb-3 line-clamp-3">{article.excerpt}</p>}
+                  {articleBlurb(article) && (
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-3">{articleBlurb(article)}</p>
+                  )}
                   <div className="flex items-center text-gray-500 text-sm mb-3">
                     <Calendar size={14} className="mr-1" />
-                    {article.createdAt
-                      ? new Date(article.createdAt).toLocaleDateString()
+                    {article.createdAt || article.publishedAt
+                      ? new Date(article.createdAt || article.publishedAt!).toLocaleDateString()
                       : 'Recent'}
                   </div>
                   {article.tags && article.tags.length > 0 && (
@@ -95,7 +104,7 @@ export function NewsPage() {
                     Read more <ChevronRight size={16} />
                   </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

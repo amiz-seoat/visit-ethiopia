@@ -81,5 +81,11 @@ export const resetPassword = async (token: string, payload: {
   passwordConfirm: string;
 }) => {
   const res = await api.patch(`/users/resetPassword/${token}`, payload);
+  if (res.data.token) {
+    localStorage.setItem("token", res.data.token);
+    if (res.data.data?.user) {
+      localStorage.setItem("user", JSON.stringify(res.data.data.user));
+    }
+  }
   return res.data;
 };

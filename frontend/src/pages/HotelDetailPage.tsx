@@ -4,6 +4,7 @@ import { Star, MapPin, Calendar } from 'lucide-react';
 import { getHotelById, getHotelReviews } from '../api/hotels';
 import { createBooking } from '../api/bookings';
 import { PageError, PageLoader } from '../components/ui/PageStatus';
+import { ReviewForm } from '../components/reviews/ReviewForm';
 import { useAuth } from '../context/AuthContext';
 import { getErrorMessage } from '../services/api';
 import type { Hotel, Review } from '../types';
@@ -174,6 +175,21 @@ export function HotelDetailPage() {
                     <p className="text-gray-700">{review.comment}</p>
                   </div>
                 ))
+              )}
+              {id && (
+                <ReviewForm
+                  itemType="hotel"
+                  itemId={id}
+                  onSubmitted={() => {
+                    getHotelReviews(id).then((data) =>
+                      setReviews(
+                        (data as Review[]).filter(
+                          (r) => r.status === 'approved' || !r.status
+                        )
+                      )
+                    );
+                  }}
+                />
               )}
             </div>
           </div>

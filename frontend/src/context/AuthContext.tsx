@@ -97,13 +97,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   }, []);
 
+  /**
+   * Role aliases for backward compatibility with legacy accounts:
+   * - `user` ↔ `customer` (public customers; signup still creates `user`)
+   * - `guide` ↔ `tour_operator` (tour management access)
+   * Management roles: admin, tour_operator/guide, hotel_manager, transport_manager.
+   * Customers (`user`/`customer`) never get management UI or APIs.
+   */
   const hasRole = useCallback(
     (...roles: UserRole[]) => {
       if (!user) return false;
-      const normalized = user.role === "user" ? "customer" : user.role;
-      return roles.some(
-        (role) => role === user.role || role === normalized
-      );
+      const aliases: Record<string, string[]> = {
+        user: ['user', 'customer'],
+        customer: ['user', 'customer'],
+        guide: ['guide', 'tour_operator'],
+        tour_operator: ['tour_operator', 'guide'],
+      };
+      return roles.some((role) => {
+        if (role === user.role) return true;
+        const group = aliases[role] || [role];
+        return group.includes(user.role);
+      });
     },
     [user]
   );

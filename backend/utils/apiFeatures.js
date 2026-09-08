@@ -1,3 +1,8 @@
+import { escapeRegex } from './escapeRegex.js'
+
+const MAX_PAGE_LIMIT = 100
+const SORT_FIELD_PATTERN = /^[a-zA-Z][a-zA-Z0-9_]*$/
+
 class APIFeatures {
   constructor(query, queryString) {
     this.query = query
@@ -17,6 +22,7 @@ class APIFeatures {
       'fields',
       'minPrice',
       'maxPrice',
+      'search',
     ]
     excludeFields.forEach((el) => delete queryObj[el])
 
@@ -39,6 +45,20 @@ class APIFeatures {
         finalQuery.price.$lte = Number(this.queryString.maxPrice)
     }
 
+    // Text search across common display fields
+    if (this.queryString.search) {
+      const term = escapeRegex(String(this.queryString.search).trim())
+      if (term) {
+        const regex = { $regex: term, $options: 'i' }
+        finalQuery.$or = [
+          { title: regex },
+          { name: regex },
+          { shortDescription: regex },
+          { description: regex },
+        ]
+      }
+    }
+
     // Apply the filters
     this.query = this.query.find(finalQuery)
     return this
@@ -47,8 +67,18 @@ class APIFeatures {
   // 2. Sorting
   sort() {
     if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(',').join(' ')
-      this.query = this.query.sort(sortBy)
+      const safe = this.queryString.sort
+        .split(',')
+        .map((part) => part.trim())
+        .filter((part) => {
+          const field = part.replace(/^-/, '')
+          return SORT_FIELD_PATTERN.test(field)
+        })
+      if (safe.length) {
+        this.query = this.query.sort(safe.join(' '))
+      } else {
+        this.query = this.query.sort('-createdAt')
+      }
     } else {
       this.query = this.query.sort('-createdAt')
     }
@@ -68,8 +98,9 @@ class APIFeatures {
 
   // 4. Pagination
   paginate() {
-    const page = this.queryString.page * 1 || 1
-    const limit = this.queryString.limit * 1 || 100
+    const page = Math.max(1, Number(this.queryString.page) || 1)
+    const requested = Number(this.queryString.limit) || 100
+    const limit = Math.min(MAX_PAGE_LIMIT, Math.max(1, requested))
     const skip = (page - 1) * limit
     this.query = this.query.skip(skip).limit(limit)
     return this

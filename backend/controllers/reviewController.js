@@ -7,6 +7,7 @@ import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
 import factory from './handlerFactory.js'
 import APIFeatures from '../utils/apiFeatures.js'
+import mongoose from 'mongoose'
 
 const reviewItemModels = {
   tour: Tour,
@@ -59,20 +60,94 @@ export const getPendingReviews = catchAsync(async (req, res, next) => {
   })
 })
 
+async function refreshAverageRating(itemType, itemId) {
+  const Model = reviewItemModels[itemType]
+  if (!Model || !itemId) return
+
+  const oid =
+    typeof itemId === 'string' ? new mongoose.Types.ObjectId(itemId) : itemId
+
+  const stats = await Review.aggregate([
+    { $match: { itemType, itemId: oid, status: 'approved' } },
+    {
+      $group: {
+        _id: '$itemId',
+        avg: { $avg: '$rating' },
+        n: { $sum: 1 },
+      },
+    },
+  ])
+
+  const averageRating = stats[0]?.avg ? Math.round(stats[0].avg * 10) / 10 : 0
+  await Model.findByIdAndUpdate(itemId, { averageRating })
+}
+
 // Admin: Approve review
-export const approveReview = factory.updateOne(Review)
+export const approveReview = catchAsync(async (req, res, next) => {
+  const review = await Review.findByIdAndUpdate(
+    req.params.id,
+    { status: 'approved' },
+    { new: true, runValidators: true }
+  )
+
+  if (!review) {
+    return next(new AppError('No document found with that ID', 404))
+  }
+
+  await refreshAverageRating(review.itemType, review.itemId)
+
+  res.status(200).json({
+    status: 'success',
+    data: { data: review },
+  })
+})
+
+export const rejectReview = catchAsync(async (req, res, next) => {
+  const review = await Review.findByIdAndUpdate(
+    req.params.id,
+    { status: 'rejected' },
+    { new: true, runValidators: true }
+  )
+
+  if (!review) {
+    return next(new AppError('No document found with that ID', 404))
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { data: review },
+  })
+})
 
 // ✅ User: Create new review
 export const createReview = catchAsync(async (req, res, next) => {
+  const { itemType, itemId, rating } = req.body
+
+  if (!itemType || !reviewItemModels[itemType]) {
+    return next(new AppError('Invalid itemType for review', 400))
+  }
+  if (!itemId) {
+    return next(new AppError('itemId is required', 400))
+  }
+  if (!rating || rating < 1 || rating > 5) {
+    return next(new AppError('Rating must be between 1 and 5', 400))
+  }
+
+  const item = await reviewItemModels[itemType].findById(itemId)
+  if (!item) {
+    return next(new AppError('The reviewed item does not exist', 404))
+  }
+
   const newReview = await Review.create({
-    user: req.user.id, // taken from logged in user
-    itemType: req.body.itemType,
-    itemId: req.body.itemId,
-    rating: req.body.rating,
+    user: req.user.id,
+    itemType,
+    itemId,
+    rating,
     title: req.body.title,
     comment: req.body.comment,
     images: req.body.images || [],
     dateOfExperience: req.body.dateOfExperience,
+    status: 'pending',
   })
 
   res.status(201).json({
@@ -102,14 +177,16 @@ export const updateReview = catchAsync(async (req, res, next) => {
   }
 
   // Check if the current user is the owner of the review
-  if (review.user._id.toString() !== req.user.id) {
+  const ownerId = review.user?._id?.toString?.() ?? review.user?.toString?.()
+  if (ownerId !== req.user.id) {
     return next(new AppError('You can only update your own reviews', 403))
   }
 
-  // Prevent updating user field
-  if (req.body.user) {
-    delete req.body.user
-  }
+  // Prevent privilege escalation via status / user field
+  delete req.body.user
+  delete req.body.status
+  delete req.body.itemType
+  delete req.body.itemId
 
   // Update the review
   const updatedReview = await Review.findByIdAndUpdate(
@@ -137,7 +214,8 @@ export const deleteReview = catchAsync(async (req, res, next) => {
   }
 
   // Check if the current user is the owner of the review OR an admin
-  if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
+  const ownerId = review.user?._id?.toString?.() ?? review.user?.toString?.()
+  if (ownerId !== req.user.id && req.user.role !== 'admin') {
     return next(new AppError('You can only delete your own reviews', 403))
   }
 

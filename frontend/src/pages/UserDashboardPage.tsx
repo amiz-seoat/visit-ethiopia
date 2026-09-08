@@ -10,7 +10,14 @@ import { updateMyProfile, updatePassword } from '../api/auth';
 import { getFeaturedTours } from '../api/tours';
 import { PageLoader } from '../components/ui/PageStatus';
 import { getErrorMessage } from '../services/api';
-import type { Booking, Tour } from '../types';
+import type { Booking, Tour, V2Booking } from '../types';
+import {
+  bookingStatusClass,
+  bookingStatusLabel,
+  createIdempotencyKey,
+  formatMinorAmount,
+  isV2Booking,
+} from '../utils/bookingHelpers';
 
 export function UserDashboardPage() {
   const { user, logout, refreshProfile, hasRole } = useAuth();
@@ -55,10 +62,51 @@ export function UserDashboardPage() {
     navigate('/');
   };
 
-  const handleCancelBooking = async (id: string) => {
+  const displayAmount = (booking: Booking) => {
+    if (isV2Booking(booking)) {
+      const snap = (booking as V2Booking).priceSnapshot;
+      if (snap) return formatMinorAmount(snap.totalMinor, snap.currency);
+    }
+    if (booking.payment?.amountMinor != null) {
+      return formatMinorAmount(
+        booking.payment.amountMinor,
+        booking.payment.currency || 'ETB'
+      );
+    }
+    if (booking.payment?.amount != null) {
+      return `${Number(booking.payment.amount).toLocaleString()} ${
+        booking.payment.currency ?? 'ETB'
+      }`;
+    }
+    return '—';
+  };
+
+  const displayDate = (booking: Booking) => {
+    if (isV2Booking(booking)) {
+      return formatDate((booking as V2Booking).priceSnapshot?.departureDate);
+    }
+    return formatDate(booking.bookingDetails?.startDate);
+  };
+
+  const handleCancelBooking = async (booking: Booking) => {
+    if (!window.confirm('Are you sure you want to cancel this booking?')) return;
     try {
-      await cancelBooking(id);
-      setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: 'cancelled' } : b)));
+      const needsKey =
+        isV2Booking(booking) &&
+        (booking.status === 'confirmed' || booking.status === 'partially_refunded');
+      const result = await cancelBooking(booking._id, {
+        reason: 'customer_request',
+        idempotencyKey: needsKey ? createIdempotencyKey('book-cancel') : undefined,
+      });
+      if (result.failed) {
+        alert(
+          'Cancellation or refund could not be completed. The booking was not marked as successfully refunded.'
+        );
+        return;
+      }
+      setBookings((prev) =>
+        prev.map((b) => (b._id === booking._id ? { ...b, ...result.booking } : b))
+      );
     } catch (err) {
       alert(getErrorMessage(err, 'Failed to cancel booking'));
     }
@@ -96,7 +144,13 @@ export function UserDashboardPage() {
     });
   };
 
-  const upcomingBookings = bookings.filter((b) => b.status !== 'cancelled' && b.status !== 'completed');
+  const upcomingBookings = bookings.filter(
+    (b) =>
+      b.status !== 'cancelled' &&
+      b.status !== 'completed' &&
+      b.status !== 'failed' &&
+      b.status !== 'expired'
+  );
   const completedBookings = bookings.filter((b) => b.status === 'completed');
 
   if (!user) return <PageLoader />;
@@ -140,10 +194,24 @@ export function UserDashboardPage() {
                 </button>
               </nav>
             </div>
-            {hasRole('admin') && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
+              <h3 className="font-medium mb-1">Become a provider</h3>
+              <p className="text-sm text-gray-600 mb-2">
+                Register your company and submit for admin approval.
+              </p>
+              <Link to="/provider/register" className="text-emerald-800 font-medium text-sm underline">
+                Provider registration
+              </Link>
+            </div>
+            {hasRole('admin', 'tour_operator', 'hotel_manager', 'transport_manager', 'guide') && (
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
-                <h3 className="font-medium mb-1">Admin Access</h3>
-                <p className="text-sm text-gray-600">You have admin privileges on this platform.</p>
+                <h3 className="font-medium mb-1">Management Access</h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  You can manage platform content for your role.
+                </p>
+                <Link to="/admin" className="text-amber-800 font-medium text-sm underline">
+                  Open management console
+                </Link>
               </div>
             )}
           </div>
@@ -189,15 +257,24 @@ export function UserDashboardPage() {
                   ) : (
                     upcomingBookings.slice(0, 2).map((booking) => (
                       <div key={booking._id} className="border rounded-lg p-4 mb-4">
-                        <div className="flex justify-between">
-                          <h3 className="font-bold capitalize">{booking.bookingType} Booking</h3>
-                          <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded capitalize">{booking.status}</span>
+                        <div className="flex justify-between gap-2">
+                          <h3 className="font-bold capitalize">
+                            {isV2Booking(booking)
+                              ? (booking as V2Booking).priceSnapshot?.tourTitle || 'Tour booking'
+                              : `${booking.bookingType} booking`}
+                          </h3>
+                          <span className={`text-xs px-2 py-0.5 rounded capitalize ${bookingStatusClass(booking.status)}`}>
+                            {bookingStatusLabel(booking.status)}
+                          </span>
                         </div>
                         <div className="text-sm text-gray-600 mt-2 space-y-1">
-                          <div className="flex items-center"><Calendar size={14} className="mr-2" />{formatDate(booking.bookingDetails?.startDate)}</div>
-                          <div className="flex items-center"><CreditCard size={14} className="mr-2" />{booking.payment?.amount?.toLocaleString()} {booking.payment?.currency ?? 'ETB'}</div>
+                          <div className="flex items-center"><Calendar size={14} className="mr-2" />{displayDate(booking)}</div>
+                          <div className="flex items-center"><CreditCard size={14} className="mr-2" />{displayAmount(booking)}</div>
                           <div className="flex items-center"><MapPin size={14} className="mr-2" />{booking.bookingType}</div>
                         </div>
+                        <Link to={`/bookings/${booking._id}`} className="text-sm text-amber-700 font-medium mt-2 inline-block">
+                          View details
+                        </Link>
                       </div>
                     ))
                   )}
@@ -227,7 +304,12 @@ export function UserDashboardPage() {
 
             {activeTab === 'bookings' && (
               <div>
-                <h1 className="text-2xl font-bold mb-6">My Bookings</h1>
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+                  <h1 className="text-2xl font-bold">My Bookings</h1>
+                  <Link to="/bookings" className="text-sm text-amber-700 font-medium underline">
+                    Open full bookings page
+                  </Link>
+                </div>
                 {bookings.length === 0 ? (
                   <div className="bg-white rounded-lg shadow-md p-8 text-center">
                     <Calendar size={48} className="mx-auto mb-3 text-gray-300" />
@@ -238,28 +320,46 @@ export function UserDashboardPage() {
                   <div className="space-y-4">
                     {bookings.map((booking) => (
                       <div key={booking._id} className="bg-white rounded-lg shadow-md p-6">
-                        <div className="flex justify-between mb-2">
-                          <h3 className="font-bold capitalize">{booking.bookingType} Booking</h3>
-                          <span className={`text-xs px-2 py-0.5 rounded capitalize ${
-                            booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                            booking.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                            'bg-green-100 text-green-800'
-                          }`}>{booking.status}</span>
+                        <div className="flex justify-between mb-2 gap-2">
+                          <h3 className="font-bold capitalize">
+                            {isV2Booking(booking)
+                              ? (booking as V2Booking).priceSnapshot?.tourTitle || 'Tour booking'
+                              : `${booking.bookingType} booking`}
+                          </h3>
+                          <span className={`text-xs px-2 py-0.5 rounded capitalize ${bookingStatusClass(booking.status)}`}>
+                            {bookingStatusLabel(booking.status)}
+                          </span>
                         </div>
                         <div className="text-sm text-gray-600 space-y-1 mt-3">
-                          <p>Dates: {formatDate(booking.bookingDetails?.startDate)} — {formatDate(booking.bookingDetails?.endDate)}</p>
-                          <p>Amount: {booking.payment?.amount?.toLocaleString()} {booking.payment?.currency ?? 'ETB'}</p>
-                          <p>Payment: {booking.payment?.paymentStatus ?? 'pending'}</p>
+                          <p>Departure: {displayDate(booking)}</p>
+                          <p>Amount: {displayAmount(booking)}</p>
+                          <p>
+                            Payment:{' '}
+                            {booking.payment?.status ||
+                              booking.payment?.paymentStatus ||
+                              (booking.status === 'payment_pending' ? 'pending' : '—')}
+                          </p>
                           <p>Ref: {booking._id.slice(-8).toUpperCase()}</p>
                         </div>
-                        {booking.status !== 'cancelled' && booking.status !== 'completed' && (
-                          <button
-                            onClick={() => handleCancelBooking(booking._id)}
-                            className="mt-4 border border-red-500 text-red-500 hover:bg-red-50 py-2 px-4 rounded text-sm"
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          <Link
+                            to={`/bookings/${booking._id}`}
+                            className="bg-amber-600 text-white py-2 px-4 rounded text-sm"
                           >
-                            Cancel Booking
-                          </button>
-                        )}
+                            View details
+                          </Link>
+                          {booking.status !== 'cancelled' &&
+                            booking.status !== 'completed' &&
+                            booking.status !== 'failed' &&
+                            booking.status !== 'expired' && (
+                            <button
+                              onClick={() => handleCancelBooking(booking)}
+                              className="border border-red-500 text-red-500 hover:bg-red-50 py-2 px-4 rounded text-sm"
+                            >
+                              Cancel Booking
+                            </button>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>

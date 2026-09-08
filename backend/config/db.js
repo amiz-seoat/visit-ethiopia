@@ -32,6 +32,11 @@ const connectDB = async () => {
       )
     }
 
+    if (process.env.ALLOW_START_WITHOUT_DB === 'true') {
+      console.warn('ALLOW_START_WITHOUT_DB=true — starting API without a database connection.')
+      return
+    }
+
     process.exit(1)
   }
 }

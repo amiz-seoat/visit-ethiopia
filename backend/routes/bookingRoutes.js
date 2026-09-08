@@ -1,29 +1,32 @@
 import express from 'express'
 import {
   createBooking,
+  createTourDepartureBooking,
   getAllBookings,
   getMyBookings,
+  getBookingById,
   cancelBooking,
   updateBookingStatus,
 } from '../controllers/bookingController.js'
 import { protect, restrict } from '../controllers/authController.js'
+import requireObjectIdParam from '../middlewares/requireObjectId.js'
 
 const router = express.Router()
 
-// All booking routes require login
 router.use(protect)
 
-// Create new booking
-router.post('/', protect, createBooking)
+router.post('/tours', createTourDepartureBooking)
 
-// Get current user's bookings
-router.get('/me', protect, getMyBookings)
+router.post('/', createBooking)
 
-// Get all bookings (admin only)
-router.get('/', protect, restrict('admin'), getAllBookings)
-// Cancel a booking
-router.patch('/:id/cancel', protect, cancelBooking)
-// Update a booking
-router.patch('/:id/status', protect, restrict('admin'), updateBookingStatus)
+router.get('/me', getMyBookings)
+
+router.get('/:id', requireObjectIdParam('id'), getBookingById)
+
+router.get('/', restrict('admin'), getAllBookings)
+
+router.patch('/:id/cancel', requireObjectIdParam('id'), cancelBooking)
+
+router.patch('/:id/status', requireObjectIdParam('id'), restrict('admin'), updateBookingStatus)
 
 export default router

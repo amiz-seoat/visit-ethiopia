@@ -10,24 +10,33 @@ import {
   getHotelReviews,
 } from '../controllers/hotelController.js'
 import { protect, restrict } from '../controllers/authController.js'
+import requireOwnershipOrAdmin from '../middlewares/ownership.js'
+import Hotel from '../models/Hotel.js'
 
 const router = express.Router()
 
 router.get('/hotel', test)
 
-// ✅ Create hotel (admin only)
-router.post('/', protect, restrict('admin'), createHotel)
+router.post('/', protect, restrict('admin', 'hotel_manager'), createHotel)
 
-// ✅ Get all + featured + single hotel
 router.get('/', getAllHotels)
 router.get('/featured', featuredHotels, getAllHotels)
 router.get('/:id', getHotel)
-
-// ✅ Hotel reviews
 router.get('/:id/reviews', getHotelReviews)
 
-// ✅ Update + delete (admin only)
-router.patch('/:id', protect, restrict('admin'), updateHotel)
-router.delete('/:id', protect, restrict('admin'), deleteHotel)
+router.patch(
+  '/:id',
+  protect,
+  restrict('admin', 'hotel_manager'),
+  requireOwnershipOrAdmin(Hotel),
+  updateHotel
+)
+router.delete(
+  '/:id',
+  protect,
+  restrict('admin', 'hotel_manager'),
+  requireOwnershipOrAdmin(Hotel),
+  deleteHotel
+)
 
 export default router

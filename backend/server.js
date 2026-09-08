@@ -28,10 +28,10 @@ if (process.env.NODE_ENV !== 'production') {
 console.log('DEBUG env: NODE_ENV=', process.env.NODE_ENV, 'PORT=', process.env.PORT)
 console.log('DEBUG env: DATABASE=', process.env.DATABASE ? '[present]' : '[missing]', 'MONGO_URI=', process.env.MONGO_URI ? '[present]' : '[missing]')
 
-// ✅ Use environment variable for port with a fallback
+// ✅ Use environment variable for port with a fallback (Render sets PORT)
 const PORT = process.env.PORT || 3000
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
 })
 

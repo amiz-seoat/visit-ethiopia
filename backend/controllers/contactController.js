@@ -24,3 +24,25 @@ export const createContact = catchAsync(async (req, res, next) => {
 export const getAllContacts = factory.getAll(Contact)
 // Get a single inquiry (admin only)
 export const getContact = factory.getOne(Contact)
+
+export const updateContactStatus = catchAsync(async (req, res, next) => {
+  const allowed = ['new', 'in_progress', 'resolved', 'spam']
+  if (!req.body.status || !allowed.includes(req.body.status)) {
+    return next(new AppError('Invalid contact status', 400))
+  }
+
+  const contact = await Contact.findByIdAndUpdate(
+    req.params.id,
+    { status: req.body.status },
+    { new: true, runValidators: true }
+  )
+
+  if (!contact) {
+    return next(new AppError('No document found with that ID', 404))
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { data: contact },
+  })
+})

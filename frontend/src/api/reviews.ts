@@ -27,7 +27,12 @@ export const getPendingReviews = async () => {
 
 export const approveReview = async (id: string) => {
   const res = await api.patch(`/reviews/${id}/approve`);
-  return res.data.data as Review;
+  return res.data.data?.data ?? res.data.data;
+};
+
+export const rejectReview = async (id: string) => {
+  const res = await api.patch(`/reviews/${id}/reject`);
+  return res.data.data?.data ?? res.data.data;
 };
 
 export const updateReview = async (id: string, data: Partial<CreateReviewPayload>) => {

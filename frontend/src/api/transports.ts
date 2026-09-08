@@ -2,9 +2,15 @@ import api from "../services/api";
 import { extractList, extractOne } from "../utils/apiHelpers";
 import type { Transport, PaginatedParams } from "../types";
 
-export const getTransports = async (params: PaginatedParams = {}) => {
+export const getTransports = async (
+  params: PaginatedParams & { allStatuses?: boolean } = {}
+) => {
+  const { allStatuses, status, ...rest } = params;
   const res = await api.get("/transports", {
-    params: { status: "active", ...params },
+    params: {
+      ...rest,
+      ...(allStatuses ? {} : { status: status ?? "active" }),
+    },
   });
   return {
     transports: extractList<Transport>(res.data),

@@ -40,7 +40,7 @@ export const getStats = catchAsync(async (req, res) => {
     contactsNew,
   ] = await Promise.all([
     User.countDocuments(),
-    User.countDocuments({ role: 'user' }),
+    User.countDocuments({ role: { $in: ['user', 'customer'] } }),
     User.countDocuments({ role: { $in: ['guide', 'tour_operator'] } }),
     User.countDocuments({ role: 'hotel_manager' }),
     User.countDocuments({ role: 'transport_manager' }),

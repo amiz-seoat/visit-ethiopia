@@ -1,0 +1,57 @@
+# Render Blueprint — Visit Ethiopia (Phase 1–4I)
+# Secrets are NOT stored here. Configure them in the Render dashboard.
+# Payment remains MOCK. Phase 4J / Chapa is not part of this deployment.
+
+services:
+  - type: web
+    name: visit-ethiopia-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 90d
+      - key: JWT_COOKIE_EXPIRES_IN
+        value: '90'
+      - key: FRONTEND_URL
+        sync: false
+      - key: BACKEND_URL
+        sync: false
+      - key: PROD_BACKEND_URL
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: MOCK_WEBHOOK_SECRET
+        sync: false
+
+  - type: web
+    name: visit-ethiopia-web
+    runtime: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false

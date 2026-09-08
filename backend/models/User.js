@@ -48,7 +48,16 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'guide'],
+    // `user` kept as synonym of customer for backward compatibility
+    enum: [
+      'user',
+      'customer',
+      'admin',
+      'guide',
+      'tour_operator',
+      'hotel_manager',
+      'transport_manager',
+    ],
     default: 'user',
   },
   isVerified: { type: Boolean, default: false },

@@ -10,8 +10,15 @@ import {
   updateTour,
   deleteTour,
 } from '../controllers/tourController.js'
+import {
+  listMarketplaceTours,
+  getTourBySlugOrId,
+  listPublicTourDepartures,
+} from '../controllers/marketplaceTourController.js'
 
 import { protect, restrict } from '../controllers/authController.js'
+import requireOwnershipOrAdmin from '../middlewares/ownership.js'
+import Tour from '../models/Tour.js'
 
 const router = express.Router()
 
@@ -19,15 +26,30 @@ const router = express.Router()
 router.get('/tour', test)
 
 // ✅ Create tour (protected & restricted)
-router.post('/', protect, restrict('admin'), createTour)
+router.post('/', protect, restrict('admin', 'tour_operator', 'guide'), createTour)
 
-// ✅ Update a tour
-router.patch('/:id', protect, restrict('admin'), updateTour)
-// ✅ Delete a tour
-router.delete('/:id', protect, restrict('admin'), deleteTour)
+// ✅ Update a tour (owners or admin)
+router.patch(
+  '/:id',
+  protect,
+  restrict('admin', 'tour_operator', 'guide'),
+  requireOwnershipOrAdmin(Tour),
+  updateTour
+)
+// ✅ Delete a tour (owners or admin; guide may update but not delete unless owner+operator — keep tour_operator/admin)
+router.delete(
+  '/:id',
+  protect,
+  restrict('admin', 'tour_operator', 'guide'),
+  requireOwnershipOrAdmin(Tour),
+  deleteTour
+)
 
-// ✅ Get all tours
+// ✅ Get all tours (legacy + marketplace visibility filtering)
 router.get('/', getAllTours)
+
+// ✅ Enhanced marketplace discovery
+router.get('/marketplace', listMarketplaceTours)
 
 // ✅ Featured tours
 router.get('/featured', featuredTours, getAllTours)
@@ -35,8 +57,11 @@ router.get('/featured', featuredTours, getAllTours)
 // ✅ Get reviews for a specific tour
 router.get('/:id/reviews', getTourReviews)
 
-// ✅ Get single tour with reviews populated
-router.get('/:id', getTour)
+// ✅ Public departures for a tour (by id or slug)
+router.get('/:id/departures', listPublicTourDepartures)
+
+// ✅ Get single tour by id or slug
+router.get('/:id', getTourBySlugOrId)
 
 
 export default router

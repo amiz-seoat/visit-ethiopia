@@ -1,15 +1,23 @@
 import mongoose from 'mongoose'
+import { geoPointSchema } from './schemas/geoPoint.js'
+import { mediaItemSchema } from './schemas/mediaItem.js'
+import { tourPackageSchema } from './schemas/tourPackage.js'
 
 const TourSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
+    slug: { type: String, trim: true, lowercase: true },
     description: { type: String, required: true },
     shortDescription: { type: String, required: true },
+    highlights: [{ type: String }],
+    uniqueSellingPoints: [{ type: String }],
     duration: {
       days: { type: Number, required: true },
       nights: { type: Number, required: true },
     },
     destinations: [{ type: String, required: true }],
+    startingLocation: geoPointSchema,
+    destinationLocations: [geoPointSchema],
     categories: [
       {
         type: String,
@@ -22,9 +30,13 @@ const TourSchema = new mongoose.Schema(
       required: true,
     },
     price: { type: Number, required: true },
+    priceMinor: { type: Number, min: 0 },
+    currency: { type: String, default: 'ETB', uppercase: true },
     discount: { type: Number, default: 0 },
     images: [{ type: String }],
     coverImage: { type: String, required: true },
+    gallery: [mediaItemSchema],
+    portfolioPhotos: [mediaItemSchema],
     startDate: { type: Date },
     endDate: { type: Date },
     availableDates: [{ type: Date }],
@@ -32,6 +44,12 @@ const TourSchema = new mongoose.Schema(
     currentBookings: { type: Number, default: 0 },
     inclusions: [{ type: String }],
     exclusions: [{ type: String }],
+    policies: {
+      cancellation: { type: String, default: '' },
+      refund: { type: String, default: '' },
+      other: { type: String, default: '' },
+    },
+    packages: [tourPackageSchema],
     itinerary: [
       {
         day: { type: Number, required: true },
@@ -46,15 +64,32 @@ const TourSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    organizationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Organization',
+      default: null,
+      index: true,
+    },
     guides: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     secretTour: { type: Boolean, default: false },
     averageRating: { type: Number, default: 0 },
+    reviewCount: { type: Number, default: 0, min: 0 },
     isFeatured: { type: Boolean, default: false },
     status: {
       type: String,
-      enum: ['active', 'inactive', 'draft'],
+      enum: [
+        'draft',
+        'published',
+        'unpublished',
+        'archived',
+        'active',
+        'inactive',
+      ],
       default: 'active',
+      index: true,
     },
+    publishedAt: Date,
+    archivedAt: Date,
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },
@@ -64,17 +99,46 @@ const TourSchema = new mongoose.Schema(
   }
 )
 
+TourSchema.index({ organizationId: 1, status: 1 })
+TourSchema.index(
+  { organizationId: 1, slug: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      organizationId: { $exists: true, $ne: null },
+      slug: { $exists: true, $type: 'string' },
+    },
+  }
+)
+TourSchema.index(
+  { slug: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { slug: { $exists: true, $type: 'string' } },
+  }
+)
+TourSchema.index({ status: 1, isFeatured: 1 })
+TourSchema.index({ 'startingLocation.coordinates': '2dsphere' }, { sparse: true })
+
 TourSchema.pre('save', function (next) {
   this.updatedAt = Date.now()
+  if (this.priceMinor == null && this.price != null) {
+    this.priceMinor = Math.round(this.price * 100)
+  }
+  if (this.price == null && this.priceMinor != null) {
+    this.price = this.priceMinor / 100
+  }
   next()
 })
 
 TourSchema.pre(/^find/, function (next) {
+  if (this.getOptions().includeSecret) return next()
   this.find({ secretTour: { $ne: true } })
-  this.start = Date.now()
   next()
 })
+
 TourSchema.pre(/^find/, function (next) {
+  if (this.getOptions().skipGuidePopulate) return next()
   this.populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',

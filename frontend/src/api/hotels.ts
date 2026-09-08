@@ -2,9 +2,15 @@ import api from "../services/api";
 import { extractList, extractOne } from "../utils/apiHelpers";
 import type { Hotel, PaginatedParams } from "../types";
 
-export const getHotels = async (params: PaginatedParams = {}) => {
+export const getHotels = async (
+  params: PaginatedParams & { allStatuses?: boolean } = {}
+) => {
+  const { allStatuses, status, ...rest } = params;
   const res = await api.get("/hotels", {
-    params: { status: "active", ...params },
+    params: {
+      ...rest,
+      ...(allStatuses ? {} : { status: status ?? "active" }),
+    },
   });
   return { hotels: extractList<Hotel>(res.data), total: res.data.results ?? 0 };
 };

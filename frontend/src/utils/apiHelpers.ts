@@ -9,9 +9,11 @@ export function extractList<T>(data: unknown): T[] {
     const nested = payload.data as Record<string, unknown>;
     if (Array.isArray(nested.data)) return nested.data as T[];
     if (Array.isArray(nested.reviews)) return nested.reviews as T[];
+    if (Array.isArray(nested.tours)) return nested.tours as T[];
   }
 
   if (Array.isArray(payload.reviews)) return payload.reviews as T[];
+  if (Array.isArray(payload.tours)) return payload.tours as T[];
 
   return [];
 }

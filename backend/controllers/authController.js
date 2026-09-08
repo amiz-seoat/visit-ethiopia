@@ -114,7 +114,22 @@ export const protect = catchAsync(async (req, res, next) => {
 
 export const restrict = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    const role = req.user.role
+    // Legacy aliases: user↔customer, guide↔tour_operator
+    const aliases = {
+      user: ['user', 'customer'],
+      customer: ['user', 'customer'],
+      guide: ['guide', 'tour_operator'],
+      tour_operator: ['guide', 'tour_operator'],
+    }
+
+    const allowed = roles.some((required) => {
+      if (required === role) return true
+      const group = aliases[required] || [required]
+      return group.includes(role)
+    })
+
+    if (!allowed) {
       return next(
         new AppError('You do not have permission to perform this action', 403)
       )
@@ -124,13 +139,14 @@ export const restrict = (...roles) => {
 }
 
 export const signup = catchAsync(async (req, res, next) => {
+  // Never accept role from public signup — roles are assigned by admins only
   const newUser = await User.create({
     FirstName: req.body.FirstName,
     LastName: req.body.LastName,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    role: req.body.role,
+    role: 'user',
   })
 
   const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
@@ -148,7 +164,7 @@ export const signup = catchAsync(async (req, res, next) => {
 
   const htmlMessage = `
   <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
-    <h2>Welcome, ${newUser.name}! 🎉</h2>
+    <h2>Welcome, ${newUser.FirstName}! 🎉</h2>
     <p>Thanks for signing up. Please verify your email by clicking the button below:</p>
     <a href="${verifyUrl}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
       Verify Email
@@ -171,6 +187,20 @@ export const signup = catchAsync(async (req, res, next) => {
       message: 'User created! Please check your email to verify your account.',
     })
   } catch (err) {
+    // In development, keep the account so local integration can continue without SMTP.
+    if (process.env.NODE_ENV !== 'production') {
+      newUser.isVerified = true
+      await newUser.save({ validateBeforeSave: false })
+      console.warn('Signup email failed in development; auto-verified user:', newUser.email)
+      console.warn('Verify URL (if needed):', verifyUrl)
+      return res.status(201).json({
+        status: 'success',
+        message:
+          'User created (development: email delivery failed, account auto-verified).',
+        verifyUrl,
+      })
+    }
+
     await User.findByIdAndDelete(newUser._id)
     return next(
       new AppError(
@@ -230,9 +260,11 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false })
 
   // 3) Send it to user's email
-  const resetURL = `${process.env.BACKEND_URL}/api/v1/users/resetPassword/${resetToken}`
+  const frontendBase =
+    process.env.FRONTEND_URL || 'http://localhost:5200'
+  const resetURL = `${frontendBase}/reset-password/${resetToken}`
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`
+  const message = `Forgot your password? Reset it here: ${resetURL}\nIf you didn't forget your password, please ignore this email!`
 
   try {
     await sendEmail({
@@ -246,6 +278,15 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
       message: 'Token sent to email!',
     })
   } catch (err) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Forgot-password email failed in development. Reset token:', resetToken)
+      return res.status(200).json({
+        status: 'success',
+        message: 'Token generated (development: email delivery failed).',
+        resetToken,
+      })
+    }
+
     user.passwordResetToken = undefined
     user.passwordResetExpires = undefined
     await user.save({ validateBeforeSave: false })

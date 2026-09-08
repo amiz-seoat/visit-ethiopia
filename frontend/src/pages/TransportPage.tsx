@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Bus, Car, Plane, Map, Search } from 'lucide-react';
 import { getTransports } from '../api/transports';
 import { PageError, PageLoader } from '../components/ui/PageStatus';
@@ -34,7 +35,10 @@ function TransportCard({ item }: { item: FlatRoute }) {
   const image = item.image || 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800';
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+    <Link
+      to={`/transport/${item.transportId}`}
+      className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow block"
+    >
       <div className="relative h-48 overflow-hidden">
         <img src={image} alt={item.name} className="w-full h-full object-cover" />
         <div className="absolute top-0 right-0 bg-amber-600 text-white px-3 py-1 m-2 rounded-full text-sm font-medium">
@@ -56,7 +60,7 @@ function TransportCard({ item }: { item: FlatRoute }) {
         </div>
         <div className="text-amber-600 font-medium">{item.route.price.toLocaleString()} ETB</div>
       </div>
-    </div>
+    </Link>
   );
 }
 

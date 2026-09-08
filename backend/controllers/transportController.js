@@ -71,8 +71,14 @@ export const updateTransport = catchAsync(async (req, res, next) => {
   })
 })
 
-// Delete transport (Admin only)
-export const deleteTransport = factory.deleteOne(Transport)
+// Delete transport
+export const deleteTransport = catchAsync(async (req, res, next) => {
+  const doc = await Transport.findByIdAndDelete(req.params.id)
+  if (!doc) {
+    return next(new AppError('No document found with that ID', 404))
+  }
+  res.status(204).json({ status: 'success', data: null })
+})
 
 // Get all routes (existing)
 export const getAllRoutes = catchAsync(async (req, res, next) => {
