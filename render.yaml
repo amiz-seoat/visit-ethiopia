@@ -1,6 +1,13 @@
 # Render Blueprint — Visit Ethiopia (Phase 1–4I)
 # Secrets are NOT stored here. Configure them in the Render dashboard.
 # Payment remains MOCK. Phase 4J / Chapa is not part of this deployment.
+#
+# Notes:
+# - Backend is a Node web service. `plan: free` is set explicitly so Blueprint
+#   does not default to a paid starter instance.
+# - Frontend is a static site (`runtime: static`). Static sites have no compute
+#   plan field; including `plan: free` causes:
+#   "services[1].plan no such plan free for service type web"
 
 services:
   - type: web
@@ -44,7 +51,6 @@ services:
   - type: web
     name: visit-ethiopia-web
     runtime: static
-    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
