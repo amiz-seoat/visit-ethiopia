@@ -1,7 +1,15 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
+/** Normalize Vite API base so Render can inject RENDER_EXTERNAL_URL without `/api/v1`. */
+function resolveApiBaseUrl(raw?: string): string {
+  const fallback = "http://localhost:3000/api/v1";
+  const value = (raw || fallback).trim().replace(/\/$/, "");
+  if (!value) return fallback;
+  if (/\/api\/v1$/i.test(value)) return value;
+  return `${value}/api/v1`;
+}
+
+export const API_BASE_URL = resolveApiBaseUrl(import.meta.env.VITE_API_BASE_URL);
 
 const api = axios.create({
   baseURL: API_BASE_URL,

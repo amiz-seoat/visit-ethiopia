@@ -6,8 +6,10 @@
 # - Backend is a Node web service. `plan: free` is set explicitly so Blueprint
 #   does not default to a paid starter instance.
 # - Frontend is a static site (`runtime: static`). Static sites have no compute
-#   plan field; including `plan: free` causes:
-#   "services[1].plan no such plan free for service type web"
+#   plan field; including `plan: free` causes Blueprint validation errors.
+# - Public service URLs are wired with fromService → RENDER_EXTERNAL_URL
+#   (not private-network host). Browser + CORS need the public HTTPS origins.
+# - JWT_SECRET / MOCK_WEBHOOK_SECRET use generateValue (Render-generated secrets).
 
 services:
   - type: web
@@ -21,19 +23,33 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DATABASE
-        sync: false
-      - key: JWT_SECRET
-        sync: false
       - key: JWT_EXPIRES_IN
         value: 90d
       - key: JWT_COOKIE_EXPIRES_IN
         value: '90'
-      - key: FRONTEND_URL
-        sync: false
+      # Auto-wired public HTTPS origin of this API (email verification links, etc.)
       - key: BACKEND_URL
-        sync: false
+        fromService:
+          name: visit-ethiopia-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
       - key: PROD_BACKEND_URL
+        fromService:
+          name: visit-ethiopia-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      # Auto-wired public HTTPS origin of the static frontend (CORS allowlist)
+      - key: FRONTEND_URL
+        fromService:
+          name: visit-ethiopia-web
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MOCK_WEBHOOK_SECRET
+        generateValue: true
+      # Manual secrets / account credentials (enter in Render; never commit)
+      - key: DATABASE
         sync: false
       - key: EMAIL_USER
         sync: false
@@ -44,8 +60,6 @@ services:
       - key: CLOUDINARY_API_KEY
         sync: false
       - key: CLOUDINARY_API_SECRET
-        sync: false
-      - key: MOCK_WEBHOOK_SECRET
         sync: false
 
   - type: web
@@ -59,5 +73,9 @@ services:
         source: /*
         destination: /index.html
     envVars:
+      # Public API origin; frontend appends /api/v1 if missing (see api.ts).
       - key: VITE_API_BASE_URL
-        sync: false
+        fromService:
+          name: visit-ethiopia-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
