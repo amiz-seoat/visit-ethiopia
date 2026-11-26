@@ -23,6 +23,7 @@ const SUITES = [
   ['transport', 'transport-marketplace-prisma.js'],
   ['transport-fulfillment', 'transport-fulfillment-prisma.js'],
   ['chapa', 'chapa-payment-prisma.js'],
+  ['tour-visibility', 'tour-visibility-prisma.js'],
 ]
 
 const filter = process.argv[2]

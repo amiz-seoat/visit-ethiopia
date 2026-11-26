@@ -321,53 +321,124 @@ export async function findApprovedReviews(itemType, itemId) {
   return rows.map((row) => toApiDoc(row, { reviewMode: true }))
 }
 
-/** Public tour visibility: legacy (null org) + active/published, never secret. */
+const PUBLIC_TOUR_STATUSES = ['active', 'published']
+
+/**
+ * Public tour visibility (mirrors the Mongo marketplace rules):
+ * never secret, status active/published, and either a legacy tour (no org)
+ * or owned by an approved + public organization with an approved version.
+ * Returned as an AND clause so query-string filters can never override it.
+ */
+export function publicTourVisibilityClause(publicOrgIds = []) {
+  return {
+    secretTour: false,
+    status: { in: PUBLIC_TOUR_STATUSES },
+    OR: [
+      { organizationId: null },
+      ...(publicOrgIds.length ? [{ organizationId: { in: publicOrgIds } }] : []),
+    ],
+  }
+}
+
+/** Back-compat export: legacy-only base (used by older callers/tests). */
 export function publicTourBaseWhere() {
   return {
     secretTour: false,
     organizationId: null,
-    status: { in: ['active', 'published'] },
+    status: { in: PUBLIC_TOUR_STATUSES },
   }
 }
 
-export async function findPublicTours(query = {}, extraWhere = {}) {
-  const base = { ...publicTourBaseWhere(), ...extraWhere }
-  const args = buildPrismaListArgs(query, base, {
-    searchableFields: ['title', 'shortDescription', 'description'],
-  })
-  // Remove conflicting status if query forces status=active (AND with in)
-  if (query.status && typeof query.status === 'string') {
-    args.where.status = query.status
-    args.where.secretTour = false
-    args.where.organizationId = null
+function withVisibility(args, publicOrgIds) {
+  // Drop raw query-string overrides of visibility fields, then AND the clause.
+  delete args.where.secretTour
+  delete args.where.OR
+  if (
+    args.where.status &&
+    !(typeof args.where.status === 'string' && PUBLIC_TOUR_STATUSES.includes(args.where.status))
+  ) {
+    delete args.where.status
   }
+  args.where.AND = [...(args.where.AND || []), publicTourVisibilityClause(publicOrgIds)]
+  return args
+}
+
+/** Attach public organization summary from the approved version snapshot. */
+async function attachPublicOrganizations(rows) {
+  const orgIds = [...new Set(rows.map((r) => r.organizationId).filter(Boolean))]
+  if (!orgIds.length) return new Map()
+  const orgs = await prisma.organization.findMany({
+    where: { id: { in: orgIds } },
+    select: {
+      id: true,
+      slug: true,
+      averageRating: true,
+      reviewCount: true,
+      approvedVersion: { select: { snapshot: true } },
+    },
+  })
+  const map = new Map()
+  for (const org of orgs) {
+    const s = org.approvedVersion?.snapshot || {}
+    map.set(org.id, {
+      _id: org.id,
+      slug: org.slug,
+      name: s.name,
+      logo: s.logo ?? null,
+      coverImage: s.coverImage ?? null,
+      shortDescription: s.shortDescription ?? '',
+      providerTypes: s.providerTypes ?? [],
+      location: s.location ?? null,
+      averageRating: org.averageRating,
+      reviewCount: org.reviewCount,
+    })
+  }
+  return map
+}
+
+export async function findPublicTours(query = {}, extraWhere = {}) {
+  const publicOrgIds = await publicOrganizationIds()
+  const args = withVisibility(
+    buildPrismaListArgs(query, { ...extraWhere }, {
+      searchableFields: ['title', 'shortDescription', 'description'],
+    }),
+    publicOrgIds
+  )
   const rows = await prisma.tour.findMany(args)
   return rows.map((row) => toApiDoc(row))
 }
 
 export async function findMarketplaceTours(query = {}) {
-  // Phase 2: org marketplace tours not seeded; legacy null-org only
-  const base = { ...publicTourBaseWhere() }
+  const publicOrgIds = await publicOrganizationIds()
+  const base = {}
   if (query.destination) {
     base.destinations = { has: String(query.destination) }
   }
   if (query.organizationId) {
-    // No public orgs in Phase 2 PG seed
-    return []
+    const orgId = String(query.organizationId)
+    if (!publicOrgIds.includes(orgId)) return []
+    base.organizationId = orgId
   }
   if (query.durationDays) {
     base.durationDays = Number(query.durationDays)
   }
-  const args = buildPrismaListArgs(query, base, {
-    searchableFields: ['title', 'shortDescription'],
-  })
-  // search also on destinations array — approximate with hasSome if simple term
-  if (query.search) {
-    // already handled title/shortDescription; destinations contains handled loosely
+  const listQuery = { ...query }
+  for (const k of ['destination', 'organizationId', 'durationDays', 'packageType']) {
+    delete listQuery[k]
   }
+  const args = withVisibility(
+    buildPrismaListArgs(listQuery, base, {
+      searchableFields: ['title', 'shortDescription'],
+    }),
+    publicOrgIds
+  )
   const rows = await prisma.tour.findMany(args)
+  const orgMap = await attachPublicOrganizations(rows)
   return rows.map((row) => {
     const doc = toApiDoc(row)
+    if (row.organizationId && orgMap.has(row.organizationId)) {
+      doc.organization = orgMap.get(row.organizationId)
+    }
     // marketplace serialize shape (no org)
     return {
       _id: doc._id,
@@ -401,6 +472,7 @@ export async function findMarketplaceTours(query = {}) {
       reviewCount: doc.reviewCount,
       isFeatured: doc.isFeatured,
       organizationId: doc.organizationId ?? null,
+      ...(doc.organization ? { organization: doc.organization } : {}),
     }
   })
 }
@@ -418,10 +490,15 @@ export async function findPublicTourByIdOrSlug(param) {
   }
   if (!row) return null
   if (row.secretTour) return null
-  if (!['active', 'published'].includes(row.status)) return null
-  // Phase 2: org-linked tours not supported on Prisma catalog path
-  if (row.organizationId) return null
-  return toApiDoc(row)
+  if (!PUBLIC_TOUR_STATUSES.includes(row.status)) return null
+  const doc = toApiDoc(row)
+  if (row.organizationId) {
+    const publicOrgIds = await publicOrganizationIds()
+    if (!publicOrgIds.includes(row.organizationId)) return null
+    const orgMap = await attachPublicOrganizations([row])
+    doc.organization = orgMap.get(row.organizationId) || null
+  }
+  return doc
 }
 
 export default {
