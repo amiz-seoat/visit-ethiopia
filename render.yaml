@@ -58,17 +58,16 @@ services:
       # Neon direct URL (no -pooler) — used by prisma migrate
       - key: DIRECT_URL
         sync: false
-      # Primary frontend origin (Vercel), no trailing slash
+      # Primary frontend origin (Vercel) — CORS + payment return URL
       - key: FRONTEND_URL
-        sync: false
-      # Extra allowed origins, comma-separated (e.g. the Render static site)
+        value: https://visit-ethiopia-rw9b.vercel.app
+      # Secondary frontend (Render static site)
       - key: CORS_ALLOWED_ORIGINS
-        sync: false
-      # Payments: chapa (needs CHAPA_SECRET_KEY) or mock demo mode
-      - key: PAYMENT_PROVIDER
-        sync: false
+        value: https://visit-ethiopia-web.onrender.com
+      # Payments: Chapa is used automatically once CHAPA_SECRET_KEY is set.
+      # Until then the API runs labelled demo payments (no real money).
       - key: ALLOW_MOCK_PAYMENTS
-        sync: false
+        value: 'true'
       - key: CHAPA_SECRET_KEY
         sync: false
       - key: CHAPA_WEBHOOK_SECRET

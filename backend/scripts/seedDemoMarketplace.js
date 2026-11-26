@@ -3,12 +3,13 @@
  *
  * - Additive and idempotent: fixed IDs, upserts that never overwrite existing
  *   rows, inventory created with skipDuplicates. Never deletes anything.
- * - No hardcoded passwords. Accounts are created only when the matching env
- *   vars are present:
- *     ADMIN_EMAIL + ADMIN_PASSWORD     → platform admin (your private login)
- *     DEMO_PASSWORD                    → demo traveler + demo provider accounts
- *       (demo.traveler@example.com, demo.provider@example.com — example.com is
- *        an IANA-reserved domain, so these can never receive real mail)
+ * - No hardcoded passwords. Optional env vars:
+ *     ADMIN_EMAIL + ADMIN_PASSWORD  → create a platform admin (your own login)
+ *     DEMO_PASSWORD                 → make the demo accounts loginable
+ *   Without DEMO_PASSWORD the demo provider (owner of the demo catalogue) gets a
+ *   random password that is discarded, so no usable credential exists, and the
+ *   demo traveler account is not created. Demo emails use example.com (an
+ *   IANA-reserved domain that can never receive mail).
  * - Images: Wikimedia Commons (see docs/IMAGE_CREDITS.md) and Unsplash.
  *
  * Usage (point DATABASE_URL/DIRECT_URL at the target DB explicitly):
@@ -24,6 +25,7 @@ if (!process.env.DATABASE_URL) {
   dotenv.config({ path: path.join(__dirname, '..', 'config.env'), quiet: true })
 }
 const dryRun = process.argv.includes('--dry-run')
+const crypto = await import('crypto')
 
 const { default: prisma } = await import('../config/prisma.js')
 const { hashPassword } = await import('../services/passwordService.js')
@@ -198,18 +200,27 @@ async function main() {
   const demoPassword = process.env.DEMO_PASSWORD
   const adminEmail = process.env.ADMIN_EMAIL
   const adminPassword = process.env.ADMIN_PASSWORD
-  if (!demoPassword || demoPassword.length < 10) throw new Error('DEMO_PASSWORD (min 10 chars) is required')
-  if (!adminEmail || !adminPassword || adminPassword.length < 12) {
-    throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD (min 12 chars) are required')
+  if (demoPassword && demoPassword.length < 10) throw new Error('DEMO_PASSWORD must be at least 10 characters')
+  if (adminEmail && (!adminPassword || adminPassword.length < 12)) {
+    throw new Error('ADMIN_PASSWORD (min 12 chars) is required when ADMIN_EMAIL is set')
   }
 
-  const adminId = await upsertUser(id(1), { email: adminEmail.toLowerCase(), firstName: 'Platform', lastName: 'Admin', role: 'admin', password: adminPassword })
-  if (!dryRun) {
-    const admin = await prisma.user.findUnique({ where: { id: adminId } })
-    if (admin && admin.role !== 'admin') throw new Error(`${adminEmail} exists but is not an admin — refusing to continue`)
+  let adminId = null
+  if (adminEmail) {
+    adminId = await upsertUser(id(1), { email: adminEmail.toLowerCase(), firstName: 'Platform', lastName: 'Admin', role: 'admin', password: adminPassword })
+    if (!dryRun) {
+      const admin = await prisma.user.findUnique({ where: { id: adminId } })
+      if (admin && admin.role !== 'admin') throw new Error(`${adminEmail} exists but is not an admin — refusing to continue`)
+    }
+  } else {
+    const existingAdmin = await prisma.user.findFirst({ where: { role: 'admin' }, select: { id: true } })
+    adminId = existingAdmin?.id || null
   }
-  const providerId = await upsertUser(id(2), { email: 'demo.provider@example.com', firstName: 'Demo', lastName: 'Provider', role: 'tour_operator', password: demoPassword })
-  const travelerId = await upsertUser(id(3), { email: 'demo.traveler@example.com', firstName: 'Demo', lastName: 'Traveler', role: 'user', password: demoPassword })
+  const unusable = crypto.randomBytes(32).toString('base64url')
+  const providerId = await upsertUser(id(2), { email: 'demo.provider@example.com', firstName: 'Demo', lastName: 'Provider', role: 'tour_operator', password: demoPassword || unusable })
+  const travelerId = demoPassword
+    ? await upsertUser(id(3), { email: 'demo.traveler@example.com', firstName: 'Demo', lastName: 'Traveler', role: 'user', password: demoPassword })
+    : null
 
   // --- Destinations ------------------------------------------------------
   const destinations = [
@@ -408,9 +419,9 @@ async function main() {
     summary: 'When to travel, where to stay and how to book departures around Ethiopia\'s most colourful celebrations.',
     content: 'Timkat (Epiphany, January 19) and Meskel (Finding of the True Cross, September 27) are the most spectacular festivals in the Ethiopian calendar. Gondar and Lalibela fill up early, so book accommodation and tour departures well ahead. This demo article is part of the Visit Ethiopia portfolio deployment.',
     coverImage: IMG.gondar, category: 'event', tags: ['festivals', 'timkat', 'meskel'],
-    authorId: adminId, isFeatured: true, status: 'published', views: 0,
+    authorId: adminId || providerId, isFeatured: true, status: 'published', views: 0,
   }, 'news article')
-  await upsert('review', { id: id(951) }, {
+  if (travelerId) await upsert('review', { id: id(951) }, {
     id: id(951), userId: travelerId, itemType: 'tour', itemId: id(401), rating: 5,
     title: 'Well organised and great guides', comment: 'Demo review: the itinerary was well paced and the guide in Lalibela was excellent.',
     status: 'approved', images: [],
