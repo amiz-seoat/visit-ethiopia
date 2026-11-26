@@ -83,7 +83,7 @@ export function UserDashboardPage() {
 
   const displayDate = (booking: Booking) => {
     if (isV2Booking(booking)) {
-      return formatDate((booking as V2Booking).priceSnapshot?.departureDate);
+      return formatDate((booking as V2Booking).priceSnapshot?.departureDate, 'UTC');
     }
     return formatDate(booking.bookingDetails?.startDate);
   };
@@ -137,10 +137,11 @@ export function UserDashboardPage() {
     }
   };
 
-  const formatDate = (dateString?: string) => {
+  const formatDate = (dateString?: string, timeZone?: string) => {
     if (!dateString) return '—';
     return new Date(dateString).toLocaleDateString(undefined, {
       year: 'numeric', month: 'long', day: 'numeric',
+      ...(timeZone ? { timeZone } : {}),
     });
   };
 

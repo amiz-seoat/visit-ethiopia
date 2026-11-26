@@ -6,6 +6,7 @@ interface TourCardProps {
   title: string;
   image: string; // This should use coverImage from backend
   price: number;
+  currency?: string;
   duration: {
     days: number;
     nights: number;
@@ -18,6 +19,7 @@ export function TourCard({
   title,
   image,
   price,
+  currency = 'ETB',
   duration,
   rating,
   shortDescription
@@ -27,7 +29,7 @@ export function TourCard({
         <div className="relative h-48 overflow-hidden">
           <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
           <div className="absolute top-0 right-0 bg-amber-600 text-white px-3 py-1 m-2 rounded-full text-sm font-medium">
-            ${price}
+            {Number(price).toLocaleString()} {currency}
           </div>
         </div>
       </Link>

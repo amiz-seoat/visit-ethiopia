@@ -25,6 +25,17 @@ function formatDate(value?: string | null) {
   })
 }
 
+/** Departure/check-in dates are calendar dates stored as UTC midnight. */
+function formatCalendarDate(value?: string | null) {
+  if (!value) return '—'
+  return new Date(value).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  })
+}
+
 function shortRef(id: string) {
   return id.slice(-8).toUpperCase()
 }
@@ -404,8 +415,8 @@ export function BookingDetailPage() {
               <dt className="text-gray-500">Departure</dt>
               <dd className="font-medium">
                 {snapshot?.departureDate
-                  ? formatDate(snapshot.departureDate)
-                  : formatDate(booking.bookingDetails?.startDate)}
+                  ? formatCalendarDate(snapshot.departureDate)
+                  : formatCalendarDate(booking.bookingDetails?.startDate)}
               </dd>
             </div>
             <div>

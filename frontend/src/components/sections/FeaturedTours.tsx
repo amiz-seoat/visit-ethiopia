@@ -39,6 +39,7 @@ export function FeaturedTours() {
               title={tour.title}
               image={tour.coverImage}
               price={tour.price}
+              currency={(tour as { currency?: string }).currency}
               duration={tour.duration}
               rating={tour.averageRating ?? 0}
               shortDescription={tour.shortDescription}

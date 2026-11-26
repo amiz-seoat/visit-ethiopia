@@ -12,12 +12,13 @@ import {
   isV2Booking,
 } from '../utils/bookingHelpers'
 
-function formatDate(value?: string | null) {
+function formatDate(value?: string | null, timeZone?: string) {
   if (!value) return '—'
   return new Date(value).toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    ...(timeZone ? { timeZone } : {}),
   })
 }
 
@@ -48,7 +49,7 @@ function bookingAmount(booking: Booking | V2Booking) {
 
 function bookingDate(booking: Booking | V2Booking) {
   if (isV2Booking(booking)) {
-    return formatDate((booking as V2Booking).priceSnapshot?.departureDate)
+    return formatDate((booking as V2Booking).priceSnapshot?.departureDate, 'UTC')
   }
   return formatDate(booking.bookingDetails?.startDate)
 }

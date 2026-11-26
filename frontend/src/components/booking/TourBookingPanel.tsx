@@ -304,7 +304,7 @@ export function TourBookingPanel({ tour, departures, tourPath }: TourBookingPane
             disabled={submitting || maxQty <= 0}
           >
             {maxQty <= 0 ? (
-              <option value={1}>Sold out</option>
+              <option value={1}>{selectedDeparture ? 'Sold out' : 'Select a departure first'}</option>
             ) : (
               Array.from({ length: maxQty }, (_, i) => i + 1).map((n) => (
                 <option key={n} value={n}>
