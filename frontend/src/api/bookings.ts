@@ -45,12 +45,69 @@ export const createBooking = async (payload: CreateBookingPayload) => {
   return res.data.data as Booking;
 };
 
-/** Phase 4G — v2 tour departure booking. Requires Idempotency-Key. */
+/** Phase 4C — v2 tour departure booking. Requires Idempotency-Key. */
 export const createTourBooking = async (
   payload: CreateTourBookingPayload,
   idempotencyKey: string
 ): Promise<TourBookingResult> => {
   const res = await api.post("/bookings/tours", payload, {
+    headers: { "Idempotency-Key": idempotencyKey },
+  });
+  return {
+    booking: res.data.data as V2Booking,
+    statusCode: res.status,
+    idempotent: Boolean(res.data.idempotent),
+  };
+};
+
+export interface CreateHotelBookingPayload {
+  hotelId: string;
+  roomTypeKey: string;
+  checkIn: string;
+  checkOut: string;
+  quantity: number;
+  contactInfo: {
+    fullName: string;
+    email: string;
+    phone: string;
+    address?: string;
+  };
+}
+
+/** Phase hotel — v2 hotel inventory booking. Requires Idempotency-Key. */
+export const createHotelBooking = async (
+  payload: CreateHotelBookingPayload,
+  idempotencyKey: string
+): Promise<TourBookingResult> => {
+  const res = await api.post("/bookings/hotels", payload, {
+    headers: { "Idempotency-Key": idempotencyKey },
+  });
+  return {
+    booking: res.data.data as V2Booking,
+    statusCode: res.status,
+    idempotent: Boolean(res.data.idempotent),
+  };
+};
+
+export interface CreateTransportBookingPayload {
+  transportId: string;
+  routeKey: string;
+  travelDate: string;
+  quantity: number;
+  contactInfo: {
+    fullName: string;
+    email: string;
+    phone: string;
+    address?: string;
+  };
+}
+
+/** Transport v2 seat inventory booking. Requires Idempotency-Key. */
+export const createTransportBooking = async (
+  payload: CreateTransportBookingPayload,
+  idempotencyKey: string
+): Promise<TourBookingResult> => {
+  const res = await api.post("/bookings/transports", payload, {
     headers: { "Idempotency-Key": idempotencyKey },
   });
   return {

@@ -43,6 +43,7 @@ export function ProviderBookingsPage() {
 
   const status = searchParams.get('status') || ''
   const paymentStatus = searchParams.get('paymentStatus') || ''
+  const bookingType = searchParams.get('bookingType') || ''
   const customerSearch = searchParams.get('q') || ''
   const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1)
   const limit = 20
@@ -57,6 +58,7 @@ export function ProviderBookingsPage() {
       const result = await listProviderBookings(organizationId, {
         status: status || undefined,
         paymentStatus: paymentStatus || undefined,
+        bookingType: bookingType || undefined,
         customerSearch: customerSearch || undefined,
         page,
         limit,
@@ -79,7 +81,34 @@ export function ProviderBookingsPage() {
     } finally {
       setLoading(false)
     }
-  }, [organizationId, status, paymentStatus, customerSearch, page])
+  }, [organizationId, status, paymentStatus, bookingType, customerSearch, page])
+
+  function serviceLabel(b: ProviderBookingRow) {
+    if (b.bookingType === 'hotel') {
+      return {
+        title: b.hotel?.name || 'Hotel',
+        meta: `${b.stay?.checkIn || '—'} → ${b.stay?.checkOut || '—'} · ${
+          b.stay?.roomTypeName || b.stay?.roomTypeKey || 'Room'
+        }`,
+      }
+    }
+    if (b.bookingType === 'transport') {
+      const route =
+        b.route?.from && b.route?.to
+          ? `${b.route.from} → ${b.route.to}`
+          : b.route?.key || 'Route'
+      return {
+        title: b.transport?.name || 'Transport',
+        meta: `${formatDate(b.route?.travelDate)} · ${route}`,
+      }
+    }
+    return {
+      title: b.tour?.title || 'Tour',
+      meta: `${formatDate(b.departure?.departureDate)} · ${
+        b.package?.name || b.package?.key || '—'
+      }`,
+    }
+  }
 
   useEffect(() => {
     load()
@@ -109,13 +138,30 @@ export function ProviderBookingsPage() {
           >
             ← Provider workspace
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 mt-2">Tour bookings</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mt-2">Provider bookings</h1>
           <p className="text-sm text-gray-600 mt-1">
-            V2 tour bookings for your organization. Prices and payments are read-only.
+            V2 tour, hotel, and transport bookings for your organization. Prices and
+            payments are read-only.
           </p>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4 mb-6 flex flex-col md:flex-row gap-3 md:items-end">
+          <div className="flex-1">
+            <label htmlFor="bookingType" className="block text-xs font-medium text-gray-600 mb-1">
+              Type
+            </label>
+            <select
+              id="bookingType"
+              value={bookingType}
+              onChange={(e) => updateFilter('bookingType', e.target.value)}
+              className="w-full border rounded-md px-3 py-2 text-sm"
+            >
+              <option value="">Tour, hotel & transport</option>
+              <option value="tour">Tour</option>
+              <option value="hotel">Hotel</option>
+              <option value="transport">Transport</option>
+            </select>
+          </div>
           <div className="flex-1">
             <label htmlFor="status" className="block text-xs font-medium text-gray-600 mb-1">
               Booking status
@@ -190,7 +236,7 @@ export function ProviderBookingsPage() {
                     <tr>
                       <th className="px-4 py-3 font-medium">Ref</th>
                       <th className="px-4 py-3 font-medium">Customer</th>
-                      <th className="px-4 py-3 font-medium">Tour / departure</th>
+                      <th className="px-4 py-3 font-medium">Service</th>
                       <th className="px-4 py-3 font-medium">Qty</th>
                       <th className="px-4 py-3 font-medium">Total</th>
                       <th className="px-4 py-3 font-medium">Status</th>
@@ -208,9 +254,10 @@ export function ProviderBookingsPage() {
                           <div className="text-xs text-gray-500">{b.customer?.email}</div>
                         </td>
                         <td className="px-4 py-3">
-                          <div>{b.tour?.title || 'Tour'}</div>
-                          <div className="text-xs text-gray-500">
-                            {formatDate(b.departure?.departureDate)} · {b.package?.name || b.package?.key}
+                          <div>{serviceLabel(b).title}</div>
+                          <div className="text-xs text-gray-500">{serviceLabel(b).meta}</div>
+                          <div className="text-[10px] uppercase tracking-wide text-gray-400 mt-0.5">
+                            {b.bookingType}
                           </div>
                         </td>
                         <td className="px-4 py-3">{b.quantity ?? '—'}</td>

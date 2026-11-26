@@ -46,16 +46,19 @@ app.set('trust proxy', 1)
 
 /** Explicit origin allowlist — never Access-Control-Allow-Origin: * with credentials. */
 function buildAllowedOrigins() {
-  const origins = new Set([
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:5176',
-    'http://localhost:5188',
-    'http://localhost:5199',
-    'http://localhost:5200',
-    'https://visit-ethiopia-frontend.vercel.app',
-  ])
+  const origins = new Set(
+    process.env.NODE_ENV === 'production'
+      ? []
+      : [
+          'http://localhost:5173',
+          'http://localhost:5174',
+          'http://localhost:5175',
+          'http://localhost:5176',
+          'http://localhost:5188',
+          'http://localhost:5199',
+          'http://localhost:5200',
+        ]
+  )
 
   const normalize = (value) => String(value).trim().replace(/\/$/, '')
   if (process.env.FRONTEND_URL) {
@@ -108,13 +111,47 @@ app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use(cookieParser())
 app.use(helmet())
 
+// Request log (skip health probes); errors are logged by the error handler.
+app.use((req, res, next) => {
+  if (req.path === '/health' || req.path === '/health/ready') return next()
+  const started = Date.now()
+  res.on('finish', () => {
+    const ms = Date.now() - started
+    if (process.env.NODE_ENV === 'production' || res.statusCode >= 500 || ms > 2000) {
+      console.log(`${req.method} ${req.originalUrl.split('?')[0]} ${res.statusCode} ${ms}ms`)
+    }
+  })
+  next()
+})
+
 // Rate limiting (higher ceiling in development for local test suites)
+const isProd = process.env.NODE_ENV === 'production'
 const limiter = rateLimit({
-  max: process.env.NODE_ENV === 'production' ? 100 : 2000,
-  windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this IP, please try again in an hour!',
+  max: isProd ? Number(process.env.RATE_LIMIT_MAX || 600) : 5000,
+  windowMs: 15 * 60 * 1000,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { status: 'fail', message: 'Too many requests, please try again later.' },
 })
 app.use('/api', limiter)
+
+// Stricter limit for credential endpoints (brute-force protection)
+const authLimiter = rateLimit({
+  max: isProd ? Number(process.env.AUTH_RATE_LIMIT_MAX || 30) : 1000,
+  windowMs: 15 * 60 * 1000,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { status: 'fail', message: 'Too many attempts, please try again in 15 minutes.' },
+})
+app.use(
+  [
+    '/api/v1/users/login',
+    '/api/v1/users/signup',
+    '/api/v1/users/forgotPassword',
+    '/api/v1/users/resetPassword',
+  ],
+  authLimiter
+)
 
 app.use(express.json({
   limit: '10kb',
@@ -122,7 +159,10 @@ app.use(express.json({
     req.rawBody = buf.toString('utf8')
   },
 }))
-app.use(mongoSanitize())
+// Mongo operator sanitization — keep for mongo mode; skip when Prisma-only.
+if (String(process.env.DATABASE_MODE || 'mongo').toLowerCase() !== 'prisma') {
+  app.use(mongoSanitize())
+}
 app.use(xss())
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -132,7 +172,23 @@ app.get('/', (req, res) => {
 })
 
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok' })
+  res.status(200).json({ status: 'ok', uptimeSeconds: Math.round(process.uptime()) })
+})
+
+// Readiness: verifies the database answers (use for monitoring, not liveness).
+app.get('/health/ready', async (req, res) => {
+  try {
+    if (String(process.env.DATABASE_MODE || '').toLowerCase() === 'prisma') {
+      const { default: prisma } = await import('./config/prisma.js')
+      await prisma.$queryRaw`SELECT 1`
+      return res.status(200).json({ status: 'ok', database: 'postgresql' })
+    }
+    const { default: mongoose } = await import('mongoose')
+    const ok = mongoose.connection.readyState === 1
+    return res.status(ok ? 200 : 503).json({ status: ok ? 'ok' : 'unavailable', database: 'mongodb' })
+  } catch {
+    return res.status(503).json({ status: 'unavailable' })
+  }
 })
 
 // Main API routes (require an active database connection)

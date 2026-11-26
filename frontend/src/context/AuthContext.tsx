@@ -61,10 +61,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(profile);
         localStorage.setItem("user", JSON.stringify(profile));
       }
-    } catch {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      setUser(null);
+    } catch (err) {
+      // Only an explicit auth rejection ends the session. Network errors, CORS,
+      // 5xx and cold-start timeouts keep the cached user so a refresh during a
+      // backend wake-up does not log people out.
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status === 401 || status === 403) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setUser(null);
+      }
     } finally {
       setIsLoading(false);
     }

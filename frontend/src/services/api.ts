@@ -2,7 +2,8 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 /** Normalize Vite API base so Render can inject RENDER_EXTERNAL_URL without `/api/v1`. */
 function resolveApiBaseUrl(raw?: string): string {
-  const fallback = "http://localhost:3000/api/v1";
+  // Production builds must set VITE_API_BASE_URL (enforced in vite.config.ts).
+  const fallback = import.meta.env.PROD ? "/api/v1" : "http://localhost:4002/api/v1";
   const value = (raw || fallback).trim().replace(/\/$/, "");
   if (!value) return fallback;
   if (/\/api\/v1$/i.test(value)) return value;
@@ -36,7 +37,9 @@ api.interceptors.response.use(
     if (status === 401 && !window.location.pathname.includes("/login")) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      localStorage.removeItem("activeOrganizationId");
+      const back = window.location.pathname + window.location.search;
+      window.location.href = `/login?redirect=${encodeURIComponent(back)}`;
     }
 
     return Promise.reject(error);

@@ -43,7 +43,7 @@ export const PAYMENT_ATTEMPT_STATUSES = ['pending', 'succeeded', 'failed']
 
 export const REFUND_STATUSES = ['pending', 'processing', 'completed', 'failed']
 
-export const PAYMENT_PROVIDERS = ['mock']
+export const PAYMENT_PROVIDERS = ['mock', 'chapa']
 
 /**
  * Operational fulfillment state (Phase 4I) — separate from financial booking.status.

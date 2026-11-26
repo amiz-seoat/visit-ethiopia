@@ -70,7 +70,12 @@ export function serializePublicOrganization(organization, approvedVersion) {
   }
 }
 
-export function serializeProviderWorkspace(organization, latestVersion, approvedVersion) {
+export function serializeProviderWorkspace(
+  organization,
+  latestVersion,
+  approvedVersion,
+  summary = null
+) {
   return {
     organization: stripPrivateOrganizationFields(organization),
     latestVersion: latestVersion
@@ -100,6 +105,22 @@ export function serializeProviderWorkspace(organization, latestVersion, approved
     isPublic:
       organization.approvalStatus === 'approved' &&
       organization.visibility === 'public',
+    ...(summary
+      ? {
+          summary: {
+            memberCount: summary.memberCount ?? 0,
+            tourCount: summary.tourCount ?? 0,
+            hotelCount: summary.hotelCount ?? 0,
+            transportCount: summary.transportCount ?? 0,
+            pendingApprovalCount: summary.pendingApprovalCount ?? 0,
+            openDepartureCount: summary.openDepartureCount ?? 0,
+            bookingCount: summary.bookingCount ?? 0,
+            activeRoomTypeCount: summary.activeRoomTypeCount ?? 0,
+            inventoryDayCount: summary.inventoryDayCount ?? 0,
+            lowAvailabilityDayCount: summary.lowAvailabilityDayCount ?? 0,
+          },
+        }
+      : {}),
   }
 }
 

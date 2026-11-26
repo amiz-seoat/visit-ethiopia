@@ -5,6 +5,9 @@ import User from '../models/User.js'
 import AppError from '../utils/appError.js'
 import { isV2BookingFlow } from '../config/booking.js'
 import { escapeRegex } from '../utils/escapeRegex.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
+import { isObjectIdCompatible } from '../utils/objectId.js'
+import * as bookRepo from '../repositories/booking/prismaBookingRepository.js'
 
 const MAX_PAGE_LIMIT = 100
 const DEFAULT_LIMIT = 20
@@ -48,6 +51,22 @@ function snapshotSubset(snapshot) {
     returnDate: snapshot.returnDate ?? null,
     packageKey: snapshot.packageKey,
     packageName: snapshot.packageName,
+    transportId: snapshot.transportId,
+    transportName: snapshot.transportName,
+    transportType: snapshot.transportType,
+    routeKey: snapshot.routeKey,
+    from: snapshot.from,
+    to: snapshot.to,
+    departureTime: snapshot.departureTime,
+    arrivalTime: snapshot.arrivalTime,
+    travelDate: snapshot.travelDate,
+    hotelId: snapshot.hotelId,
+    hotelName: snapshot.hotelName,
+    roomTypeKey: snapshot.roomTypeKey,
+    roomTypeName: snapshot.roomTypeName,
+    checkIn: snapshot.checkIn,
+    checkOut: snapshot.checkOut,
+    nightsCount: snapshot.nightsCount,
     organizationId: snapshot.organizationId,
     organizationName: snapshot.organizationName,
     pricedAt: snapshot.pricedAt,
@@ -62,6 +81,7 @@ export function serializeProviderBooking(booking, { payment = null, customerUser
   const doc = booking.toObject ? booking.toObject({ virtuals: true }) : { ...booking }
   const contact = doc.contactInfo || {}
   const snap = doc.priceSnapshot || {}
+  const details = doc.bookingDetails || {}
 
   return {
     _id: doc._id,
@@ -82,7 +102,7 @@ export function serializeProviderBooking(booking, { payment = null, customerUser
         : {}),
     },
     tour: {
-      id: snap.tourId || doc.bookingItem || null,
+      id: snap.tourId || (doc.bookingType === 'tour' ? doc.bookingItem : null) || null,
       title: snap.tourTitle || null,
       slug: snap.tourSlug || null,
     },
@@ -94,6 +114,36 @@ export function serializeProviderBooking(booking, { payment = null, customerUser
     package: {
       key: doc.packageKey || snap.packageKey || null,
       name: snap.packageName || null,
+    },
+    transport: {
+      id:
+        snap.transportId ||
+        (doc.bookingType === 'transport' ? doc.bookingItem : null) ||
+        null,
+      name: snap.transportName || null,
+      type: snap.transportType || null,
+    },
+    route: {
+      key: details.routeKey || snap.routeKey || null,
+      from: details.from || snap.from || null,
+      to: details.to || snap.to || null,
+      departureTime: details.departureTime || snap.departureTime || null,
+      arrivalTime: details.arrivalTime || snap.arrivalTime || null,
+      travelDate: details.travelDate || snap.travelDate || null,
+    },
+    hotel: {
+      id:
+        snap.hotelId ||
+        (doc.bookingType === 'hotel' ? doc.bookingItem : null) ||
+        null,
+      name: snap.hotelName || null,
+    },
+    stay: {
+      roomTypeKey: details.roomTypeKey || snap.roomTypeKey || null,
+      roomTypeName: snap.roomTypeName || null,
+      checkIn: details.checkIn || snap.checkIn || null,
+      checkOut: details.checkOut || snap.checkOut || null,
+      nightsCount: snap.nightsCount ?? null,
     },
     quantity: doc.inventoryQuantity ?? snap.quantity ?? null,
     priceSnapshot: snapshotSubset(snap),
@@ -220,6 +270,10 @@ async function attachCustomerUsers(bookings) {
  * List V2 tour bookings for an organization (provider or admin-bypass context).
  */
 export async function listOrganizationV2Bookings(organizationId, query = {}) {
+  if (isPrismaBooking()) {
+    return listOrganizationV2BookingsPrisma(organizationId, query)
+  }
+
   const { page, limit, skip } = parsePagination(query)
   const filter = buildProviderBookingFilter(organizationId, query)
 
@@ -268,6 +322,10 @@ export async function listOrganizationV2Bookings(organizationId, query = {}) {
  * Load one org-scoped V2 tour booking. Cross-org / legacy → 404 (no existence leak).
  */
 export async function getOrganizationV2Booking(organizationId, bookingId) {
+  if (isPrismaBooking()) {
+    return getOrganizationV2BookingPrisma(organizationId, bookingId)
+  }
+
   if (!mongoose.Types.ObjectId.isValid(String(bookingId))) {
     throw new AppError('Booking not found', 404)
   }
@@ -302,6 +360,10 @@ export async function getOrganizationV2Booking(organizationId, bookingId) {
  * Admin list — may filter by organizationId explicitly (platform admin only).
  */
 export async function listAdminV2Bookings(query = {}) {
+  if (isPrismaBooking()) {
+    return listAdminV2BookingsPrisma(query)
+  }
+
   const { page, limit, skip } = parsePagination(query)
   const filter = {
     bookingFlowVersion: 'v2',
@@ -354,6 +416,10 @@ export async function listAdminV2Bookings(query = {}) {
 }
 
 export async function getAdminV2Booking(bookingId) {
+  if (isPrismaBooking()) {
+    return getAdminV2BookingPrisma(bookingId)
+  }
+
   if (!mongoose.Types.ObjectId.isValid(String(bookingId))) {
     throw new AppError('Booking not found', 404)
   }
@@ -374,6 +440,198 @@ export async function getAdminV2Booking(bookingId) {
   const customerUser = booking.user
     ? await User.findById(booking.user).select('FirstName LastName email')
     : null
+
+  return serializeProviderBooking(booking, { payment, customerUser })
+}
+
+function parseObjectIdCompat(value, fieldName) {
+  if (value == null || value === '') return null
+  if (!isObjectIdCompatible(String(value))) {
+    throw new AppError(`Invalid ${fieldName}`, 400)
+  }
+  return String(value)
+}
+
+async function attachPaymentsPrisma(bookings) {
+  const paymentIds = bookings.map((b) => b.paymentId).filter(Boolean)
+  if (!paymentIds.length) return new Map()
+  const payments = await bookRepo.findPaymentsByIds(paymentIds)
+  const map = new Map()
+  for (const p of payments) map.set(String(p._id), p)
+  return map
+}
+
+async function attachCustomerUsersPrisma(bookings) {
+  const userIds = [...new Set(bookings.map((b) => String(b.user)).filter(Boolean))]
+  if (!userIds.length) return new Map()
+  const users = await bookRepo.findUsersByIds(userIds)
+  const map = new Map()
+  for (const u of users) map.set(String(u._id), u)
+  return map
+}
+
+function buildPrismaListArgs(organizationId, query = {}) {
+  const { page, limit, skip } = parsePagination(query)
+  const bookingType = query.bookingType
+    ? String(query.bookingType).trim().toLowerCase()
+    : null
+  if (
+    bookingType &&
+    !['tour', 'transport', 'hotel', 'restaurant'].includes(bookingType)
+  ) {
+    throw new AppError('Invalid bookingType filter', 400)
+  }
+
+  const args = {
+    organizationId: organizationId ? String(organizationId) : null,
+    status: query.status ? String(query.status).trim() : null,
+    bookingType,
+    departureId: parseObjectIdCompat(query.departureId, 'departureId'),
+    tourId: parseObjectIdCompat(query.tourId, 'tourId'),
+    transportId: parseObjectIdCompat(query.transportId, 'transportId'),
+    routeKey: query.routeKey
+      ? String(query.routeKey).trim().toLowerCase()
+      : null,
+    travelDate: query.travelDate
+      ? String(query.travelDate).trim().slice(0, 10)
+      : null,
+    hotelId: parseObjectIdCompat(query.hotelId, 'hotelId'),
+    checkIn: query.checkIn
+      ? String(query.checkIn).trim().slice(0, 10)
+      : null,
+    checkOut: query.checkOut
+      ? String(query.checkOut).trim().slice(0, 10)
+      : null,
+    skip,
+    take: limit,
+    page,
+    limit,
+  }
+
+  if (query.createdFrom || query.createdTo) {
+    if (query.createdFrom) {
+      const from = new Date(query.createdFrom)
+      if (Number.isNaN(from.getTime())) throw new AppError('Invalid createdFrom', 400)
+      args.createdFrom = from
+    }
+    if (query.createdTo) {
+      const to = new Date(query.createdTo)
+      if (Number.isNaN(to.getTime())) throw new AppError('Invalid createdTo', 400)
+      args.createdTo = to
+    }
+  }
+
+  if (query.customerSearch) {
+    args.customerSearch = String(query.customerSearch).trim() || null
+  }
+
+  return args
+}
+
+async function listOrganizationV2BookingsPrisma(organizationId, query = {}) {
+  const args = buildPrismaListArgs(organizationId, query)
+  const { page, limit } = args
+
+  if (query.paymentStatus) {
+    const status = String(query.paymentStatus).trim()
+    const paymentIds = await bookRepo.findPaymentIdsByOrgStatus(
+      organizationId,
+      status
+    )
+    if (!paymentIds.length) {
+      return { results: 0, total: 0, page, limit, data: [] }
+    }
+    args.paymentIds = paymentIds
+  }
+
+  const { total, bookings } = await bookRepo.listProviderBookings(args)
+  const paymentMap = await attachPaymentsPrisma(bookings)
+  const userMap = await attachCustomerUsersPrisma(bookings)
+
+  const data = bookings.map((b) =>
+    serializeProviderBooking(b, {
+      payment: b.paymentId ? paymentMap.get(String(b.paymentId)) : null,
+      customerUser: userMap.get(String(b.user)) || null,
+    })
+  )
+
+  return { results: data.length, total, page, limit, data }
+}
+
+async function getOrganizationV2BookingPrisma(organizationId, bookingId) {
+  if (!isObjectIdCompatible(String(bookingId))) {
+    throw new AppError('Booking not found', 404)
+  }
+
+  const booking = await bookRepo.findProviderBooking(organizationId, bookingId)
+  if (!booking) throw new AppError('Booking not found', 404)
+
+  let payment = null
+  if (booking.paymentId) {
+    payment = await bookRepo.findPaymentById(booking.paymentId)
+  }
+
+  const users = booking.user
+    ? await bookRepo.findUsersByIds([booking.user])
+    : []
+  const customerUser = users[0] || null
+
+  return serializeProviderBooking(booking, { payment, customerUser })
+}
+
+async function listAdminV2BookingsPrisma(query = {}) {
+  const organizationId = parseObjectIdCompat(query.organizationId, 'organizationId')
+  const args = buildPrismaListArgs(organizationId, query)
+  const { page, limit } = args
+
+  if (query.paymentStatus) {
+    const status = String(query.paymentStatus).trim()
+    const paymentIds = await bookRepo.findPaymentIdsByOrgStatus(
+      organizationId,
+      status
+    )
+    if (!paymentIds.length) {
+      return { results: 0, total: 0, page, limit, data: [] }
+    }
+    args.paymentIds = paymentIds
+  }
+
+  const { total, bookings } = await bookRepo.listProviderBookings(args)
+  const paymentMap = await attachPaymentsPrisma(bookings)
+  const userMap = await attachCustomerUsersPrisma(bookings)
+
+  const data = bookings.map((b) =>
+    serializeProviderBooking(b, {
+      payment: b.paymentId ? paymentMap.get(String(b.paymentId)) : null,
+      customerUser: userMap.get(String(b.user)) || null,
+    })
+  )
+
+  return { results: data.length, total, page, limit, data }
+}
+
+async function getAdminV2BookingPrisma(bookingId) {
+  if (!isObjectIdCompatible(String(bookingId))) {
+    throw new AppError('Booking not found', 404)
+  }
+
+  const booking = await bookRepo.findBookingById(bookingId, { includeNotes: true })
+  if (
+    !booking ||
+    !isV2BookingFlow(booking) ||
+    !['tour', 'transport', 'hotel'].includes(booking.bookingType)
+  ) {
+    throw new AppError('Booking not found', 404)
+  }
+
+  let payment = null
+  if (booking.paymentId) {
+    payment = await bookRepo.findPaymentById(booking.paymentId)
+  }
+  const users = booking.user
+    ? await bookRepo.findUsersByIds([booking.user])
+    : []
+  const customerUser = users[0] || null
 
   return serializeProviderBooking(booking, { payment, customerUser })
 }

@@ -1,17 +1,21 @@
-import User from '../models/User.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
 import jwt from 'jsonwebtoken'
-import sendEmail from '../utils/Email.js'
+import sendEmail, { isEmailConfigured } from '../utils/Email.js'
 import { promisify } from 'util'
-import crypto from 'crypto'
+import { getUserRepository } from '../repositories/users/index.js'
+import {
+  comparePassword,
+  createPasswordResetTokenPair,
+  hashResetToken,
+} from '../services/passwordService.js'
+import { isPrismaIdentity } from '../utils/databaseMode.js'
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   })
 
-// ✅ Updated createSendToken
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id)
 
@@ -20,7 +24,6 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-    // For local development (HTTP) we use 'lax' and secure=false. In production use 'none' and secure=true
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     secure: process.env.NODE_ENV === 'production',
   }
@@ -36,9 +39,9 @@ const createSendToken = (user, statusCode, res) => {
   })
 }
 
-// ✅ Updated login
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body
+  const users = getUserRepository()
 
   if (!email || !password) {
     return res.status(400).json({
@@ -47,9 +50,15 @@ export const login = catchAsync(async (req, res, next) => {
     })
   }
 
-  const user = await User.findOne({ email }).select('+password')
+  const user = await users.findByEmailForLogin(email)
 
-  if (!user || !(await user.correctPassword(password, user.password))) {
+  const passwordOk = user
+    ? await (user.correctPassword
+        ? user.correctPassword(password, user.password)
+        : comparePassword(password, user.password))
+    : false
+
+  if (!user || !passwordOk) {
     return next(new AppError('Incorrect email or password', 401))
   }
 
@@ -60,9 +69,9 @@ export const login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res)
 })
 
-// ✅ Updated protect
 export const protect = catchAsync(async (req, res, next) => {
   let token = null
+  const users = getUserRepository()
 
   if (req.cookies?.jwt) {
     token = req.cookies.jwt
@@ -79,14 +88,13 @@ export const protect = catchAsync(async (req, res, next) => {
   try {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 
-    const currentUser = await User.findById(decoded.id)
+    const currentUser = await users.findById(decoded.id)
     if (!currentUser) {
       return next(
         new AppError('The user belonging to this token no longer exists.', 401)
       )
     }
 
-    // BLOCK inactive users
     if (currentUser.active === false) {
       return next(
         new AppError(
@@ -115,7 +123,6 @@ export const protect = catchAsync(async (req, res, next) => {
 export const restrict = (...roles) => {
   return (req, res, next) => {
     const role = req.user.role
-    // Legacy aliases: user↔customer, guide↔tour_operator
     const aliases = {
       user: ['user', 'customer'],
       customer: ['user', 'customer'],
@@ -139,8 +146,9 @@ export const restrict = (...roles) => {
 }
 
 export const signup = catchAsync(async (req, res, next) => {
-  // Never accept role from public signup — roles are assigned by admins only
-  const newUser = await User.create({
+  const users = getUserRepository()
+
+  const newUser = await users.createUser({
     FirstName: req.body.FirstName,
     LastName: req.body.LastName,
     email: req.body.email,
@@ -153,10 +161,30 @@ export const signup = catchAsync(async (req, res, next) => {
     expiresIn: '1d',
   })
 
-  const backendUrl =
-    process.env.NODE_ENV === 'production'
-      ? process.env.PROD_BACKEND_URL
-      : process.env.BACKEND_URL
+  const backendUrl = (
+    process.env.PUBLIC_BACKEND_URL ||
+    (process.env.NODE_ENV === 'production'
+      ? process.env.PROD_BACKEND_URL || process.env.BACKEND_URL
+      : process.env.BACKEND_URL) ||
+    ''
+  ).replace(/\/$/, '')
+
+  // Production without an email provider: verification email cannot be sent,
+  // so accounts are activated immediately (documented limitation). Once
+  // EMAIL_USER/EMAIL_PASS are configured, verification is enforced.
+  if (process.env.NODE_ENV === 'production' && !isEmailConfigured()) {
+    if (isPrismaIdentity() && users.setVerified) {
+      await users.setVerified(newUser._id, true)
+    } else {
+      newUser.isVerified = true
+      await users.saveUser(newUser, { validateBeforeSave: false })
+    }
+    console.warn('[signup] email not configured — account auto-verified')
+    return res.status(201).json({
+      status: 'success',
+      message: 'Account created! You can now log in.',
+    })
+  }
 
   const verifyUrl = `${backendUrl}/api/v1/users/verify/${token}`
 
@@ -187,11 +215,17 @@ export const signup = catchAsync(async (req, res, next) => {
       message: 'User created! Please check your email to verify your account.',
     })
   } catch (err) {
-    // In development, keep the account so local integration can continue without SMTP.
     if (process.env.NODE_ENV !== 'production') {
       newUser.isVerified = true
-      await newUser.save({ validateBeforeSave: false })
-      console.warn('Signup email failed in development; auto-verified user:', newUser.email)
+      if (isPrismaIdentity() && users.setVerified) {
+        await users.setVerified(newUser._id, true)
+      } else {
+        await users.saveUser(newUser, { validateBeforeSave: false })
+      }
+      console.warn(
+        'Signup email failed in development; auto-verified user:',
+        newUser.email
+      )
       console.warn('Verify URL (if needed):', verifyUrl)
       return res.status(201).json({
         status: 'success',
@@ -201,7 +235,7 @@ export const signup = catchAsync(async (req, res, next) => {
       })
     }
 
-    await User.findByIdAndDelete(newUser._id)
+    await users.deleteById(newUser._id)
     return next(
       new AppError(
         'There was an error sending the email. Try again later.',
@@ -212,22 +246,33 @@ export const signup = catchAsync(async (req, res, next) => {
 })
 
 export const verifyEmail = catchAsync(async (req, res, next) => {
+  const users = getUserRepository()
   try {
     const decoded = jwt.verify(req.params.token, process.env.JWT_SECRET)
-    const user = await User.findById(decoded.id)
+    const user = await users.findById(decoded.id)
 
     if (!user) {
       return next(new AppError('Invalid verification link', 400))
     }
 
     user.isVerified = true
-    await user.save({ validateBeforeSave: false })
+    if (isPrismaIdentity() && users.setVerified) {
+      await users.setVerified(user._id, true)
+    } else {
+      await users.saveUser(user, { validateBeforeSave: false })
+    }
 
+    if (process.env.FRONTEND_URL && req.accepts(['html', 'json']) === 'html') {
+      return res.redirect(302, `${process.env.FRONTEND_URL.replace(/\/$/, '')}/login?verified=1`)
+    }
     res.status(200).json({
       status: 'success',
       message: 'Email verified successfully! You can now log in.',
     })
   } catch (err) {
+    if (process.env.FRONTEND_URL && req.accepts(['html', 'json']) === 'html') {
+      return res.redirect(302, `${process.env.FRONTEND_URL.replace(/\/$/, '')}/login?verified=0`)
+    }
     return next(new AppError('Verification link expired or invalid', 400))
   }
 })
@@ -246,22 +291,32 @@ export const logOut = (req, res) => {
   })
 }
 
-// 🔥 Here are the missing exports you need:
-
 export const forgotPassword = catchAsync(async (req, res, next) => {
-  // 1) Get user based on posted email
-  const user = await User.findOne({ email: req.body.email })
+  const users = getUserRepository()
+  const user = await users.findByEmailForLogin(req.body.email)
+
   if (!user) {
     return next(new AppError('There is no user with that email address.', 404))
   }
 
-  // 2) Generate the random reset token
-  const resetToken = user.createPasswordResetToken()
-  await user.save({ validateBeforeSave: false })
+  let resetToken
+  if (isPrismaIdentity()) {
+    const pair = createPasswordResetTokenPair()
+    resetToken = pair.resetToken
+    await users.setPasswordResetToken(
+      user._id,
+      pair.passwordResetToken,
+      pair.passwordResetExpires
+    )
+  } else {
+    resetToken = user.createPasswordResetToken()
+    await users.saveUser(user, { validateBeforeSave: false })
+  }
 
-  // 3) Send it to user's email
-  const frontendBase =
-    process.env.FRONTEND_URL || 'http://localhost:5200'
+  // Never include password hash in subsequent handling / logs
+  user.password = undefined
+
+  const frontendBase = process.env.FRONTEND_URL || 'http://localhost:5200'
   const resetURL = `${frontendBase}/reset-password/${resetToken}`
 
   const message = `Forgot your password? Reset it here: ${resetURL}\nIf you didn't forget your password, please ignore this email!`
@@ -279,7 +334,10 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     })
   } catch (err) {
     if (process.env.NODE_ENV !== 'production') {
-      console.warn('Forgot-password email failed in development. Reset token:', resetToken)
+      console.warn(
+        'Forgot-password email failed in development. Reset token:',
+        resetToken
+      )
       return res.status(200).json({
         status: 'success',
         message: 'Token generated (development: email delivery failed).',
@@ -287,9 +345,13 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
       })
     }
 
-    user.passwordResetToken = undefined
-    user.passwordResetExpires = undefined
-    await user.save({ validateBeforeSave: false })
+    if (isPrismaIdentity()) {
+      await users.clearPasswordResetToken(user._id)
+    } else {
+      user.passwordResetToken = undefined
+      user.passwordResetExpires = undefined
+      await users.saveUser(user, { validateBeforeSave: false })
+    }
 
     return next(
       new AppError(
@@ -301,48 +363,59 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
 })
 
 export const resetPassword = catchAsync(async (req, res, next) => {
-  // 1) Get user based on the token
-  const hashedToken = crypto
-    .createHash('sha256')
-    .update(req.params.token)
-    .digest('hex')
+  const users = getUserRepository()
+  const hashedToken = hashResetToken(req.params.token)
 
-  const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
-  })
+  const user = await users.findByResetToken(hashedToken)
 
-  // 2) If token has not expired, and there is user, set the new password
   if (!user) {
     return next(new AppError('Token is invalid or has expired', 400))
+  }
+
+  if (isPrismaIdentity()) {
+    const updated = await users.updatePassword(
+      user._id,
+      req.body.password,
+      req.body.passwordConfirm
+    )
+    createSendToken(updated, 200, res)
+    return
   }
 
   user.password = req.body.password
   user.passwordConfirm = req.body.passwordConfirm
   user.passwordResetToken = undefined
   user.passwordResetExpires = undefined
-  await user.save()
+  await users.saveUser(user)
 
-  // 3) Update changedPasswordAt property for the user
-
-  // 4) Log the user in, send JWT
   createSendToken(user, 200, res)
 })
 
 export const updatePassword = catchAsync(async (req, res, next) => {
-  // 1) Get user from collection
-  const user = await User.findById(req.user._id).select('+password')
+  const users = getUserRepository()
+  const user = await users.findByIdWithPassword(req.user._id)
 
-  // 2) Check if POSTed current password is correct
-  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+  const ok = await (user.correctPassword
+    ? user.correctPassword(req.body.passwordCurrent, user.password)
+    : comparePassword(req.body.passwordCurrent, user.password))
+
+  if (!ok) {
     return next(new AppError('Your current password is wrong.', 401))
   }
 
-  // 3) If so, update password
+  if (isPrismaIdentity()) {
+    const updated = await users.updatePassword(
+      user._id,
+      req.body.password,
+      req.body.passwordConfirm
+    )
+    createSendToken(updated, 200, res)
+    return
+  }
+
   user.password = req.body.password
   user.passwordConfirm = req.body.passwordConfirm
-  await user.save()
+  await users.saveUser(user)
 
-  // 4) Log user in, send JWT
   createSendToken(user, 200, res)
 })

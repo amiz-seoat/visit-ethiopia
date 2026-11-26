@@ -28,6 +28,8 @@ import {
 } from '../controllers/approvalController.js'
 import { listOrganizationPublicTours } from '../controllers/marketplaceTourController.js'
 import organizationTourRoutes from './organizationTourRoutes.js'
+import organizationHotelRoutes from './organizationHotelRoutes.js'
+import organizationTransportRoutes from './organizationTransportRoutes.js'
 
 const router = express.Router()
 
@@ -92,10 +94,9 @@ router.post(
   submitVersion
 )
 
-router.use(
-  '/:organizationId/tours',
-  organizationTourRoutes
-)
+router.use('/:organizationId/tours', organizationTourRoutes)
+router.use('/:organizationId/hotels', organizationHotelRoutes)
+router.use('/:organizationId/transports', organizationTransportRoutes)
 
 // Legacy PATCH /:id — version-aware draft update
 router.patch(

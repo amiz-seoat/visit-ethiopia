@@ -17,6 +17,7 @@ import {
 } from './bookingLifecycleService.js'
 import { getPaymentProvider } from './payment/paymentProviderRegistry.js'
 import { cancelStalePayment } from './paymentService.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
 
 const REFUND_BLOCKED_BODY = [
   'amount',
@@ -60,7 +61,7 @@ export function serializeRefund(refund) {
   }
 }
 
-function rejectRefundBodyFields(body = {}) {
+export function rejectRefundBodyFields(body = {}) {
   for (const field of REFUND_BLOCKED_BODY) {
     if (body[field] !== undefined) {
       throw new AppError(`Field ${field} is not allowed in refund request`, 400)
@@ -350,6 +351,11 @@ export async function processRefund({
   booking,
   mockOutcome = 'success',
 }) {
+  if (isPrismaBooking()) {
+    const { processRefundPrisma } = await import('./prismaRefundService.js')
+    return processRefundPrisma({ refund, payment, booking, mockOutcome })
+  }
+
   const processing = await Refund.findOneAndUpdate(
     { _id: refund._id, status: { $in: ['pending', 'failed'] } },
     {
@@ -460,6 +466,20 @@ export async function refundAndCancelBookingForUser({
   mockOutcome = 'success',
   reason = null,
 }) {
+  if (isPrismaBooking()) {
+    const { refundAndCancelBookingForUserPrisma } = await import(
+      './prismaRefundService.js'
+    )
+    return refundAndCancelBookingForUserPrisma({
+      booking,
+      user,
+      body,
+      idempotencyKey,
+      mockOutcome,
+      reason,
+    })
+  }
+
   rejectRefundBodyFields(body)
   const confirmKey = validateRefundIdempotencyKey(idempotencyKey, { required: true })
 
@@ -629,6 +649,18 @@ export async function createRefundForPayment({
   mockOutcome = 'success',
   reason = null,
 }) {
+  if (isPrismaBooking()) {
+    const { createRefundForPaymentPrisma } = await import('./prismaRefundService.js')
+    return createRefundForPaymentPrisma({
+      paymentId,
+      user,
+      body,
+      idempotencyKey,
+      mockOutcome,
+      reason,
+    })
+  }
+
   rejectRefundBodyFields(body)
   const confirmKey = validateRefundIdempotencyKey(idempotencyKey, { required: true })
 
@@ -674,6 +706,18 @@ export async function cancelOrRefundBookingForUser(
   user,
   { reason, idempotencyKey, mockOutcome = 'success', body = {} } = {}
 ) {
+  if (isPrismaBooking()) {
+    const { cancelOrRefundBookingForUserPrisma } = await import(
+      './prismaRefundService.js'
+    )
+    return cancelOrRefundBookingForUserPrisma(booking, user, {
+      reason,
+      idempotencyKey,
+      mockOutcome,
+      body,
+    })
+  }
+
   if (isLegacyBookingFlow(booking)) {
     const { cancelBookingForUser } = await import('./bookingLifecycleService.js')
     return cancelBookingForUser(booking, user, { reason })
@@ -721,6 +765,13 @@ export async function cancelOrRefundBookingForUser(
  * Never trusts client/webhook amounts — uses Refund.amountMinor.
  */
 export async function applyProviderRefundSuccess({ refundId, providerRefundId }) {
+  if (isPrismaBooking()) {
+    const { applyProviderRefundSuccessPrisma } = await import(
+      './prismaRefundService.js'
+    )
+    return applyProviderRefundSuccessPrisma({ refundId, providerRefundId })
+  }
+
   const refund = await Refund.findById(refundId)
   if (!refund) throw new AppError('Refund not found', 404)
 

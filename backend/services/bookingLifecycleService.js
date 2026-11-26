@@ -3,6 +3,14 @@ import InventoryHold from '../models/InventoryHold.js'
 import AppError from '../utils/appError.js'
 import { isLegacyBookingFlow, isV2BookingFlow } from '../config/booking.js'
 import { releaseForBooking } from './bookingInventoryService.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
+import {
+  markV2BookingFailedPrisma,
+  expireV2BookingPrisma,
+  cancelV2BookingPrisma,
+  cancelBookingForUserPrisma,
+  confirmV2BookingPrisma,
+} from './prismaBookingDomainService.js'
 
 /** Allowed v2 transitions (Phase 4C–4F). */
 const V2_TRANSITIONS = {
@@ -62,6 +70,10 @@ async function loadV2Booking(bookingId) {
 }
 
 export async function markV2BookingFailed(booking, reason = 'failed') {
+  if (isPrismaBooking()) {
+    return markV2BookingFailedPrisma(booking, reason)
+  }
+
   if (!isV2BookingFlow(booking)) {
     throw new AppError('Not a v2 booking', 400)
   }
@@ -80,6 +92,10 @@ export async function markV2BookingFailed(booking, reason = 'failed') {
 }
 
 export async function expireV2Booking(booking) {
+  if (isPrismaBooking()) {
+    return expireV2BookingPrisma(booking)
+  }
+
   if (!isV2BookingFlow(booking)) {
     throw new AppError('Not a v2 booking', 400)
   }
@@ -108,6 +124,10 @@ export async function expireV2Booking(booking) {
 }
 
 export async function cancelV2Booking(booking, { reason = 'customer_cancelled', actorRole = 'user' } = {}) {
+  if (isPrismaBooking()) {
+    return cancelV2BookingPrisma(booking, { reason, actorRole })
+  }
+
   if (!isV2BookingFlow(booking)) {
     throw new AppError('Not a v2 booking', 400)
   }
@@ -166,6 +186,10 @@ export async function cancelLegacyBooking(booking) {
 }
 
 export async function cancelBookingForUser(booking, user, { reason } = {}) {
+  if (isPrismaBooking()) {
+    return cancelBookingForUserPrisma(booking, user, { reason })
+  }
+
   const ownerId = booking.user?._id?.toString?.() ?? booking.user?.toString?.()
   const isOwner = ownerId === user.id
   const isAdmin = user.role === 'admin'
@@ -194,6 +218,10 @@ export async function cancelBookingForUser(booking, user, { reason } = {}) {
 }
 
 export async function confirmV2Booking(booking) {
+  if (isPrismaBooking()) {
+    return confirmV2BookingPrisma(booking)
+  }
+
   if (!isV2BookingFlow(booking)) {
     throw new AppError('Not a v2 booking', 400)
   }

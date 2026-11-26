@@ -1,9 +1,11 @@
 import AppError from '../../utils/appError.js'
 import { PAYMENT_PROVIDERS } from '../../config/booking.js'
 import MockPaymentProvider from './MockPaymentProvider.js'
+import ChapaPaymentProvider from './ChapaPaymentProvider.js'
 
 const providers = {
   mock: new MockPaymentProvider(),
+  chapa: new ChapaPaymentProvider(),
 }
 
 export function getPaymentProvider(name) {

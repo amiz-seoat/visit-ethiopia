@@ -1,0 +1,12 @@
+# Root ignores (Prisma / local Postgres / env)
+node_modules/
+.env
+.env.*
+!.env.example
+*.pem
+
+# Prisma generated (also under backend/node_modules)
+# Keep migrations in git once created for local/dev workflows
+
+# Local tool settings
+.claude/

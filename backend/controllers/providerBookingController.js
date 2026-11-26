@@ -6,6 +6,7 @@ import {
 import {
   checkInProviderBooking,
   completeProviderBooking,
+  checkOutProviderBooking,
   markNoShowProviderBooking,
   addProviderBookingNote,
   listBookingOperationAudits,
@@ -90,6 +91,23 @@ export const completeBooking = catchAsync(async (req, res) => {
   })
 })
 
+/** Hotel check-out alias → same completed fulfillment transition. */
+export const checkOutBooking = catchAsync(async (req, res) => {
+  stripClientOrgForge(req)
+  const result = await checkOutProviderBooking({
+    organizationId: req.organizationId,
+    bookingId: req.params.id,
+    actorUserId: req.user.id,
+    body: req.body || {},
+  })
+
+  res.status(200).json({
+    status: 'success',
+    idempotent: result.idempotent,
+    data: result.booking,
+  })
+})
+
 export const noShowBooking = catchAsync(async (req, res) => {
   stripClientOrgForge(req)
   const result = await markNoShowProviderBooking({
@@ -140,6 +158,7 @@ export default {
   getProviderBooking,
   checkInBooking,
   completeBooking,
+  checkOutBooking,
   noShowBooking,
   addBookingNote,
   listBookingAudits,

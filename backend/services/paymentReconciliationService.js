@@ -5,6 +5,9 @@ import { isLegacyBookingFlow, isV2BookingFlow } from '../config/booking.js'
 import { releaseForBooking } from './bookingInventoryService.js'
 import { expireV2Booking, markV2BookingFailed } from './bookingLifecycleService.js'
 import { applyProviderPaymentSuccess, cancelStalePayment } from './paymentService.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
+import prisma from '../config/prisma.js'
+import { toApiPayment, toApiBooking, toApiRefund } from '../repositories/booking/bookingSerialize.js'
 
 function emptySummary() {
   return {
@@ -149,10 +152,12 @@ async function reconcileStalePaymentPending({ payment, booking, now, dryRun, sum
   try {
     await cancelStalePayment(payment, { reason: 'expired' })
 
-    const refreshed = await Booking.findById(booking._id).setOptions({
-      skipUserPopulate: true,
-      skipBookingItemPopulate: true,
-    })
+    const refreshed = isPrismaBooking()
+      ? toApiBooking(await prisma.booking.findUnique({ where: { id: String(booking._id) } }))
+      : await Booking.findById(booking._id).setOptions({
+          skipUserPopulate: true,
+          skipBookingItemPopulate: true,
+        })
 
     if (refreshed?.status === 'payment_pending') {
       const expireResult = await expireV2Booking(refreshed)
@@ -297,11 +302,21 @@ async function reconcileRefundedPaymentConfirmedBooking({
 
   try {
     const { applyProviderRefundSuccess } = await import('./refundService.js')
-    const Refund = (await import('../models/Refund.js')).default
-    const refund = await Refund.findOne({
-      paymentId: payment._id,
-      status: 'completed',
-    }).sort('-completedAt')
+    let refund
+    if (isPrismaBooking()) {
+      refund = toApiRefund(
+        await prisma.refund.findFirst({
+          where: { paymentId: String(payment._id), status: 'completed' },
+          orderBy: { completedAt: 'desc' },
+        })
+      )
+    } else {
+      const Refund = (await import('../models/Refund.js')).default
+      refund = await Refund.findOne({
+        paymentId: payment._id,
+        status: 'completed',
+      }).sort('-completedAt')
+    }
 
     if (refund) {
       await applyProviderRefundSuccess({
@@ -375,6 +390,10 @@ async function reconcileCancelledConsumedHold({ booking, dryRun, summary }) {
  * Scan and repair recoverable v2 payment/booking/inventory inconsistencies.
  */
 export async function runPaymentReconciliation({ dryRun = false, limit = 100 } = {}) {
+  if (isPrismaBooking()) {
+    return runPaymentReconciliationPrisma({ dryRun, limit })
+  }
+
   const summary = emptySummary()
   summary.dryRun = dryRun
   const batchLimit = Math.max(1, Math.min(Number(limit) || 100, 1000))
@@ -508,6 +527,167 @@ export async function runPaymentReconciliation({ dryRun = false, limit = 100 } =
       booking.status !== 'cancelled'
     ) {
       await flagConsumedHoldUnconfirmedBooking({ booking, hold, summary })
+    }
+  }
+
+  return summary
+}
+
+/** Prisma-mode reconciliation — same repair helpers, Postgres queries. */
+async function runPaymentReconciliationPrisma({ dryRun = false, limit = 100 } = {}) {
+  const summary = emptySummary()
+  summary.dryRun = dryRun
+  const batchLimit = Math.max(1, Math.min(Number(limit) || 100, 1000))
+  const now = new Date()
+
+  const paymentRows = await prisma.payment.findMany({
+    where: { provider: { in: ['mock', 'chapa'] } },
+    orderBy: { updatedAt: 'asc' },
+    take: batchLimit,
+  })
+
+  for (const row of paymentRows) {
+    const payment = toApiPayment(row)
+    const bookingRow = await prisma.booking.findUnique({
+      where: { id: payment.bookingId },
+    })
+    if (!bookingRow || bookingRow.bookingFlowVersion !== 'v2') continue
+    const booking = toApiBooking(bookingRow)
+
+    if (payment.status === 'completed' && booking.status === 'payment_pending') {
+      await reconcileCompletedPaymentPendingBooking({
+        payment,
+        booking,
+        dryRun,
+        summary,
+      })
+      continue
+    }
+
+    if (payment.status === 'failed' && booking.status === 'payment_pending') {
+      await reconcileFailedPaymentPendingBooking({
+        payment,
+        booking,
+        dryRun,
+        summary,
+      })
+      continue
+    }
+
+    if (
+      payment.status === 'refunded' &&
+      ['confirmed', 'partially_refunded'].includes(booking.status)
+    ) {
+      await reconcileRefundedPaymentConfirmedBooking({
+        payment,
+        booking,
+        dryRun,
+        summary,
+      })
+      continue
+    }
+
+    if (
+      ['pending', 'processing'].includes(payment.status) &&
+      booking.status === 'payment_pending' &&
+      (isBookingExpired(booking, now) ||
+        (payment.expiresAt && payment.expiresAt <= now))
+    ) {
+      await reconcileStalePaymentPending({
+        payment,
+        booking,
+        now,
+        dryRun,
+        summary,
+      })
+    }
+  }
+
+  const refundRows = await prisma.refund.findMany({
+    where: { status: 'completed' },
+    orderBy: { updatedAt: 'asc' },
+    take: batchLimit,
+  })
+
+  for (const row of refundRows) {
+    const refund = toApiRefund(row)
+    const payment = toApiPayment(
+      await prisma.payment.findUnique({ where: { id: refund.paymentId } })
+    )
+    const booking = toApiBooking(
+      await prisma.booking.findUnique({ where: { id: refund.bookingId } })
+    )
+    if (!payment || !booking) continue
+
+    const paymentNeedsRepair =
+      (payment.amountRefundedMinor || 0) < refund.amountMinor ||
+      (payment.status === 'completed' && refund.amountMinor > 0)
+    const bookingNeedsRepair =
+      payment.status === 'refunded' &&
+      ['confirmed', 'partially_refunded'].includes(booking.status)
+
+    if (paymentNeedsRepair || bookingNeedsRepair) {
+      await reconcileCompletedRefund({ refund, dryRun, summary })
+    }
+  }
+
+  const pendingBookings = await prisma.booking.findMany({
+    where: {
+      bookingFlowVersion: 'v2',
+      status: 'confirmed',
+    },
+    orderBy: { updatedAt: 'asc' },
+    take: batchLimit,
+  })
+
+  for (const row of pendingBookings) {
+    const booking = toApiBooking(row)
+    const payment = booking.paymentId
+      ? toApiPayment(
+          await prisma.payment.findUnique({ where: { id: booking.paymentId } })
+        )
+      : null
+    if (
+      !payment ||
+      !['completed', 'partially_refunded', 'refunded'].includes(payment.status)
+    ) {
+      await flagConfirmedBookingIncompletePayment({ booking, payment, summary })
+    } else if (payment.status === 'refunded') {
+      await reconcileRefundedPaymentConfirmedBooking({
+        payment,
+        booking,
+        dryRun,
+        summary,
+      })
+    }
+  }
+
+  const consumedHolds = await prisma.inventoryHold.findMany({
+    where: { status: 'consumed' },
+    orderBy: { updatedAt: 'asc' },
+    take: batchLimit,
+  })
+
+  for (const holdRow of consumedHolds) {
+    const booking = toApiBooking(
+      await prisma.booking.findUnique({ where: { id: holdRow.bookingId } })
+    )
+    if (!booking || booking.bookingFlowVersion !== 'v2') continue
+    if (
+      booking.status !== 'confirmed' &&
+      booking.status !== 'completed' &&
+      booking.status !== 'partially_refunded' &&
+      booking.status !== 'cancelled'
+    ) {
+      await flagConsumedHoldUnconfirmedBooking({
+        booking,
+        hold: {
+          _id: holdRow.id,
+          bookingId: holdRow.bookingId,
+          status: holdRow.status,
+        },
+        summary,
+      })
     }
   }
 

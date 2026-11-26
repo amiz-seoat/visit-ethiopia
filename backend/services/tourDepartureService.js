@@ -1,6 +1,8 @@
 import TourDeparture from '../models/TourDeparture.js'
 import InventoryHold from '../models/InventoryHold.js'
 import AppError from '../utils/appError.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
+import * as prismaDep from '../repositories/booking/prismaDepartureInventoryRepository.js'
 
 function parseDate(value, fieldName) {
   if (!value) return null
@@ -54,6 +56,20 @@ export async function createDeparture({
     throw new AppError('open departures must have availableSpots > 0', 400)
   }
 
+  if (isPrismaBooking()) {
+    return prismaDep.createDepartureRecord({
+      tourId: tour._id,
+      organizationId,
+      departureDate,
+      returnDate,
+      capacity,
+      availableSpots,
+      status,
+      packages: payload.packages || [],
+      notes: payload.notes || '',
+    })
+  }
+
   return TourDeparture.create({
     tourId: tour._id,
     organizationId,
@@ -72,10 +88,12 @@ export async function updateDeparture(departure, updates) {
     updates.availableSpots !== undefined &&
     updates.availableSpots !== departure.availableSpots
   ) {
-    const activeHold = await InventoryHold.exists({
-      departureId: departure._id,
-      status: { $in: ['held', 'consumed'] },
-    })
+    const activeHold = isPrismaBooking()
+      ? await prismaDep.hasActiveHolds(departure._id)
+      : await InventoryHold.exists({
+          departureId: departure._id,
+          status: { $in: ['held', 'consumed'] },
+        })
     if (activeHold) {
       throw new AppError(
         'Cannot manually change availableSpots while active v2 bookings exist for this departure',
@@ -103,42 +121,62 @@ export async function updateDeparture(departure, updates) {
     throw new AppError('availableSpots must be an integer between 0 and capacity', 400)
   }
 
+  let departureDate = departure.departureDate
+  let returnDate = departure.returnDate
   if (updates.departureDate) {
-    departure.departureDate = parseDate(updates.departureDate, 'departureDate')
+    departureDate = parseDate(updates.departureDate, 'departureDate')
   }
   if (updates.returnDate !== undefined) {
-    departure.returnDate = updates.returnDate
+    returnDate = updates.returnDate
       ? parseDate(updates.returnDate, 'returnDate')
       : null
   }
-  if (
-    departure.returnDate &&
-    departure.returnDate < departure.departureDate
-  ) {
+  if (returnDate && returnDate < departureDate) {
     throw new AppError('returnDate cannot be before departureDate', 400)
   }
 
+  let status = departure.status
   if (updates.status) {
     const allowed = ['scheduled', 'open', 'full', 'cancelled', 'completed']
     if (!allowed.includes(updates.status)) {
       throw new AppError('Invalid departure status', 400)
     }
-    departure.status = updates.status
+    status = updates.status
   }
+
+  let packages = departure.packages
   if (updates.packages) {
     validateDeparturePackages(updates.packages)
-    departure.packages = updates.packages
+    packages = updates.packages
   }
-  if (updates.notes !== undefined) departure.notes = updates.notes
+  const notes =
+    updates.notes !== undefined ? updates.notes : departure.notes
 
+  if (availableSpots === 0 && status === 'open') {
+    status = 'full'
+  } else if (status === 'full' && availableSpots > 0) {
+    status = 'open'
+  }
+
+  if (isPrismaBooking()) {
+    return prismaDep.updateDepartureRecord(departure._id, {
+      departureDate,
+      returnDate,
+      capacity,
+      availableSpots,
+      status,
+      packages,
+      notes,
+    })
+  }
+
+  departure.departureDate = departureDate
+  departure.returnDate = returnDate
   departure.capacity = capacity
   departure.availableSpots = availableSpots
-  if (departure.availableSpots === 0 && departure.status === 'open') {
-    departure.status = 'full'
-  } else if (departure.status === 'full' && departure.availableSpots > 0) {
-    departure.status = 'open'
-  }
-
+  departure.status = status
+  departure.packages = packages
+  departure.notes = notes
   await departure.save()
   return departure
 }
@@ -147,6 +185,10 @@ export async function updateDeparture(departure, updates) {
  * Atomically reserve spots. Returns updated departure or throws if unavailable.
  */
 export async function reserveDepartureSpots(departureId, quantity = 1) {
+  if (isPrismaBooking()) {
+    return prismaDep.reserveSpotsAtomic(departureId, quantity)
+  }
+
   if (!Number.isInteger(quantity) || quantity < 1) {
     throw new AppError('quantity must be a positive integer', 400)
   }
@@ -176,6 +218,10 @@ export async function reserveDepartureSpots(departureId, quantity = 1) {
 }
 
 export async function releaseDepartureSpots(departureId, quantity = 1) {
+  if (isPrismaBooking()) {
+    return prismaDep.releaseSpotsAtomic(departureId, quantity)
+  }
+
   if (!Number.isInteger(quantity) || quantity < 1) {
     throw new AppError('quantity must be a positive integer', 400)
   }

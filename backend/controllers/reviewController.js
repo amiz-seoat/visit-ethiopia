@@ -5,9 +5,10 @@ import Transport from '../models/Transport.js'
 import Restaurant from '../models/Restaurants.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
-import factory from './handlerFactory.js'
 import APIFeatures from '../utils/apiFeatures.js'
 import mongoose from 'mongoose'
+import { isPrismaApp } from '../utils/databaseMode.js'
+import * as catalogWrite from '../repositories/prisma/catalogWriteRepository.js'
 
 const reviewItemModels = {
   tour: Tour,
@@ -26,6 +27,17 @@ export const test = catchAsync(async (req, res) => {
 
 // Admin: Get all pending reviews
 export const getPendingReviews = catchAsync(async (req, res, next) => {
+  if (isPrismaApp()) {
+    const reviews = await catalogWrite.findPendingReviews(req.query)
+    return res.status(200).json({
+      status: 'success',
+      results: reviews.length,
+      data: {
+        data: reviews,
+      },
+    })
+  }
+
   let query = Review.find({ status: 'pending' }).populate({
     path: 'user',
     select: 'FirstName LastName',
@@ -84,6 +96,18 @@ async function refreshAverageRating(itemType, itemId) {
 
 // Admin: Approve review
 export const approveReview = catchAsync(async (req, res, next) => {
+  if (isPrismaApp()) {
+    const review = await catalogWrite.approveReview(req.params.id)
+    if (!review) {
+      return next(new AppError('No document found with that ID', 404))
+    }
+    await catalogWrite.refreshAverageRating(review.itemType, review.itemId)
+    return res.status(200).json({
+      status: 'success',
+      data: { data: review },
+    })
+  }
+
   const review = await Review.findByIdAndUpdate(
     req.params.id,
     { status: 'approved' },
@@ -103,6 +127,19 @@ export const approveReview = catchAsync(async (req, res, next) => {
 })
 
 export const rejectReview = catchAsync(async (req, res, next) => {
+  if (isPrismaApp()) {
+    const review = await catalogWrite.updateReview(req.params.id, {
+      status: 'rejected',
+    })
+    if (!review) {
+      return next(new AppError('No document found with that ID', 404))
+    }
+    return res.status(200).json({
+      status: 'success',
+      data: { data: review },
+    })
+  }
+
   const review = await Review.findByIdAndUpdate(
     req.params.id,
     { status: 'rejected' },
@@ -133,6 +170,28 @@ export const createReview = catchAsync(async (req, res, next) => {
     return next(new AppError('Rating must be between 1 and 5', 400))
   }
 
+  if (isPrismaApp()) {
+    const item = await catalogWrite.findCatalogItem(itemType, itemId)
+    if (!item) {
+      return next(new AppError('The reviewed item does not exist', 404))
+    }
+    const newReview = await catalogWrite.createReview({
+      user: req.user.id,
+      itemType,
+      itemId,
+      rating,
+      title: req.body.title,
+      comment: req.body.comment,
+      images: req.body.images || [],
+      dateOfExperience: req.body.dateOfExperience,
+      status: 'pending',
+    })
+    return res.status(201).json({
+      status: 'success',
+      data: newReview,
+    })
+  }
+
   const item = await reviewItemModels[itemType].findById(itemId)
   if (!item) {
     return next(new AppError('The reviewed item does not exist', 404))
@@ -158,6 +217,15 @@ export const createReview = catchAsync(async (req, res, next) => {
 
 // ✅ User: Get current user's reviews
 export const getMyReviews = catchAsync(async (req, res, next) => {
+  if (isPrismaApp()) {
+    const reviews = await catalogWrite.findReviewsByUser(req.user.id)
+    return res.status(200).json({
+      status: 'success',
+      results: reviews.length,
+      data: reviews,
+    })
+  }
+
   const reviews = await Review.find({ user: req.user.id })
 
   res.status(200).json({
@@ -169,26 +237,47 @@ export const getMyReviews = catchAsync(async (req, res, next) => {
 
 // ✅ Update review (owner only)
 export const updateReview = catchAsync(async (req, res, next) => {
-  // Find the review and check if user owns it
+  if (isPrismaApp()) {
+    const review = await catalogWrite.findReviewById(req.params.id)
+    if (!review) {
+      return next(new AppError('No review found with that ID', 404))
+    }
+    const ownerId =
+      review.user?._id?.toString?.() ??
+      review.user?.toString?.() ??
+      review.userId?.toString?.()
+    if (ownerId !== req.user.id) {
+      return next(new AppError('You can only update your own reviews', 403))
+    }
+
+    delete req.body.user
+    delete req.body.status
+    delete req.body.itemType
+    delete req.body.itemId
+
+    const updatedReview = await catalogWrite.updateReview(req.params.id, req.body)
+    return res.status(200).json({
+      status: 'success',
+      data: { data: updatedReview },
+    })
+  }
+
   const review = await Review.findById(req.params.id)
 
   if (!review) {
     return next(new AppError('No review found with that ID', 404))
   }
 
-  // Check if the current user is the owner of the review
   const ownerId = review.user?._id?.toString?.() ?? review.user?.toString?.()
   if (ownerId !== req.user.id) {
     return next(new AppError('You can only update your own reviews', 403))
   }
 
-  // Prevent privilege escalation via status / user field
   delete req.body.user
   delete req.body.status
   delete req.body.itemType
   delete req.body.itemId
 
-  // Update the review
   const updatedReview = await Review.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -206,20 +295,36 @@ export const updateReview = catchAsync(async (req, res, next) => {
 
 // ✅ Delete review (owner/admin)
 export const deleteReview = catchAsync(async (req, res, next) => {
-  // Find the review
+  if (isPrismaApp()) {
+    const review = await catalogWrite.findReviewById(req.params.id)
+    if (!review) {
+      return next(new AppError('No review found with that ID', 404))
+    }
+    const ownerId =
+      review.user?._id?.toString?.() ??
+      review.user?.toString?.() ??
+      review.userId?.toString?.()
+    if (ownerId !== req.user.id && req.user.role !== 'admin') {
+      return next(new AppError('You can only delete your own reviews', 403))
+    }
+    await catalogWrite.deleteReview(req.params.id)
+    return res.status(204).json({
+      status: 'success',
+      data: null,
+    })
+  }
+
   const review = await Review.findById(req.params.id)
 
   if (!review) {
     return next(new AppError('No review found with that ID', 404))
   }
 
-  // Check if the current user is the owner of the review OR an admin
   const ownerId = review.user?._id?.toString?.() ?? review.user?.toString?.()
   if (ownerId !== req.user.id && req.user.role !== 'admin') {
     return next(new AppError('You can only delete your own reviews', 403))
   }
 
-  // Delete the review
   await Review.findByIdAndDelete(req.params.id)
 
   res.status(204).json({

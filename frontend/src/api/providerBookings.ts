@@ -49,6 +49,30 @@ export interface ProviderBookingRow {
     returnDate?: string | null
   }
   package: { key?: string | null; name?: string | null }
+  transport?: {
+    id?: string | null
+    name?: string | null
+    type?: string | null
+  }
+  route?: {
+    key?: string | null
+    from?: string | null
+    to?: string | null
+    departureTime?: string | null
+    arrivalTime?: string | null
+    travelDate?: string | null
+  }
+  hotel?: {
+    id?: string | null
+    name?: string | null
+  }
+  stay?: {
+    roomTypeKey?: string | null
+    roomTypeName?: string | null
+    checkIn?: string | null
+    checkOut?: string | null
+    nightsCount?: number | null
+  }
   quantity?: number | null
   priceSnapshot?: {
     currency: string
@@ -59,6 +83,16 @@ export interface ProviderBookingRow {
     packageName?: string
     tourTitle?: string
     departureDate?: string
+    transportName?: string
+    routeKey?: string
+    travelDate?: string
+    from?: string
+    to?: string
+    hotelName?: string
+    roomTypeKey?: string
+    roomTypeName?: string
+    checkIn?: string
+    checkOut?: string
   } | null
   payment?: ProviderBookingPayment | null
   inventory?: {
@@ -127,6 +161,16 @@ export async function checkInProviderBooking(organizationId: string, bookingId: 
 export async function completeProviderBooking(organizationId: string, bookingId: string) {
   const { data } = await api.post(
     `/provider/bookings/${bookingId}/complete`,
+    {},
+    orgHeaders(organizationId)
+  )
+  return { booking: data.data as ProviderBookingRow, idempotent: Boolean(data.idempotent) }
+}
+
+/** Hotel check-out alias (same completed fulfillment transition). */
+export async function checkOutProviderBooking(organizationId: string, bookingId: string) {
+  const { data } = await api.post(
+    `/provider/bookings/${bookingId}/check-out`,
     {},
     orgHeaders(organizationId)
   )

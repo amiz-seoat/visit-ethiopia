@@ -3,18 +3,41 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "prisma": {
+    "schema": "../prisma/schema.prisma"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node scripts/run-prisma-tests.js",
     "start": "node server.js",
     "dev": "nodemon server.js",
     "dev:memory": "node scripts/startWithMemoryDb.js",
-    "audit:integration": "node scripts/full-integration-suite.js http://localhost:4002/api/v1"
+    "dev:prisma": "node scripts/startPrismaDev.js",
+    "audit:integration": "node scripts/full-integration-suite.js http://localhost:4002/api/v1",
+    "prisma:validate": "prisma validate --schema ../prisma/schema.prisma",
+    "prisma:generate": "prisma generate --schema ../prisma/schema.prisma && node scripts/syncPrismaClient.js",
+    "prisma:connectivity": "node scripts/prismaConnectivityTest.js",
+    "prisma:seed": "node scripts/seedPrismaCatalog.js",
+    "prisma:phase3": "node scripts/phase3-prisma-identity.js",
+    "prisma:phase4": "node scripts/phase4-prisma-booking.js",
+    "prisma:phase5": "node scripts/phase5-prisma-parity.js",
+    "prisma:phase6": "node scripts/phase6-prisma-qa.js",
+    "prisma:ownership": "node scripts/ownership-prisma-harden.js",
+    "prisma:workspace": "node scripts/provider-workspace-prisma.js",
+    "prisma:hotel": "node scripts/hotel-marketplace-prisma.js",
+    "prisma:hotel-booking": "node scripts/hotel-booking-prisma.js",
+    "prisma:hotel-fulfillment": "node scripts/hotel-fulfillment-prisma.js",
+    "prisma:transport": "node scripts/transport-marketplace-prisma.js",
+    "prisma:transport-fulfillment": "node scripts/transport-fulfillment-prisma.js",
+    "build": "prisma generate --schema ../prisma/schema.prisma && node scripts/syncPrismaClient.js",
+    "migrate:deploy": "prisma migrate deploy --schema ../prisma/schema.prisma",
+    "prisma:chapa": "node scripts/chapa-payment-prisma.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Visit Ethiopia marketplace API (Express + Prisma/PostgreSQL)",
   "dependencies": {
+    "@prisma/client": "6.19.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
@@ -38,6 +61,10 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
     "mongodb-memory-server": "^11.2.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "prisma": "6.19.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

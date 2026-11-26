@@ -1,0 +1,28 @@
+# Local PostgreSQL for Prisma Phase 1 (NOT MongoDB, NOT production).
+# Start: docker compose -f docker-compose.prisma.yml up -d
+# Stop:  docker compose -f docker-compose.prisma.yml down
+#
+# Credentials below are LOCAL DEV ONLY placeholders — never use in production / Supabase.
+
+services:
+  prisma-postgres:
+    image: postgres:16-alpine
+    container_name: visit-ethiopia-prisma-pg
+    restart: unless-stopped
+    ports:
+      # Host 5434 — 5433 is commonly used by other local Postgres containers
+      - '5434:5432'
+    environment:
+      POSTGRES_USER: visit
+      POSTGRES_PASSWORD: visit_dev_only
+      POSTGRES_DB: visit_ethiopia_prisma
+    volumes:
+      - visit_ethiopia_prisma_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U visit -d visit_ethiopia_prisma']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  visit_ethiopia_prisma_pgdata:

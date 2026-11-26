@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import {
   addProviderBookingNote,
   checkInProviderBooking,
+  checkOutProviderBooking,
   completeProviderBooking,
   getProviderBooking,
   noShowProviderBooking,
@@ -45,7 +46,7 @@ export function ProviderBookingDetailPage() {
   const [actionMessage, setActionMessage] = useState('')
   const [busy, setBusy] = useState(false)
   const [confirmAction, setConfirmAction] = useState<
-    null | 'check-in' | 'complete' | 'no-show'
+    null | 'check-in' | 'complete' | 'check-out' | 'no-show'
   >(null)
   const [noteText, setNoteText] = useState('')
   const busyRef = useRef(false)
@@ -80,7 +81,9 @@ export function ProviderBookingDetailPage() {
     load()
   }, [load])
 
-  const runAction = async (action: 'check-in' | 'complete' | 'no-show') => {
+  const runAction = async (
+    action: 'check-in' | 'complete' | 'check-out' | 'no-show'
+  ) => {
     if (!organizationId || !bookingId || busyRef.current) return
     busyRef.current = true
     setBusy(true)
@@ -92,6 +95,9 @@ export function ProviderBookingDetailPage() {
       if (action === 'check-in') {
         result = await checkInProviderBooking(organizationId, bookingId)
         setActionMessage(result.idempotent ? 'Already checked in.' : 'Guest checked in.')
+      } else if (action === 'check-out') {
+        result = await checkOutProviderBooking(organizationId, bookingId)
+        setActionMessage(result.idempotent ? 'Already checked out.' : 'Guest checked out.')
       } else if (action === 'complete') {
         result = await completeProviderBooking(organizationId, bookingId)
         setActionMessage(result.idempotent ? 'Already completed.' : 'Booking marked completed.')
@@ -167,9 +173,13 @@ export function ProviderBookingDetailPage() {
   const snap = booking.priceSnapshot
   const fulfillment = booking.fulfillmentStatus || 'pending'
   const financiallyConfirmed = booking.status === 'confirmed'
+  const isHotel = booking.bookingType === 'hotel'
   const canCheckIn = financiallyConfirmed && fulfillment === 'confirmed'
+  const canCheckOut = isHotel && financiallyConfirmed && fulfillment === 'checked_in'
   const canComplete =
-    financiallyConfirmed && (fulfillment === 'confirmed' || fulfillment === 'checked_in')
+    !isHotel &&
+    financiallyConfirmed &&
+    (fulfillment === 'confirmed' || fulfillment === 'checked_in')
   const canNoShow = financiallyConfirmed && fulfillment === 'confirmed'
   const readOnlyOps =
     !financiallyConfirmed ||
@@ -234,29 +244,96 @@ export function ProviderBookingDetailPage() {
           </dl>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6 mb-4 space-y-4">
-          <h2 className="font-semibold text-lg">Tour & departure</h2>
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            <div>
-              <dt className="text-gray-500">Tour</dt>
-              <dd className="font-medium">{booking.tour?.title || '—'}</dd>
-            </div>
-            <div>
-              <dt className="text-gray-500">Departure</dt>
-              <dd className="font-medium">{formatDate(booking.departure?.departureDate)}</dd>
-            </div>
-            <div>
-              <dt className="text-gray-500">Package</dt>
-              <dd className="font-medium">
-                {booking.package?.name || booking.package?.key || '—'}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-gray-500">Quantity</dt>
-              <dd className="font-medium">{booking.quantity ?? '—'}</dd>
-            </div>
-          </dl>
-        </div>
+        {booking.bookingType === 'hotel' ? (
+          <div className="bg-white rounded-lg shadow-md p-6 mb-4 space-y-4">
+            <h2 className="font-semibold text-lg">Hotel stay</h2>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+              <div>
+                <dt className="text-gray-500">Hotel</dt>
+                <dd className="font-medium">{booking.hotel?.name || '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Room type</dt>
+                <dd className="font-medium">
+                  {booking.stay?.roomTypeName || booking.stay?.roomTypeKey || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Check-in</dt>
+                <dd className="font-medium">{booking.stay?.checkIn || '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Check-out</dt>
+                <dd className="font-medium">{booking.stay?.checkOut || '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Rooms</dt>
+                <dd className="font-medium">{booking.quantity ?? '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Nights</dt>
+                <dd className="font-medium">{booking.stay?.nightsCount ?? '—'}</dd>
+              </div>
+            </dl>
+          </div>
+        ) : booking.bookingType === 'transport' ? (
+          <div className="bg-white rounded-lg shadow-md p-6 mb-4 space-y-4">
+            <h2 className="font-semibold text-lg">Transport & route</h2>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+              <div>
+                <dt className="text-gray-500">Transport</dt>
+                <dd className="font-medium">{booking.transport?.name || '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Travel date</dt>
+                <dd className="font-medium">{formatDate(booking.route?.travelDate)}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Route</dt>
+                <dd className="font-medium">
+                  {booking.route?.from && booking.route?.to
+                    ? `${booking.route.from} → ${booking.route.to}`
+                    : booking.route?.key || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Schedule</dt>
+                <dd className="font-medium">
+                  {booking.route?.departureTime || '—'}
+                  {booking.route?.arrivalTime ? ` – ${booking.route.arrivalTime}` : ''}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Seats</dt>
+                <dd className="font-medium">{booking.quantity ?? '—'}</dd>
+              </div>
+            </dl>
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-md p-6 mb-4 space-y-4">
+            <h2 className="font-semibold text-lg">Tour & departure</h2>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+              <div>
+                <dt className="text-gray-500">Tour</dt>
+                <dd className="font-medium">{booking.tour?.title || '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Departure</dt>
+                <dd className="font-medium">{formatDate(booking.departure?.departureDate)}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Package</dt>
+                <dd className="font-medium">
+                  {booking.package?.name || booking.package?.key || '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Quantity</dt>
+                <dd className="font-medium">{booking.quantity ?? '—'}</dd>
+              </div>
+            </dl>
+          </div>
+        )}
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-4 space-y-4">
           <h2 className="font-semibold text-lg">Pricing (snapshot)</h2>
@@ -326,7 +403,7 @@ export function ProviderBookingDetailPage() {
           <h2 className="font-semibold text-lg mb-2">Fulfillment operations</h2>
           <p className="text-xs text-gray-500 mb-4">
             These actions update operational status only. They never change payment,
-            refunds, or inventory seats.
+            refunds, or reserved inventory.
           </p>
           {readOnlyOps ? (
             <p className="text-sm text-gray-600">
@@ -342,6 +419,16 @@ export function ProviderBookingDetailPage() {
                   className="bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium px-4 py-2 rounded-md disabled:opacity-60"
                 >
                   Check in
+                </button>
+              )}
+              {canCheckOut && (
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => setConfirmAction('check-out')}
+                  className="bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-medium px-4 py-2 rounded-md disabled:opacity-60"
+                >
+                  Check out
                 </button>
               )}
               {canComplete && (
@@ -427,6 +514,7 @@ export function ProviderBookingDetailPage() {
             </h3>
             <p className="text-sm text-gray-600 mb-4">
               {confirmAction === 'check-in' && 'Mark this booking as checked in?'}
+              {confirmAction === 'check-out' && 'Mark this guest as checked out?'}
               {confirmAction === 'complete' && 'Mark this booking as completed?'}
               {confirmAction === 'no-show' &&
                 'Mark this booking as a no-show? This does not issue a refund.'}

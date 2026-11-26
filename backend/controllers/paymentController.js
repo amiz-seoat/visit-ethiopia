@@ -6,6 +6,12 @@ import {
 } from '../services/paymentService.js'
 import { serializeV2Booking } from '../services/bookingLifecycleService.js'
 import { ingestPaymentWebhook } from '../services/paymentWebhookService.js'
+import {
+  handleChapaCallback,
+  startChapaCheckout,
+  verifyChapaPayment,
+} from '../services/chapaCheckoutService.js'
+import { getPublicPaymentConfig } from '../config/payments.js'
 
 export const getPaymentById = catchAsync(async (req, res, next) => {
   const { payment, booking } = await getPaymentForUser(req.params.id, req.user)
@@ -109,3 +115,51 @@ export const handlePaymentWebhook = catchAsync(async (req, res) => {
 })
 
 export default { getPaymentById, confirmPayment, createRefund, handlePaymentWebhook }
+
+// ---------------------------------------------------------------------------
+// Chapa hosted checkout
+// ---------------------------------------------------------------------------
+
+export const getPaymentConfig = (req, res) => {
+  res.status(200).json({ status: 'success', data: getPublicPaymentConfig() })
+}
+
+export const startCheckout = catchAsync(async (req, res) => {
+  const result = await startChapaCheckout({ paymentId: req.params.id, user: req.user })
+  res.status(200).json({
+    status: 'success',
+    data: {
+      checkoutUrl: result.checkoutUrl,
+      alreadyPaid: result.alreadyPaid,
+      reused: Boolean(result.reused),
+      payment: serializePayment(result.payment),
+      booking: serializeV2Booking(result.booking),
+    },
+  })
+})
+
+export const verifyPayment = catchAsync(async (req, res) => {
+  const result = await verifyChapaPayment({
+    paymentId: req.params.id,
+    user: req.user,
+    source: 'customer',
+  })
+  res.status(200).json({
+    status: 'success',
+    data: {
+      outcome: result.outcome,
+      payment: serializePayment(result.payment),
+      booking: serializeV2Booking(result.booking),
+    },
+  })
+})
+
+/** Chapa callback_url (GET). Query values are lookup keys only — never trusted. */
+export const chapaCallback = catchAsync(async (req, res) => {
+  const txRef = req.query.trx_ref || req.query.tx_ref
+  if (!txRef || typeof txRef !== 'string') {
+    return res.status(400).json({ status: 'fail', message: 'trx_ref is required' })
+  }
+  const result = await handleChapaCallback(txRef)
+  res.status(200).json({ status: 'success', outcome: result.outcome })
+})

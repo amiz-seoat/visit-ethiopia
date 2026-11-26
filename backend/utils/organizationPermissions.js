@@ -9,13 +9,23 @@ export const PROVIDER_TYPE_PERMISSIONS = {
     'bookings:read',
     'bookings:manage',
   ],
-  hotel: ['org:read', 'org:write', 'org:members:manage', 'hotels:read', 'hotels:write'],
+  hotel: [
+    'org:read',
+    'org:write',
+    'org:members:manage',
+    'hotels:read',
+    'hotels:write',
+    'bookings:read',
+    'bookings:manage',
+  ],
   tour_bus_provider: [
     'org:read',
     'org:write',
     'org:members:manage',
     'tour_buses:read',
     'tour_buses:write',
+    'bookings:read',
+    'bookings:manage',
   ],
   bus_company: [
     'org:read',
@@ -23,6 +33,8 @@ export const PROVIDER_TYPE_PERMISSIONS = {
     'org:members:manage',
     'bus:read',
     'bus:write',
+    'bookings:read',
+    'bookings:manage',
   ],
 }
 

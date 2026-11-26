@@ -29,6 +29,7 @@ const bookingOperationAuditSchema = new mongoose.Schema(
       enum: [
         'check_in',
         'complete',
+        'check_out',
         'no_show',
         'add_note',
         'fulfillment_confirmed',

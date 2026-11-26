@@ -4,6 +4,7 @@ import {
   createHotel,
   getAllHotels,
   getHotel,
+  getHotelAvailability,
   updateHotel,
   deleteHotel,
   featuredHotels,
@@ -21,6 +22,7 @@ router.post('/', protect, restrict('admin', 'hotel_manager'), createHotel)
 
 router.get('/', getAllHotels)
 router.get('/featured', featuredHotels, getAllHotels)
+router.get('/:id/availability', getHotelAvailability)
 router.get('/:id', getHotel)
 router.get('/:id/reviews', getHotelReviews)
 

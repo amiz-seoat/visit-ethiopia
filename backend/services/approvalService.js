@@ -2,6 +2,8 @@ import Organization from '../models/Organization.js'
 import ProviderVersion from '../models/ProviderVersion.js'
 import ApprovalRequest from '../models/ApprovalRequest.js'
 import AppError from '../utils/appError.js'
+import { isPrismaIdentity } from '../utils/databaseMode.js'
+import { getOrganizationRepository } from '../repositories/organizations/index.js'
 import { validateVerification } from './verificationService.js'
 import { analyzeVersionChanges } from '../utils/versionDiff.js'
 import {
@@ -17,6 +19,11 @@ import {
   reconcileOrganizationApprovalState,
   tryGetIdempotentApproveResult,
 } from './approvalReconciliationService.js'
+import {
+  submitVersionForApprovalPrisma,
+  approveRequestPrisma,
+  rejectRequestPrisma,
+} from './prismaIdentityApprovalService.js'
 
 function assertVersionBelongsToOrg(version, organizationId) {
   if (version.organizationId.toString() !== organizationId.toString()) {
@@ -38,6 +45,14 @@ export async function submitVersionForApproval({
   versionId,
   submittedBy,
 }) {
+  if (isPrismaIdentity()) {
+    return submitVersionForApprovalPrisma({
+      organization,
+      versionId,
+      submittedBy,
+    })
+  }
+
   const version = await ProviderVersion.findById(versionId)
   if (!version) throw new AppError('Version not found', 404)
 
@@ -119,6 +134,14 @@ export async function submitVersionForApproval({
 }
 
 export async function approveRequest({ approvalRequestId, adminUserId, adminNotes }) {
+  if (isPrismaIdentity()) {
+    return approveRequestPrisma({
+      approvalRequestId,
+      adminUserId,
+      adminNotes,
+    })
+  }
+
   const approvalRequest = await ApprovalRequest.findById(approvalRequestId)
   if (!approvalRequest) throw new AppError('Approval request not found', 404)
 
@@ -226,6 +249,15 @@ export async function rejectRequest({
   rejectionReason,
   adminNotes,
 }) {
+  if (isPrismaIdentity()) {
+    return rejectRequestPrisma({
+      approvalRequestId,
+      adminUserId,
+      rejectionReason,
+      adminNotes,
+    })
+  }
+
   if (!rejectionReason?.trim()) {
     throw new AppError('Rejection reason is required', 400)
   }
@@ -318,6 +350,17 @@ export async function suspendOrganization({
   adminUserId,
   reason,
 }) {
+  if (isPrismaIdentity()) {
+    const orgs = getOrganizationRepository()
+    const organization = await orgs.suspendOrganization(
+      organizationId,
+      adminUserId,
+      reason
+    )
+    if (!organization) throw new AppError('Organization not found', 404)
+    return organization
+  }
+
   const organization = await Organization.findById(organizationId)
   if (!organization) throw new AppError('Organization not found', 404)
 
@@ -332,6 +375,21 @@ export async function suspendOrganization({
 }
 
 export async function reactivateOrganization({ organizationId, adminUserId }) {
+  if (isPrismaIdentity()) {
+    const orgs = getOrganizationRepository()
+    try {
+      const organization = await orgs.reactivateOrganization(organizationId)
+      if (!organization) throw new AppError('Organization not found', 404)
+      return organization
+    } catch (err) {
+      if (err?.statusCode === 400) {
+        throw new AppError(err.message, 400)
+      }
+      if (err?.code === 'P2025') throw new AppError('Organization not found', 404)
+      throw err
+    }
+  }
+
   const organization = await Organization.findById(organizationId)
   if (!organization) throw new AppError('Organization not found', 404)
 
@@ -353,6 +411,26 @@ export async function reactivateOrganization({ organizationId, adminUserId }) {
 }
 
 export async function getApprovalRequestDetail(approvalRequestId) {
+  if (isPrismaIdentity()) {
+    const orgs = getOrganizationRepository()
+    const detail = await orgs.getApprovalRequestDetail(approvalRequestId)
+    if (!detail) throw new AppError('Approval request not found', 404)
+
+    return {
+      approvalRequest: detail.approvalRequest,
+      submittedVersion: detail.submittedVersion,
+      currentApprovedVersion: detail.currentApprovedVersion,
+      organization: detail.organization,
+      diff: detail.submittedVersion
+        ? analyzeVersionChanges({
+            approvedSnapshot: detail._approvedSnapshot,
+            submittedSnapshot: detail._submittedSnapshot,
+          })
+        : null,
+      verificationChecklist: detail.verificationChecklist || [],
+    }
+  }
+
   const approvalRequest = await ApprovalRequest.findById(approvalRequestId)
     .populate('submittedBy', 'FirstName LastName email')
     .populate('reviewedBy', 'FirstName LastName email')
@@ -402,6 +480,11 @@ export async function getApprovalRequestDetail(approvalRequestId) {
 }
 
 export async function listApprovalRequests(filters = {}) {
+  if (isPrismaIdentity()) {
+    const orgs = getOrganizationRepository()
+    return orgs.listApprovalRequests(filters)
+  }
+
   const query = {}
   if (filters.status) query.status = filters.status
   if (filters.providerType) query.providerTypes = filters.providerType

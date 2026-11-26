@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { cancelBooking, getBookingById } from '../api/bookings'
-import { confirmPayment, getPaymentById } from '../api/payments'
+import { confirmPayment, getPaymentById, startCheckout, verifyPayment } from '../api/payments'
 import { PageError, PageLoader } from '../components/ui/PageStatus'
 import { getErrorMessage } from '../services/api'
 import type { Booking, PaymentRecord, V2Booking } from '../types'
@@ -48,6 +48,10 @@ export function BookingDetailPage() {
   const [showCancelDialog, setShowCancelDialog] = useState(false)
   const [paymentFailed, setPaymentFailed] = useState(false)
   const [showSuccessBanner, setShowSuccessBanner] = useState(false)
+  const [redirecting, setRedirecting] = useState(false)
+  const [verifying, setVerifying] = useState(false)
+  const returnedFromCheckout = new URLSearchParams(location.search).get('payment') === 'return'
+  const verifyStartedRef = useRef(false)
 
   const confirmingRef = useRef(false)
   const cancellingRef = useRef(false)
@@ -90,6 +94,80 @@ export function BookingDetailPage() {
   useEffect(() => {
     load()
   }, [load])
+
+  // Returning from Chapa: verify server-side (the redirect itself proves nothing).
+  useEffect(() => {
+    if (!returnedFromCheckout || !payment?._id || payment.provider !== 'chapa') return
+    if (verifyStartedRef.current) return
+    verifyStartedRef.current = true
+    let cancelled = false
+    const run = async () => {
+      setVerifying(true)
+      setActionError('')
+      try {
+        for (let attempt = 0; attempt < 6 && !cancelled; attempt++) {
+          const result = await verifyPayment(payment._id)
+          setPayment(result.payment)
+          setBooking(result.booking)
+          if (result.outcome === 'success') {
+            setShowSuccessBanner(true)
+            setActionMessage('Payment verified with Chapa. Your booking is confirmed.')
+            break
+          }
+          if (result.outcome === 'flagged') {
+            setActionError(
+              'We received a payment that needs manual review (for example, it arrived after your booking hold expired). Our team will contact you about a refund.'
+            )
+            break
+          }
+          if (result.outcome === 'failed_retryable') {
+            setActionError('Chapa reported that the payment did not go through. You can try again before your hold expires.')
+            break
+          }
+          if (attempt === 5) {
+            setActionMessage(
+              'Your payment is still being processed by Chapa. Refresh this page in a minute to see the confirmed status.'
+            )
+            break
+          }
+          await new Promise((r) => setTimeout(r, 3000))
+        }
+      } catch (err) {
+        setActionError(getErrorMessage(err, 'Could not verify the payment yet. Please refresh in a moment.'))
+      } finally {
+        if (!cancelled) setVerifying(false)
+        navigate(location.pathname, { replace: true })
+      }
+    }
+    run()
+    return () => {
+      cancelled = true
+    }
+  }, [returnedFromCheckout, payment?._id, payment?.provider, navigate, location.pathname])
+
+  const handleChapaCheckout = async () => {
+    if (!payment?._id || redirecting) return
+    setRedirecting(true)
+    setActionError('')
+    try {
+      const result = await startCheckout(payment._id)
+      if (result.alreadyPaid) {
+        setPayment(result.payment)
+        setBooking(result.booking)
+        setActionMessage('This booking is already paid.')
+        setRedirecting(false)
+        return
+      }
+      if (result.checkoutUrl) {
+        window.location.assign(result.checkoutUrl)
+        return
+      }
+      setRedirecting(false)
+    } catch (err) {
+      setActionError(getErrorMessage(err, 'Could not start the payment. Please try again.'))
+      setRedirecting(false)
+    }
+  }
 
   useEffect(() => {
     if (justCreated) {
@@ -213,7 +291,9 @@ export function BookingDetailPage() {
     status === 'payment_pending' &&
     payment &&
     payment.status === 'pending' &&
-    !paymentFailed
+    !paymentFailed &&
+    !verifying
+  const isChapa = payment?.provider === 'chapa'
 
   const displayTotalMinor =
     snapshot?.totalMinor ??
@@ -265,7 +345,13 @@ export function BookingDetailPage() {
 
         {justCreated && status === 'payment_pending' && (
           <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-            Booking created. Complete mock payment below to confirm your seats.
+            Booking created. Complete payment below to confirm your reservation before the hold expires.
+          </div>
+        )}
+
+        {verifying && (
+          <div className="mb-4 rounded-md bg-blue-50 border border-blue-200 text-blue-800 p-3 text-sm" role="status">
+            Verifying your payment with Chapa…
           </div>
         )}
 
@@ -403,9 +489,16 @@ export function BookingDetailPage() {
         {showCheckout && (
           <div className="bg-white rounded-lg shadow-md p-6 mb-6 border border-amber-100">
             <h2 className="text-xl font-bold mb-2">Checkout</h2>
-            <p className="text-xs text-amber-800 bg-amber-50 border border-amber-100 rounded px-3 py-2 mb-4">
-              Development / test payment — Mock Payment provider. No card or bank details are collected.
-            </p>
+            {isChapa ? (
+              <p className="text-xs text-gray-700 bg-gray-50 border border-gray-200 rounded px-3 py-2 mb-4">
+                You will be redirected to Chapa's secure checkout (card, telebirr, CBE Birr and other
+                Ethiopian payment methods). Your booking is confirmed only after Chapa verifies the payment.
+              </p>
+            ) : (
+              <p className="text-xs text-amber-800 bg-amber-50 border border-amber-100 rounded px-3 py-2 mb-4">
+                Demo payment — no real money is charged and no card or bank details are collected.
+              </p>
+            )}
 
             <div className="space-y-2 text-sm mb-4">
               <div className="flex justify-between">
@@ -423,18 +516,29 @@ export function BookingDetailPage() {
             <div className="mb-4">
               <p className="text-sm font-medium text-gray-700 mb-1">Payment method</p>
               <div className="border rounded-md px-3 py-2 bg-gray-50 text-sm">
-                Mock Payment
+                {isChapa ? 'Chapa (hosted checkout)' : 'Demo payment'}
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={handleConfirmPayment}
-              disabled={confirming}
-              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md disabled:opacity-60"
-            >
-              {confirming ? 'Confirming payment…' : 'Confirm payment'}
-            </button>
+            {isChapa ? (
+              <button
+                type="button"
+                onClick={handleChapaCheckout}
+                disabled={redirecting}
+                className="w-full bg-green-700 hover:bg-green-800 text-white font-medium py-3 px-4 rounded-md disabled:opacity-60"
+              >
+                {redirecting ? 'Redirecting to Chapa…' : 'Pay with Chapa'}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleConfirmPayment}
+                disabled={confirming}
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md disabled:opacity-60"
+              >
+                {confirming ? 'Confirming payment…' : 'Confirm demo payment'}
+              </button>
+            )}
           </div>
         )}
 

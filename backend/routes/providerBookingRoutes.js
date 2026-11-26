@@ -11,6 +11,7 @@ import {
   getProviderBooking,
   checkInBooking,
   completeBooking,
+  checkOutBooking,
   noShowBooking,
   addBookingNote,
   listBookingAudits,
@@ -59,6 +60,13 @@ router.post(
   requireObjectIdParam('id'),
   requireOrganizationPermission('bookings:manage'),
   completeBooking
+)
+
+router.post(
+  '/:id/check-out',
+  requireObjectIdParam('id'),
+  requireOrganizationPermission('bookings:manage'),
+  checkOutBooking
 )
 
 router.post(

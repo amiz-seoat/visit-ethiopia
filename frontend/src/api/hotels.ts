@@ -25,6 +25,37 @@ export const getHotelById = async (id: string) => {
   return extractOne<Hotel>(res.data);
 };
 
+export const getHotelAvailability = async (
+  hotelId: string,
+  params: { checkIn: string; checkOut: string; roomTypeKey?: string }
+) => {
+  const res = await api.get(`/hotels/${hotelId}/availability`, { params });
+  return res.data.data as {
+    hotelId: string;
+    checkIn: string;
+    checkOut: string;
+    nights: number;
+    roomTypes: Array<{
+      roomTypeKey: string;
+      name: string;
+      capacity?: number;
+      currency?: string;
+      price?: number;
+      priceMinor?: number;
+      available: boolean;
+      minAvailableRooms: number;
+      nightsMissingInventory: number;
+      days: Array<{
+        date: string;
+        availableRooms: number;
+        totalRooms: number;
+        priceOverrideMinor?: number | null;
+        missing?: boolean;
+      }>;
+    }>;
+  };
+};
+
 export const getHotelReviews = async (id: string) => {
   const res = await api.get(`/hotels/${id}/reviews`);
   return extractList(res.data);

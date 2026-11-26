@@ -8,9 +8,17 @@ import {
   setActiveOrganization,
   type ProviderWorkspace,
 } from '../api/organizations';
+import {
+  listProviderBookings,
+  type ProviderBookingRow,
+} from '../api/providerBookings';
 import { getErrorMessage } from '../services/api';
 import { PageLoader } from '../components/ui/PageStatus';
 import { ProviderToursPanel } from '../components/provider/ProviderToursPanel';
+import {
+  bookingStatusClass,
+  bookingStatusLabel,
+} from '../utils/bookingHelpers';
 
 export function ProviderWorkspacePage() {
   const { organizationId } = useParams<{ organizationId: string }>();
@@ -23,6 +31,10 @@ export function ProviderWorkspacePage() {
 
   const [shortDescription, setShortDescription] = useState('');
   const [description, setDescription] = useState('');
+  const [transportBookings, setTransportBookings] = useState<ProviderBookingRow[]>(
+    []
+  );
+  const [hotelBookings, setHotelBookings] = useState<ProviderBookingRow[]>([]);
 
   const load = useCallback(async () => {
     if (!organizationId) return;
@@ -37,6 +49,26 @@ export function ProviderWorkspacePage() {
         (data.latestVersion?.snapshot?.shortDescription as string) || ''
       );
       setDescription((data.latestVersion?.snapshot?.description as string) || '');
+      try {
+        const bookings = await listProviderBookings(organizationId, {
+          bookingType: 'transport',
+          limit: 8,
+          page: 1,
+        });
+        setTransportBookings(bookings.bookings);
+      } catch {
+        setTransportBookings([]);
+      }
+      try {
+        const bookings = await listProviderBookings(organizationId, {
+          bookingType: 'hotel',
+          limit: 8,
+          page: 1,
+        });
+        setHotelBookings(bookings.bookings);
+      } catch {
+        setHotelBookings([]);
+      }
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to load workspace'));
     } finally {
@@ -160,6 +192,65 @@ export function ProviderWorkspacePage() {
           <div className="bg-red-50 text-red-700 px-4 py-3 rounded text-sm">{error}</div>
         )}
 
+        {workspace.summary && (
+          <div className="bg-white rounded-xl shadow p-6">
+            <h2 className="font-semibold text-gray-900 mb-3">Workspace summary</h2>
+            <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+              <div>
+                <dt className="text-gray-500">Members</dt>
+                <dd className="font-medium text-gray-900">{workspace.summary.memberCount}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Tours</dt>
+                <dd className="font-medium text-gray-900">{workspace.summary.tourCount}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Hotels</dt>
+                <dd className="font-medium text-gray-900">{workspace.summary.hotelCount}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Transports</dt>
+                <dd className="font-medium text-gray-900">{workspace.summary.transportCount}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Pending approvals</dt>
+                <dd className="font-medium text-gray-900">{workspace.summary.pendingApprovalCount}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Open departures</dt>
+                <dd className="font-medium text-gray-900">{workspace.summary.openDepartureCount}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Bookings</dt>
+                <dd className="font-medium text-gray-900">{workspace.summary.bookingCount}</dd>
+              </div>
+              {(workspace.summary.activeRoomTypeCount != null ||
+                workspace.summary.inventoryDayCount != null) && (
+                <>
+                  <div>
+                    <dt className="text-gray-500">Active room types</dt>
+                    <dd className="font-medium text-gray-900">
+                      {workspace.summary.activeRoomTypeCount ?? 0}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-gray-500">Inventory days</dt>
+                    <dd className="font-medium text-gray-900">
+                      {workspace.summary.inventoryDayCount ?? 0}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-gray-500">Low availability days</dt>
+                    <dd className="font-medium text-gray-900">
+                      {workspace.summary.lowAvailabilityDayCount ?? 0}
+                    </dd>
+                  </div>
+                </>
+              )}
+            </dl>
+          </div>
+        )}
+
         <div className="bg-white rounded-xl shadow p-6 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="font-semibold text-gray-900">Company profile (draft)</h2>
@@ -167,7 +258,7 @@ export function ProviderWorkspacePage() {
               to={`/provider/workspace/${organizationId}/bookings`}
               className="text-sm font-medium text-amber-700 underline"
             >
-              View tour bookings
+              View bookings
             </Link>
           </div>
           <div>
@@ -221,6 +312,121 @@ export function ProviderWorkspacePage() {
             )}
           </div>
         </div>
+
+        {(workspace.summary?.hotelCount ?? 0) > 0 || hotelBookings.length > 0 ? (
+          <div className="bg-white rounded-xl shadow p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+              <h2 className="font-semibold text-gray-900">Hotel bookings</h2>
+              <Link
+                to={`/provider/workspace/${organizationId}/bookings?bookingType=hotel`}
+                className="text-sm font-medium text-amber-700 underline"
+              >
+                Open hotel bookings
+              </Link>
+            </div>
+            {hotelBookings.length === 0 ? (
+              <p className="text-sm text-gray-500">No recent hotel bookings.</p>
+            ) : (
+              <ul className="divide-y">
+                {hotelBookings.map((b) => (
+                  <li
+                    key={b._id}
+                    className="py-3 flex flex-wrap items-center justify-between gap-2 text-sm"
+                  >
+                    <div>
+                      <div className="font-medium text-gray-900">
+                        {b.reference} · {b.hotel?.name || 'Hotel'}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {b.stay?.checkIn || '—'} → {b.stay?.checkOut || '—'}
+                        {b.stay?.roomTypeName || b.stay?.roomTypeKey
+                          ? ` · ${b.stay?.roomTypeName || b.stay?.roomTypeKey}`
+                          : ''}
+                        {b.quantity != null ? ` · ${b.quantity} rooms` : ''}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded capitalize ${bookingStatusClass(
+                          b.status
+                        )}`}
+                      >
+                        {bookingStatusLabel(b.status)}
+                      </span>
+                      <span className="text-xs text-gray-500 capitalize">
+                        {(b.fulfillmentStatus || 'pending').replace(/_/g, ' ')}
+                      </span>
+                      <Link
+                        to={`/provider/workspace/${organizationId}/bookings/${b._id}`}
+                        className="text-amber-700 font-medium hover:underline"
+                      >
+                        Manage
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : null}
+
+        {(workspace.summary?.transportCount ?? 0) > 0 ||
+        transportBookings.length > 0 ? (
+          <div className="bg-white rounded-xl shadow p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+              <h2 className="font-semibold text-gray-900">Transport bookings</h2>
+              <Link
+                to={`/provider/workspace/${organizationId}/bookings?bookingType=transport`}
+                className="text-sm font-medium text-amber-700 underline"
+              >
+                Open transport bookings
+              </Link>
+            </div>
+            {transportBookings.length === 0 ? (
+              <p className="text-sm text-gray-500">No recent transport bookings.</p>
+            ) : (
+              <ul className="divide-y">
+                {transportBookings.map((b) => (
+                  <li
+                    key={b._id}
+                    className="py-3 flex flex-wrap items-center justify-between gap-2 text-sm"
+                  >
+                    <div>
+                      <div className="font-medium text-gray-900">
+                        {b.reference} · {b.transport?.name || 'Transport'}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {b.route?.travelDate || '—'}
+                        {b.route?.from && b.route?.to
+                          ? ` · ${b.route.from} → ${b.route.to}`
+                          : ''}
+                        {b.quantity != null ? ` · ${b.quantity} seats` : ''}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded capitalize ${bookingStatusClass(
+                          b.status
+                        )}`}
+                      >
+                        {bookingStatusLabel(b.status)}
+                      </span>
+                      <span className="text-xs text-gray-500 capitalize">
+                        {(b.fulfillmentStatus || 'pending').replace(/_/g, ' ')}
+                      </span>
+                      <Link
+                        to={`/provider/workspace/${organizationId}/bookings/${b._id}`}
+                        className="text-amber-700 font-medium hover:underline"
+                      >
+                        Manage
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : null}
 
         <ProviderToursPanel
           organizationId={organizationId!}

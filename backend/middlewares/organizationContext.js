@@ -4,6 +4,8 @@ import catchAsync from '../utils/catchAsync.js'
 import Organization from '../models/Organization.js'
 import OrganizationMember from '../models/OrganizationMember.js'
 import UserOrganizationPreference from '../models/UserOrganizationPreference.js'
+import { isPrismaIdentity } from '../utils/databaseMode.js'
+import { getOrganizationRepository } from '../repositories/organizations/index.js'
 import {
   memberHasPermission,
   memberHasOrgRole,
@@ -14,9 +16,6 @@ import {
 const ORG_CONTEXT_HEADER = 'x-org-context'
 const ADMIN_ORG_BYPASS_HEADER = 'x-admin-org-bypass'
 
-/**
- * Resolve organization id from header or optional fallback on req.user preference.
- */
 export function getOrganizationContextId(req) {
   const header =
     req.headers[ORG_CONTEXT_HEADER] ||
@@ -41,24 +40,29 @@ async function resolveOrganizationContextId(req) {
     req.headers[ORG_CONTEXT_HEADER.toLowerCase()]
   if (header) return String(header).trim()
 
-  // URL-scoped provider routes must send X-Org-Context explicitly.
   if (urlScopedOrganizationId(req)) return null
 
   if (req.user?.id) {
-    const pref = await UserOrganizationPreference.findOne({
-      userId: req.user.id,
-    }).select('activeOrganizationId')
-    if (pref?.activeOrganizationId) {
-      req.user.activeOrganizationId = pref.activeOrganizationId
-      return String(pref.activeOrganizationId)
+    if (isPrismaIdentity()) {
+      const orgs = getOrganizationRepository()
+      const pref = await orgs.findPreference(req.user.id)
+      if (pref?.activeOrganizationId) {
+        req.user.activeOrganizationId = pref.activeOrganizationId
+        return String(pref.activeOrganizationId)
+      }
+    } else {
+      const pref = await UserOrganizationPreference.findOne({
+        userId: req.user.id,
+      }).select('activeOrganizationId')
+      if (pref?.activeOrganizationId) {
+        req.user.activeOrganizationId = pref.activeOrganizationId
+        return String(pref.activeOrganizationId)
+      }
     }
   }
   return null
 }
 
-/**
- * Require X-Org-Context (or server preference fallback) for provider mutations.
- */
 export const requireOrganizationContext = (options = {}) =>
   catchAsync(async (req, res, next) => {
     const orgId = await resolveOrganizationContextId(req)
@@ -72,7 +76,16 @@ export const requireOrganizationContext = (options = {}) =>
       )
     }
 
-    const organization = await Organization.findById(orgId)
+    let organization
+    let member = null
+
+    if (isPrismaIdentity()) {
+      const orgs = getOrganizationRepository()
+      organization = await orgs.findOrganizationById(orgId)
+    } else {
+      organization = await Organization.findById(orgId)
+    }
+
     if (!organization) {
       return next(new AppError('Organization not found for context', 400))
     }
@@ -84,12 +97,16 @@ export const requireOrganizationContext = (options = {}) =>
       (req.headers[ADMIN_ORG_BYPASS_HEADER] === 'true' ||
         req.headers[ADMIN_ORG_BYPASS_HEADER.toLowerCase()] === 'true')
 
-    let member = null
     if (!adminBypass) {
-      member = await OrganizationMember.findOne({
-        organizationId: orgId,
-        userId: req.user.id,
-      })
+      if (isPrismaIdentity()) {
+        const orgs = getOrganizationRepository()
+        member = await orgs.findMember(orgId, req.user.id)
+      } else {
+        member = await OrganizationMember.findOne({
+          organizationId: orgId,
+          userId: req.user.id,
+        })
+      }
 
       if (!member) {
         return next(
@@ -105,13 +122,19 @@ export const requireOrganizationContext = (options = {}) =>
 
       if (member.status === 'removed') {
         return next(
-          new AppError('Your membership in this organization has been removed', 403)
+          new AppError(
+            'Your membership in this organization has been removed',
+            403
+          )
         )
       }
 
       if (member.status !== 'active') {
         return next(
-          new AppError('Your membership in this organization is not active', 403)
+          new AppError(
+            'Your membership in this organization is not active',
+            403
+          )
         )
       }
     }
@@ -123,9 +146,6 @@ export const requireOrganizationContext = (options = {}) =>
     next()
   })
 
-/**
- * Require a specific permission within the resolved organization.
- */
 export const requireOrganizationPermission = (permission) =>
   catchAsync(async (req, res, next) => {
     if (req.isAdminOrgBypass && req.user?.role === 'admin') {
@@ -133,8 +153,24 @@ export const requireOrganizationPermission = (permission) =>
     }
     if (!memberHasPermission(req.organizationMember, permission)) {
       return next(
+        new AppError(`You do not have permission: ${permission}`, 403)
+      )
+    }
+    next()
+  })
+
+/** Allow if the member has any one of the listed permissions (owner/admin still bypass). */
+export const requireAnyOrganizationPermission = (...permissions) =>
+  catchAsync(async (req, res, next) => {
+    if (req.isAdminOrgBypass && req.user?.role === 'admin') {
+      return next()
+    }
+    const member = req.organizationMember
+    const ok = permissions.some((p) => memberHasPermission(member, p))
+    if (!ok) {
+      return next(
         new AppError(
-          `You do not have permission: ${permission}`,
+          `You do not have permission: ${permissions.join(' or ')}`,
           403
         )
       )
@@ -142,9 +178,6 @@ export const requireOrganizationPermission = (permission) =>
     next()
   })
 
-/**
- * Require one of the organization roles.
- */
 export const requireOrganizationRole =
   (...roles) =>
   (req, res, next) => {

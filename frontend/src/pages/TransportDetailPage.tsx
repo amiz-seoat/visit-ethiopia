@@ -1,18 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Star } from 'lucide-react';
-import { getTransportById, getTransportReviews } from '../api/transports';
+import {
+  getTransportById,
+  getTransportReviews,
+  getTransportAvailability,
+} from '../api/transports';
+import { createTransportBooking } from '../api/bookings';
 import { ReviewForm } from '../components/reviews/ReviewForm';
 import { PageError, PageLoader } from '../components/ui/PageStatus';
 import { getErrorMessage } from '../services/api';
-import type { Review, Transport } from '../types';
+import { useAuth } from '../context/AuthContext';
+import type { Review, Transport, TransportRoute } from '../types';
+
+function routeKeyOf(route: TransportRoute, idx: number) {
+  return (
+    route.key ||
+    `${route.from}-${route.to}-${route.departureTime}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') ||
+    `route-${idx + 1}`
+  );
+}
 
 export function TransportDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   const [transport, setTransport] = useState<Transport | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const [travelDate, setTravelDate] = useState('');
+  const [routeKey, setRouteKey] = useState('');
+  const [quantity, setQuantity] = useState(1);
+  const [availability, setAvailability] = useState<
+    Awaited<ReturnType<typeof getTransportAvailability>>['availability']
+  >([]);
+  const [availLoading, setAvailLoading] = useState(false);
+  const [availError, setAvailError] = useState('');
+  const [bookError, setBookError] = useState('');
+  const [booking, setBooking] = useState(false);
 
   const load = async () => {
     if (!id) return;
@@ -25,6 +55,8 @@ export function TransportDetailPage() {
       if (!data) setError('Transport not found');
       else {
         setTransport(data);
+        const first = (data.routes ?? []).find((r) => r.active !== false);
+        if (first) setRouteKey(routeKeyOf(first, 0));
         setReviews(
           (reviewData as Review[]).filter(
             (r) => r.status === 'approved' || !r.status
@@ -43,8 +75,79 @@ export function TransportDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  const selectedAvail = useMemo(
+    () => availability.find((a) => a.routeKey === routeKey),
+    [availability, routeKey]
+  );
+
+  const estimatedTotal =
+    selectedAvail && selectedAvail.hasInventory
+      ? (selectedAvail.priceMinor * quantity) / 100
+      : null;
+
+  const checkAvailability = async () => {
+    if (!id || !travelDate) {
+      setAvailError('Select a travel date');
+      return;
+    }
+    setAvailLoading(true);
+    setAvailError('');
+    try {
+      const data = await getTransportAvailability(id, {
+        travelDate,
+        routeKey: routeKey || undefined,
+      });
+      setAvailability(data.availability || []);
+      if (!(data.availability || []).some((a) => a.hasInventory && a.availableSeats > 0)) {
+        setAvailError('No seats available for this date');
+      }
+    } catch (err) {
+      setAvailability([]);
+      setAvailError(getErrorMessage(err, 'Failed to check availability'));
+    } finally {
+      setAvailLoading(false);
+    }
+  };
+
+  const book = async () => {
+    if (!id || !isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    if (!travelDate || !routeKey) {
+      setBookError('Select a route and travel date');
+      return;
+    }
+    setBooking(true);
+    setBookError('');
+    try {
+      const idempotencyKey = `transport-${id}-${routeKey}-${travelDate}-${quantity}-${Date.now()}`;
+      await createTransportBooking(
+        {
+          transportId: id,
+          routeKey,
+          travelDate,
+          quantity,
+          contactInfo: {
+            fullName: `${user?.FirstName || ''} ${user?.LastName || ''}`.trim() || 'Guest',
+            email: user?.email || '',
+            phone: transport.contact?.phone || user?.email || '+251900000000',
+          },
+        },
+        idempotencyKey
+      );
+      navigate('/bookings');
+    } catch (err) {
+      setBookError(getErrorMessage(err, 'Booking failed'));
+    } finally {
+      setBooking(false);
+    }
+  };
+
   if (loading) return <PageLoader message="Loading transport..." />;
   if (error || !transport) return <PageError message={error || 'Not found'} />;
+
+  const activeRoutes = (transport.routes ?? []).filter((r) => r.active !== false);
 
   return (
     <div className="w-full bg-white">
@@ -69,8 +172,8 @@ export function TransportDetailPage() {
 
         <h2 className="text-xl font-bold mb-3">Routes</h2>
         <div className="space-y-3 mb-8">
-          {(transport.routes ?? []).map((route, idx) => (
-            <div key={idx} className="border rounded-lg p-4">
+          {activeRoutes.map((route, idx) => (
+            <div key={routeKeyOf(route, idx)} className="border rounded-lg p-4">
               <p className="font-medium">
                 {route.from} → {route.to}
               </p>
@@ -80,9 +183,87 @@ export function TransportDetailPage() {
               </p>
               <p className="text-amber-800 font-medium mt-1">
                 {route.price.toLocaleString()} ETB · {route.availableSeats} seats
+                (template)
               </p>
             </div>
           ))}
+        </div>
+
+        <h2 className="text-xl font-bold mb-3">Book seats</h2>
+        <div className="border rounded-lg p-4 mb-8 space-y-3">
+          <label className="block text-sm">
+            Route
+            <select
+              className="mt-1 w-full border rounded px-3 py-2"
+              value={routeKey}
+              onChange={(e) => setRouteKey(e.target.value)}
+            >
+              {activeRoutes.map((route, idx) => {
+                const key = routeKeyOf(route, idx);
+                return (
+                  <option key={key} value={key}>
+                    {route.from} → {route.to} ({route.departureTime})
+                  </option>
+                );
+              })}
+            </select>
+          </label>
+          <label className="block text-sm">
+            Travel date
+            <input
+              type="date"
+              className="mt-1 w-full border rounded px-3 py-2"
+              value={travelDate}
+              onChange={(e) => setTravelDate(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            Seats
+            <input
+              type="number"
+              min={1}
+              max={40}
+              className="mt-1 w-full border rounded px-3 py-2"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value) || 1)}
+            />
+          </label>
+          <button
+            type="button"
+            onClick={checkAvailability}
+            disabled={availLoading}
+            className="px-4 py-2 bg-gray-800 text-white rounded disabled:opacity-50"
+          >
+            {availLoading ? 'Checking…' : 'Check availability'}
+          </button>
+          {availError && <p className="text-red-600 text-sm">{availError}</p>}
+          {selectedAvail && (
+            <p className="text-sm text-gray-700">
+              {selectedAvail.hasInventory
+                ? `${selectedAvail.availableSeats} seats available · ${(
+                    selectedAvail.priceMinor / 100
+                  ).toLocaleString()} ${selectedAvail.currency}/seat`
+                : 'No inventory for this date'}
+            </p>
+          )}
+          {estimatedTotal != null && (
+            <p className="font-medium text-amber-800">
+              Estimated total: {estimatedTotal.toLocaleString()} ETB
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={book}
+            disabled={
+              booking ||
+              !selectedAvail?.hasInventory ||
+              (selectedAvail?.availableSeats ?? 0) < quantity
+            }
+            className="px-4 py-2 bg-amber-600 text-white rounded disabled:opacity-50"
+          >
+            {booking ? 'Booking…' : isAuthenticated ? 'Book now' : 'Log in to book'}
+          </button>
+          {bookError && <p className="text-red-600 text-sm">{bookError}</p>}
         </div>
 
         <h2 className="text-xl font-bold mb-3">Reviews</h2>

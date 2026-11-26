@@ -10,6 +10,15 @@ import {
   reserveDepartureSpots,
   releaseDepartureSpots,
 } from './tourDepartureService.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
+import {
+  loadBookableDepartureContextPrisma,
+  reserveForBookingPrisma,
+  releaseForBookingPrisma,
+  finalizeForBookingPrisma,
+  restoreConsumedForBookingPrisma,
+} from './prismaBookingDomainService.js'
+import * as prismaDep from '../repositories/booking/prismaDepartureInventoryRepository.js'
 
 const ACTIVE_HOLD_STATUSES = ['pending', 'held', 'consumed']
 const RELEASABLE_HOLD_STATUSES = ['held']
@@ -26,6 +35,10 @@ export function parseReservationQuantity(value, fieldName = 'quantity') {
  * Load departure + tour and verify the departure is bookable for v2 inventory.
  */
 export async function loadBookableDepartureContext(departureId) {
+  if (isPrismaBooking()) {
+    return loadBookableDepartureContextPrisma(departureId)
+  }
+
   if (!mongoose.Types.ObjectId.isValid(departureId)) {
     throw new AppError('Invalid departureId', 400)
   }
@@ -70,6 +83,9 @@ export async function loadBookableDepartureContext(departureId) {
 }
 
 export async function hasActiveReservationsForDeparture(departureId) {
+  if (isPrismaBooking()) {
+    return prismaDep.hasActiveHolds(departureId)
+  }
   const exists = await InventoryHold.exists({
     departureId,
     status: { $in: ['held', 'consumed'] },
@@ -131,6 +147,15 @@ export async function reserveForBooking({
   quantity,
   expiresAt = null,
 }) {
+  if (isPrismaBooking()) {
+    return reserveForBookingPrisma({
+      bookingId,
+      departureId,
+      quantity,
+      expiresAt,
+    })
+  }
+
   if (!mongoose.Types.ObjectId.isValid(bookingId)) {
     throw new AppError('Invalid bookingId', 400)
   }
@@ -248,6 +273,10 @@ export async function releaseForBooking({
   reason = 'release',
   targetStatus = 'released',
 }) {
+  if (isPrismaBooking()) {
+    return releaseForBookingPrisma({ bookingId, reason, targetStatus })
+  }
+
   if (!mongoose.Types.ObjectId.isValid(bookingId)) {
     throw new AppError('Invalid bookingId', 400)
   }
@@ -313,6 +342,10 @@ export async function releaseForBooking({
 
 /** Mark a held reservation as consumed (inventory stays decremented). */
 export async function finalizeForBooking({ bookingId }) {
+  if (isPrismaBooking()) {
+    return finalizeForBookingPrisma({ bookingId })
+  }
+
   const hold = await InventoryHold.findOneAndUpdate(
     { bookingId, status: 'held' },
     { status: 'consumed' },
@@ -334,6 +367,10 @@ export async function restoreConsumedForBooking({
   bookingId,
   reason = 'refund_cancelled',
 }) {
+  if (isPrismaBooking()) {
+    return restoreConsumedForBookingPrisma({ bookingId, reason })
+  }
+
   if (!mongoose.Types.ObjectId.isValid(bookingId)) {
     throw new AppError('Invalid bookingId', 400)
   }

@@ -15,7 +15,14 @@ export function LoginPage() {
   const location = useLocation();
   const { login } = useAuth();
 
-  const from = (location.state as { from?: string })?.from || "/dashboard";
+  const redirectParam = new URLSearchParams(location.search).get("redirect");
+  // Only allow same-site relative paths (prevent open redirects).
+  const safeRedirect =
+    redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//")
+      ? redirectParam
+      : null;
+  const from = (location.state as { from?: string })?.from || safeRedirect || "/dashboard";
+  const verifiedParam = new URLSearchParams(location.search).get("verified");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +51,17 @@ export function LoginPage() {
                 Sign in to your Visit Ethiopia account
               </p>
             </div>
+
+            {verifiedParam === "1" && !error && (
+              <div className="mb-4 text-sm text-green-800 bg-green-100 p-2 rounded">
+                Your email is verified. You can now sign in.
+              </div>
+            )}
+            {verifiedParam === "0" && !error && (
+              <div className="mb-4 text-sm text-red-700 bg-red-100 p-2 rounded">
+                That verification link is invalid or has expired. Please sign up again or contact support.
+              </div>
+            )}
 
             {/* error message */}
             {error && (

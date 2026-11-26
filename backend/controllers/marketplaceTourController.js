@@ -17,8 +17,22 @@ import {
 } from '../services/publicTourService.js'
 import { loadPublicOrganizationBySlug } from '../services/organizationVersionService.js'
 import { escapeRegex } from '../utils/escapeRegex.js'
+import { isPrismaCatalog } from '../utils/catalogDb.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
+import * as tourRepo from '../repositories/prisma/tourRepository.js'
+import * as prismaDep from '../repositories/booking/prismaDepartureInventoryRepository.js'
+import prisma from '../config/prisma.js'
 
 export const listMarketplaceTours = catchAsync(async (req, res) => {
+  if (isPrismaCatalog()) {
+    const serialized = await tourRepo.findMarketplace(req.query)
+    return res.status(200).json({
+      status: 'success',
+      results: serialized.length,
+      data: { data: serialized },
+    })
+  }
+
   const publicOrgIds = await organizationIdsPubliclyVisible()
 
   const filter = {
@@ -99,6 +113,13 @@ export const listMarketplaceTours = catchAsync(async (req, res) => {
 })
 
 export const getTourBySlugOrId = catchAsync(async (req, res, next) => {
+  if (isPrismaCatalog()) {
+    const param = req.params.id || req.params.slug
+    const data = await tourRepo.findByIdOrSlug(param)
+    if (!data) return next(new AppError('Tour not found', 404))
+    return res.status(200).json({ status: 'success', data: { data } })
+  }
+
   const param = req.params.id || req.params.slug
   let tour = null
 
@@ -137,7 +158,31 @@ export const listPublicTourDepartures = catchAsync(async (req, res, next) => {
   const param = req.params.id || req.params.tourSlug || req.params.slug
   let tour = null
 
-  if (mongoose.Types.ObjectId.isValid(param) && String(param).length === 24) {
+  if (isPrismaBooking()) {
+    if (mongoose.Types.ObjectId.isValid(param) && String(param).length === 24) {
+      const row = await prisma.tour.findUnique({ where: { id: String(param) } })
+      if (row) {
+        tour = {
+          _id: row.id,
+          secretTour: row.secretTour,
+          status: row.status,
+          organizationId: row.organizationId,
+        }
+      }
+    } else {
+      const row = await prisma.tour.findFirst({
+        where: { slug: String(param).toLowerCase() },
+      })
+      if (row) {
+        tour = {
+          _id: row.id,
+          secretTour: row.secretTour,
+          status: row.status,
+          organizationId: row.organizationId,
+        }
+      }
+    }
+  } else if (mongoose.Types.ObjectId.isValid(param) && String(param).length === 24) {
     tour = await Tour.findById(param)
   } else {
     tour = await Tour.findOne({ slug: param.toLowerCase() })
@@ -149,6 +194,29 @@ export const listPublicTourDepartures = catchAsync(async (req, res, next) => {
   if (tour.organizationId) {
     const visible = await isOrganizationPubliclyVisible(tour.organizationId)
     if (!visible) return next(new AppError('Tour not found', 404))
+  }
+
+  if (isPrismaBooking()) {
+    let departures = await prismaDep.findDepartures({
+      tourId: tour._id,
+      statusIn: ['open', 'scheduled'],
+    })
+    departures = departures.filter((d) => d.availableSpots > 0)
+    if (req.query.fromDate) {
+      const from = new Date(req.query.fromDate)
+      departures = departures.filter((d) => new Date(d.departureDate) >= from)
+    }
+    if (req.query.packageType) {
+      const key = String(req.query.packageType).toLowerCase()
+      departures = departures.filter((d) =>
+        (d.packages || []).some((p) => p.key === key)
+      )
+    }
+    return res.status(200).json({
+      status: 'success',
+      results: departures.length,
+      data: { data: departures },
+    })
   }
 
   const filter = {
@@ -179,11 +247,56 @@ export const listOrganizationPublicTours = catchAsync(async (req, res, next) => 
   const result = await loadPublicOrganizationBySlug(req.params.slug)
   if (!result) return next(new AppError('Organization not found', 404))
 
-  const tours = await Tour.find({
-    organizationId: result.organization._id,
-    status: { $in: ['published', 'active'] },
-    secretTour: { $ne: true },
-  }).sort('-publishedAt -createdAt')
+  let tours
+  if (isPrismaCatalog() || isPrismaBooking()) {
+    const rows = await prisma.tour.findMany({
+      where: {
+        organizationId: String(result.organization._id),
+        status: { in: ['published', 'active'] },
+        secretTour: false,
+      },
+      orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
+    })
+    tours = rows.map((row) => ({
+      _id: row.id,
+      slug: row.slug,
+      title: row.title,
+      shortDescription: row.shortDescription,
+      description: row.description,
+      highlights: row.highlights,
+      uniqueSellingPoints: row.uniqueSellingPoints,
+      duration: { days: row.durationDays, nights: row.durationNights },
+      destinations: row.destinations,
+      startingLocation: row.startingLocation,
+      destinationLocations: row.destinationLocations,
+      categories: row.categories,
+      difficulty: row.difficulty,
+      price: row.price,
+      priceMinor: row.priceMinor,
+      currency: row.currency,
+      discount: row.discount,
+      coverImage: row.coverImage,
+      images: row.images,
+      gallery: row.gallery,
+      portfolioPhotos: row.portfolioPhotos,
+      inclusions: row.inclusions,
+      exclusions: row.exclusions,
+      policies: row.policies,
+      packages: row.packages || [],
+      itinerary: row.itinerary,
+      maxGroupSize: row.maxGroupSize,
+      averageRating: row.averageRating,
+      reviewCount: row.reviewCount,
+      isFeatured: row.isFeatured,
+      organizationId: row.organizationId,
+    }))
+  } else {
+    tours = await Tour.find({
+      organizationId: result.organization._id,
+      status: { $in: ['published', 'active'] },
+      secretTour: { $ne: true },
+    }).sort('-publishedAt -createdAt')
+  }
 
   const serialized = tours.map((t) => {
     const item = serializePublicTour(t)

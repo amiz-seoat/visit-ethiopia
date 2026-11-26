@@ -104,13 +104,17 @@ export interface Destination {
 }
 
 export interface TransportRoute {
+  key?: string;
   from: string;
   to: string;
   departureTime: string;
   arrivalTime: string;
   duration?: string;
   price: number;
+  priceMinor?: number;
+  currency?: string;
   availableSeats: number;
+  active?: boolean;
 }
 
 export interface Transport {
@@ -120,6 +124,7 @@ export interface Transport {
   type: string;
   routes?: TransportRoute[];
   vehicleDetails?: { model?: string; images?: string[] };
+  contact?: { phone?: string; email?: string; website?: string };
   averageRating?: number;
   status?: string;
   createdBy?: string | { _id: string };

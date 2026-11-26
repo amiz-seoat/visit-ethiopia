@@ -2,12 +2,18 @@ import mongoose from 'mongoose'
 import Organization from '../models/Organization.js'
 import ProviderVersion from '../models/ProviderVersion.js'
 import AppError from '../utils/appError.js'
+import { isPrismaIdentity } from '../utils/databaseMode.js'
+import { generateObjectId } from '../utils/objectId.js'
 import { slugify, ensureUniqueSlug } from '../utils/slugify.js'
 import { analyzeVersionChanges } from '../utils/versionDiff.js'
 import {
   buildPublicProfileSnapshot,
   serializePublicOrganization,
 } from './publicOrganizationService.js'
+import * as prismaOrg from '../repositories/organizations/prismaOrganizationRepository.js'
+import { toApiProviderVersion } from '../repositories/prisma/identitySerialize.js'
+import { loadPublicOrganizationBySlugPrisma } from './prismaIdentityApprovalService.js'
+import prisma from '../config/prisma.js'
 
 export async function syncOrganizationProfileFromApprovedVersion(
   organization,
@@ -79,6 +85,9 @@ const EDITABLE_SNAPSHOT_FIELDS = [
 ]
 
 export async function getApprovedVersion(organization) {
+  if (isPrismaIdentity()) {
+    return prismaOrg.getApprovedVersion(organization)
+  }
   if (!organization?.approvedVersionId) return null
   const version = await ProviderVersion.findById(organization.approvedVersionId)
   if (!version || version.status !== 'approved') return null
@@ -89,11 +98,22 @@ export async function getApprovedVersion(organization) {
 }
 
 export async function getLatestVersion(organization) {
+  if (isPrismaIdentity()) {
+    return prismaOrg.getLatestVersion(organization)
+  }
   if (!organization?.latestVersionId) return null
   return ProviderVersion.findById(organization.latestVersionId)
 }
 
 export async function createInitialDraftVersion(organization, verification = {}) {
+  if (isPrismaIdentity()) {
+    // registerOrganization Prisma path already creates draft+latestVersionId
+    if (organization.latestVersionId) {
+      return prismaOrg.findProviderVersionById(organization.latestVersionId)
+    }
+    return prismaOrg.createDraftVersion(organization, verification)
+  }
+
   const version = await ProviderVersion.create({
     organizationId: organization._id,
     versionNumber: 1,
@@ -110,6 +130,57 @@ export async function createInitialDraftVersion(organization, verification = {})
 
 export async function getOrCreateEditableDraft(organization) {
   const latest = await getLatestVersion(organization)
+
+  if (isPrismaIdentity()) {
+    if (!organization.approvedVersionId) {
+      if (latest?.status === 'draft') return latest
+      if (latest?.status === 'rejected') {
+        return prismaOrg.createDraftVersion(
+          organization,
+          organization.verification || {}
+        )
+      }
+      if (latest?.status === 'submitted') {
+        throw new AppError(
+          'A version is already pending review. Wait for admin decision before editing.',
+          400
+        )
+      }
+      return createInitialDraftVersion(organization, organization.verification)
+    }
+
+    if (latest?.status === 'draft') return latest
+    if (latest && latest.status === 'submitted') {
+      throw new AppError(
+        'A version is already submitted for approval. You cannot edit until it is reviewed.',
+        400
+      )
+    }
+
+    const approved = await getApprovedVersion(organization)
+    const id = generateObjectId()
+    const nextVersionNumber =
+      (latest?.versionNumber || approved?.versionNumber || 0) + 1
+    const row = await prisma.providerVersion.create({
+      data: {
+        id,
+        organizationId: String(organization._id),
+        versionNumber: nextVersionNumber,
+        status: 'draft',
+        snapshot: approved
+          ? JSON.parse(JSON.stringify(approved.snapshot))
+          : buildPublicProfileSnapshot(organization),
+        verificationSnapshot: JSON.parse(
+          JSON.stringify(organization.verification || {})
+        ),
+      },
+    })
+    await prismaOrg.updateOrganizationFields(organization._id, {
+      latestVersionId: id,
+    })
+    organization.latestVersionId = id
+    return toApiProviderVersion(row)
+  }
 
   if (!organization.approvedVersionId) {
     if (latest?.status === 'draft') return latest
@@ -187,6 +258,40 @@ export async function updateEditableDraft(organization, updates, verificationUpd
     nextSnapshot.proposedSlug = slugify(updates.slug)
   }
 
+  if (isPrismaIdentity()) {
+    let verificationSnapshot = draft.verificationSnapshot || {}
+    if (verificationUpdates) {
+      verificationSnapshot = {
+        ...verificationSnapshot,
+        ...verificationUpdates,
+      }
+      await prismaOrg.updateOrganizationFields(organization._id, {
+        verification: {
+          ...(organization.verification || {}),
+          ...verificationUpdates,
+        },
+      })
+      organization.verification = {
+        ...(organization.verification || {}),
+        ...verificationUpdates,
+      }
+    }
+
+    const approved = await getApprovedVersion(organization)
+    const analysis = analyzeVersionChanges({
+      approvedSnapshot: approved?.snapshot,
+      submittedSnapshot: nextSnapshot,
+    })
+
+    return prismaOrg.updateProviderVersion(draft._id, {
+      snapshot: nextSnapshot,
+      verificationSnapshot,
+      changedFields: analysis.changedFields,
+      requiresReapproval: analysis.requiresReapproval,
+      reapprovalFields: analysis.reapprovalFields,
+    })
+  }
+
   draft.snapshot = nextSnapshot
 
   if (verificationUpdates) {
@@ -251,6 +356,10 @@ export async function loadPublicOrganizations(query = {}) {
 }
 
 export async function loadPublicOrganizationBySlug(slug) {
+  if (isPrismaIdentity()) {
+    return loadPublicOrganizationBySlugPrisma(slug)
+  }
+
   let organization = await Organization.findOne({
     slug: slug.toLowerCase(),
     ...Organization.publicMarketplaceFilter(),

@@ -51,12 +51,26 @@ export interface ProviderVersionSummary {
   rejectionReason?: string;
 }
 
+export interface ProviderWorkspaceSummary {
+  memberCount: number;
+  tourCount: number;
+  hotelCount: number;
+  transportCount: number;
+  pendingApprovalCount: number;
+  openDepartureCount: number;
+  bookingCount: number;
+  activeRoomTypeCount?: number;
+  inventoryDayCount?: number;
+  lowAvailabilityDayCount?: number;
+}
+
 export interface ProviderWorkspace {
   organization: Organization;
   latestVersion: ProviderVersionSummary | null;
   approvedVersion: ProviderVersionSummary | null;
   canEdit: boolean;
   isPublic: boolean;
+  summary?: ProviderWorkspaceSummary;
 }
 
 function orgHeaders(organizationId: string) {

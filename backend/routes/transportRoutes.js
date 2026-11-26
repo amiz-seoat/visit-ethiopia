@@ -3,6 +3,7 @@ import {
   test,
   getAllTransports,
   getTransport,
+  getTransportAvailability,
   getAllRoutes,
   createTransport,
   getTransportReviews,
@@ -23,6 +24,7 @@ router
   .post(protect, restrict('admin', 'transport_manager'), createTransport)
 
 router.get('/routes', getAllRoutes)
+router.get('/:id/availability', getTransportAvailability)
 router.get('/:id/reviews', getTransportReviews)
 
 router

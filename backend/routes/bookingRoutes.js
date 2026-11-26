@@ -1,7 +1,10 @@
+import requirePaymentsAvailable from '../middlewares/requirePaymentsAvailable.js'
 import express from 'express'
 import {
   createBooking,
   createTourDepartureBooking,
+  createHotelInventoryBooking,
+  createTransportInventoryBooking,
   getAllBookings,
   getMyBookings,
   getBookingById,
@@ -15,7 +18,9 @@ const router = express.Router()
 
 router.use(protect)
 
-router.post('/tours', createTourDepartureBooking)
+router.post('/tours', requirePaymentsAvailable, createTourDepartureBooking)
+router.post('/hotels', requirePaymentsAvailable, createHotelInventoryBooking)
+router.post('/transports', requirePaymentsAvailable, createTransportInventoryBooking)
 
 router.post('/', createBooking)
 

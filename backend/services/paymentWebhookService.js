@@ -7,10 +7,12 @@ import AppError from '../utils/appError.js'
 import { PAYMENT_PROVIDERS } from '../config/booking.js'
 import { isV2BookingFlow } from '../config/booking.js'
 import { getPaymentProvider } from './payment/paymentProviderRegistry.js'
+import { isMockPaymentAllowed } from '../config/payments.js'
 import {
   applyProviderPaymentFailure,
   applyProviderPaymentSuccess,
 } from './paymentService.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
 
 function hashPayload(rawBody) {
   return crypto.createHash('sha256').update(rawBody).digest('hex')
@@ -249,8 +251,21 @@ async function processParsedWebhookEvent({ provider, parsed, webhookEvent }) {
  * Ingest and process a provider webhook. Idempotent on duplicate eventId.
  */
 export async function ingestPaymentWebhook({ provider, rawBody, headers = {}, payload }) {
+  if (isPrismaBooking()) {
+    const { ingestPaymentWebhookPrisma } = await import(
+      './prismaPaymentWebhookService.js'
+    )
+    return ingestPaymentWebhookPrisma({ provider, rawBody, headers, payload })
+  }
+
   if (!PAYMENT_PROVIDERS.includes(provider)) {
     throw new AppError('Unsupported payment provider', 400)
+  }
+  if (provider !== 'mock') {
+    throw new AppError('Only the mock provider is supported in Mongo mode', 501)
+  }
+  if (!isMockPaymentAllowed()) {
+    throw new AppError('Demo payment webhooks are disabled on this server', 403)
   }
 
   const paymentProvider = getPaymentProvider(provider)

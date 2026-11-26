@@ -1,7 +1,9 @@
-import User from '../models/User.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
 import factory from './handlerFactory.js'
+import User from '../models/User.js'
+import { getUserRepository } from '../repositories/users/index.js'
+import { isPrismaIdentity, isPrismaApp } from '../utils/databaseMode.js'
 
 const fillterObj = (obj, allowedFields) => {
   const newObj = {}
@@ -12,10 +14,8 @@ const fillterObj = (obj, allowedFields) => {
 }
 
 export const getMyProfile = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.user.id).populate(
-    'favorites',
-    'title coverImage price averageRating'
-  )
+  const users = getUserRepository()
+  const user = await users.findByIdWithFavorites(req.user.id)
 
   if (!user) {
     return next(new AppError('No user found with that ID', 404))
@@ -30,7 +30,6 @@ export const getMyProfile = catchAsync(async (req, res, next) => {
 })
 
 export const updateMyProfile = catchAsync(async (req, res, next) => {
-  // 1) Create error if user POSTs password data
   if (req.body.password || req.body.confirmPassword) {
     return next(
       new AppError(
@@ -39,13 +38,13 @@ export const updateMyProfile = catchAsync(async (req, res, next) => {
       )
     )
   }
-  // 2) Filter out unwanted fields names that are not allowed to be updated
-  const filteredBody = fillterObj(req.body, ['FirstName', 'LastName', 'favorites'])
-  // 3) Update user document
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true,
-    runValidators: true,
-  }).populate('favorites', 'title coverImage price averageRating')
+  const users = getUserRepository()
+  const filteredBody = fillterObj(req.body, [
+    'FirstName',
+    'LastName',
+    'favorites',
+  ])
+  const updatedUser = await users.updateProfile(req.user.id, filteredBody)
   res.status(200).json({
     status: 'success',
     data: {
@@ -54,9 +53,9 @@ export const updateMyProfile = catchAsync(async (req, res, next) => {
   })
 })
 
-export const deleteMyProfile = catchAsync(async (req, res, next) => {
-  // 1) Find user and set active to false
-  await User.findByIdAndUpdate(req.user.id, { active: false })
+export const deleteMyProfile = catchAsync(async (req, res) => {
+  const users = getUserRepository()
+  await users.softDelete(req.user.id)
 
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000),
@@ -76,11 +75,8 @@ export const updateUserRole = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide a role to update.', 400))
   }
 
-  const user = await User.findByIdAndUpdate(
-    req.params.id,
-    { role },
-    { new: true, runValidators: true }
-  )
+  const users = getUserRepository()
+  const user = await users.updateRole(req.params.id, role)
 
   if (!user) {
     return next(new AppError('No user found with that ID.', 404))
@@ -93,9 +89,61 @@ export const updateUserRole = catchAsync(async (req, res, next) => {
   })
 })
 
-// Get all users (admin only)
-export const getAllUsers = factory.getAll(User)
+const mongooseGetAllUsers = factory.getAll(User)
+const mongooseGetUser = factory.getOne(User)
+const mongooseDeleteUser = factory.deleteOne(User)
 
-export const getUser = factory.getOne(User)
+export const getAllUsers = catchAsync(async (req, res, next) => {
+  if (isPrismaApp()) {
+    const users = getUserRepository()
+    const docs = await users.findManyAdmin(req.query)
+    return res.status(200).json({
+      status: 'success',
+      results: docs.length,
+      data: { data: docs },
+    })
+  }
+  return mongooseGetAllUsers(req, res, next)
+})
 
-export const deleteUser = factory.deleteOne(User)
+export const getUser = catchAsync(async (req, res, next) => {
+  if (isPrismaApp()) {
+    const users = getUserRepository()
+    const user = await users.findByIdAdmin(req.params.id)
+    if (!user) {
+      return next(new AppError('No document found with that ID', 404))
+    }
+    return res.status(200).json({
+      status: 'success',
+      data: { data: user },
+    })
+  }
+  return mongooseGetUser(req, res, next)
+})
+
+export const deleteUser = catchAsync(async (req, res, next) => {
+  if (isPrismaApp()) {
+    const users = getUserRepository()
+    const existing = await users.findByIdAdmin(req.params.id)
+    if (!existing) {
+      return next(new AppError('No document found with that ID', 404))
+    }
+    await users.softDelete(req.params.id)
+    return res.status(204).json({
+      status: 'success',
+      data: null,
+    })
+  }
+  return mongooseDeleteUser(req, res, next)
+})
+
+export default {
+  getMyProfile,
+  updateMyProfile,
+  deleteMyProfile,
+  updateUserRole,
+  getAllUsers,
+  getUser,
+  deleteUser,
+  isPrismaIdentity,
+}

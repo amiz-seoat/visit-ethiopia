@@ -1,5 +1,7 @@
 import Organization from '../models/Organization.js'
 import { isPublicTourStatus } from '../config/tourLifecycle.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
+import { isOrganizationPubliclyVisiblePrisma } from './prismaBookingDomainService.js'
 
 /**
  * Legacy tours (no organizationId) remain public when status is active/published.
@@ -7,6 +9,9 @@ import { isPublicTourStatus } from '../config/tourLifecycle.js'
  */
 export async function isOrganizationPubliclyVisible(organizationId) {
   if (!organizationId) return true
+  if (isPrismaBooking()) {
+    return isOrganizationPubliclyVisiblePrisma(organizationId)
+  }
   const org = await Organization.findById(organizationId).select(
     'approvalStatus visibility approvedVersionId'
   )

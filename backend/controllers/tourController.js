@@ -6,6 +6,11 @@ import AppError from '../utils/appError.js'
 import APIFeatures from '../utils/apiFeatures.js'
 import { isOrganizationPubliclyVisible, organizationIdsPubliclyVisible } from '../services/tourVisibilityService.js'
 import { isPublicTourStatus } from '../config/tourLifecycle.js'
+import { isPrismaCatalog } from '../utils/catalogDb.js'
+import { isPrismaApp } from '../utils/databaseMode.js'
+import * as tourRepo from '../repositories/prisma/tourRepository.js'
+import * as reviewRepo from '../repositories/prisma/reviewRepository.js'
+import * as catalogWrite from '../repositories/prisma/catalogWriteRepository.js'
 
 export const test = catchAsync(async (req, res) => {
   res.status(201).json({
@@ -38,6 +43,14 @@ export const createTour = catchAsync(async (req, res, next) => {
     delete req.body.status
   }
 
+  if (isPrismaApp()) {
+    const doc = await catalogWrite.createTour(req.body)
+    return res.status(201).json({
+      status: 'success',
+      data: { data: doc },
+    })
+  }
+
   const doc = await Tour.create(req.body)
   res.status(201).json({
     status: 'success',
@@ -46,6 +59,34 @@ export const createTour = catchAsync(async (req, res, next) => {
 })
 
 export const updateTour = catchAsync(async (req, res, next) => {
+  if (isPrismaApp()) {
+    const existing = await catalogWrite.findTourById(req.params.id)
+    if (!existing) {
+      return next(new AppError('No document found with that ID', 404))
+    }
+    if (existing.organizationId) {
+      return next(
+        new AppError(
+          'Organization tours must be updated through the organization tour API',
+          403
+        )
+      )
+    }
+
+    delete req.body.createdBy
+    delete req.body.organizationId
+    delete req.body.slug
+    if (req.user.role !== 'admin') {
+      delete req.body.secretTour
+    }
+
+    const doc = await catalogWrite.updateTour(req.params.id, req.body)
+    return res.status(200).json({
+      status: 'success',
+      data: { data: doc },
+    })
+  }
+
   const existing = await Tour.findById(req.params.id)
   if (!existing) {
     return next(new AppError('No document found with that ID', 404))
@@ -78,6 +119,27 @@ export const updateTour = catchAsync(async (req, res, next) => {
 })
 
 export const deleteTour = catchAsync(async (req, res, next) => {
+  if (isPrismaApp()) {
+    const existing = await catalogWrite.findTourById(req.params.id)
+    if (!existing) {
+      return next(new AppError('No document found with that ID', 404))
+    }
+    if (existing.organizationId) {
+      return next(
+        new AppError(
+          'Organization tours must be deleted through the organization tour API',
+          403
+        )
+      )
+    }
+
+    await catalogWrite.deleteTour(req.params.id)
+    return res.status(204).json({
+      status: 'success',
+      data: null,
+    })
+  }
+
   const existing = await Tour.findById(req.params.id)
   if (!existing) {
     return next(new AppError('No document found with that ID', 404))
@@ -99,6 +161,15 @@ export const deleteTour = catchAsync(async (req, res, next) => {
 })
 
 export const getAllTours = catchAsync(async (req, res) => {
+  if (isPrismaCatalog()) {
+    const tours = await tourRepo.findMany(req.query)
+    return res.status(200).json({
+      status: 'success',
+      results: tours.length,
+      data: { data: tours },
+    })
+  }
+
   const isPublicConsumer =
     !req.user ||
     req.user.role === 'customer' ||
@@ -176,6 +247,15 @@ export const getTour = catchAsync(async (req, res, next) => {
 })
 
 export const getTourReviews = catchAsync(async (req, res, next) => {
+  if (isPrismaCatalog()) {
+    const reviews = await reviewRepo.findApproved('tour', req.params.id)
+    return res.status(200).json({
+      status: 'success',
+      results: reviews.length,
+      data: { reviews },
+    })
+  }
+
   const reviews = await Review.find({
     itemId: req.params.id,
     itemType: 'tour',

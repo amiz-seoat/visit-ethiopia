@@ -6,6 +6,8 @@ import ProviderVersion from '../models/ProviderVersion.js'
 import catchAsync from '../utils/catchAsync.js'
 import AppError from '../utils/appError.js'
 import { slugify, ensureUniqueSlug } from '../utils/slugify.js'
+import { isPrismaIdentity } from '../utils/databaseMode.js'
+import { getOrganizationRepository } from '../repositories/organizations/index.js'
 import {
   PROVIDER_TYPES,
   permissionsForProviderTypes,
@@ -16,7 +18,6 @@ import {
   updateEditableDraft,
   getApprovedVersion,
   getLatestVersion,
-  listOrganizationVersions,
   loadPublicOrganizationBySlug,
 } from '../services/organizationVersionService.js'
 import {
@@ -24,6 +25,7 @@ import {
   stripPrivateOrganizationFields,
 } from '../services/publicOrganizationService.js'
 import { submitVersionForApproval } from '../services/approvalService.js'
+import { getProviderWorkspaceSummary } from '../services/providerWorkspaceService.js'
 
 export const registerOrganization = catchAsync(async (req, res, next) => {
   const {
@@ -66,6 +68,35 @@ export const registerOrganization = catchAsync(async (req, res, next) => {
     if (req.body[key] !== undefined) {
       return next(new AppError(`Cannot set ${key} during registration`, 400))
     }
+  }
+
+  if (isPrismaIdentity()) {
+    const orgs = getOrganizationRepository()
+    const result = await orgs.registerOrganization({
+      name,
+      legalName,
+      providerTypes,
+      description,
+      shortDescription,
+      location,
+      contact,
+      slug: requestedSlug,
+      verification,
+      ownerUserId: req.user.id,
+    })
+
+    return res.status(201).json({
+      status: 'success',
+      data: {
+        organization: stripPrivateOrganizationFields(result.organization),
+        membership: result.membership,
+        draftVersion: {
+          _id: result.draftVersion._id,
+          versionNumber: result.draftVersion.versionNumber,
+          status: result.draftVersion.status,
+        },
+      },
+    })
   }
 
   const baseSlug = slugify(requestedSlug || name)
@@ -118,6 +149,32 @@ export const registerOrganization = catchAsync(async (req, res, next) => {
 })
 
 export const getMyOrganizations = catchAsync(async (req, res) => {
+  if (isPrismaIdentity()) {
+    const orgs = getOrganizationRepository()
+    const memberships = await orgs.listMembershipsForUser(req.user.id, {
+      statuses: ['active', 'invited', 'suspended'],
+    })
+    const enriched = await Promise.all(
+      memberships.map(async (m) => {
+        const org = m.organizationId
+        if (!org) return m
+        const latest = await getLatestVersion(org)
+        const approved = await getApprovedVersion(org)
+        return {
+          ...m,
+          organizationId: stripPrivateOrganizationFields(org),
+          latestVersionStatus: latest?.status,
+          approvedVersionNumber: approved?.versionNumber,
+        }
+      })
+    )
+    return res.status(200).json({
+      status: 'success',
+      results: enriched.length,
+      data: { memberships: enriched },
+    })
+  }
+
   const memberships = await OrganizationMember.find({
     userId: req.user.id,
     status: { $in: ['active', 'invited', 'suspended'] },
@@ -148,6 +205,23 @@ export const getMyOrganizations = catchAsync(async (req, res) => {
 })
 
 export const getUserOrganizations = catchAsync(async (req, res) => {
+  if (isPrismaIdentity()) {
+    const orgs = getOrganizationRepository()
+    const memberships = await orgs.listMembershipsForUser(req.user.id)
+    const pref = await orgs.findPreference(req.user.id)
+    return res.status(200).json({
+      status: 'success',
+      results: memberships.length,
+      data: {
+        memberships: memberships.map((m) => ({
+          ...m,
+          organizationId: stripPrivateOrganizationFields(m.organizationId),
+        })),
+        activeOrganizationId: pref?.activeOrganizationId || null,
+      },
+    })
+  }
+
   const memberships = await OrganizationMember.find({
     userId: req.user.id,
     status: { $ne: 'removed' },
@@ -174,6 +248,29 @@ export const setActiveOrganization = catchAsync(async (req, res, next) => {
   const { organizationId } = req.body
   if (!organizationId) {
     return next(new AppError('organizationId is required', 400))
+  }
+
+  if (isPrismaIdentity()) {
+    const orgs = getOrganizationRepository()
+    const member = await orgs.findMember(organizationId, req.user.id)
+    if (!member || member.status !== 'active') {
+      return next(
+        new AppError(
+          'You must be an active member of the organization to set it as active',
+          403
+        )
+      )
+    }
+    const pref = await orgs.upsertActiveOrganization(
+      req.user.id,
+      organizationId
+    )
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        activeOrganizationId: pref.activeOrganizationId,
+      },
+    })
   }
 
   const member = await OrganizationMember.findOne({
@@ -206,7 +303,14 @@ export const setActiveOrganization = catchAsync(async (req, res, next) => {
 })
 
 export const listPublicOrganizations = catchAsync(async (req, res) => {
-  const orgs = await Organization.find(Organization.publicMarketplaceFilter())
+  let orgs
+  if (isPrismaIdentity()) {
+    const repo = getOrganizationRepository()
+    orgs = await repo.listPublicOrganizations()
+  } else {
+    orgs = await Organization.find(Organization.publicMarketplaceFilter())
+  }
+
   const limit = Math.min(Number(req.query.limit) || 100, 100)
   const page = Number(req.query.page) || 1
   const skip = (page - 1) * limit
@@ -265,10 +369,16 @@ export const getProviderWorkspace = catchAsync(async (req, res, next) => {
 
   const latest = await getLatestVersion(req.organization)
   const approved = await getApprovedVersion(req.organization)
+  const summary = await getProviderWorkspaceSummary(req.organizationId)
 
   res.status(200).json({
     status: 'success',
-    data: serializeProviderWorkspace(req.organization, latest, approved),
+    data: serializeProviderWorkspace(
+      req.organization,
+      latest,
+      approved,
+      summary
+    ),
   })
 })
 
@@ -317,13 +427,20 @@ export const listVersions = catchAsync(async (req, res, next) => {
     return next(new AppError('Organization context mismatch', 403))
   }
 
-  const versions = await ProviderVersion.find({
-    organizationId: req.organizationId,
-  })
-    .sort({ versionNumber: -1 })
-    .select(
-      '-verificationSnapshot'
-    )
+  let versions
+  if (isPrismaIdentity()) {
+    const orgs = getOrganizationRepository()
+    versions = (await orgs.listVersions(req.organizationId)).map((v) => {
+      const { verificationSnapshot, ...rest } = v
+      return rest
+    })
+  } else {
+    versions = await ProviderVersion.find({
+      organizationId: req.organizationId,
+    })
+      .sort({ versionNumber: -1 })
+      .select('-verificationSnapshot')
+  }
 
   res.status(200).json({
     status: 'success',

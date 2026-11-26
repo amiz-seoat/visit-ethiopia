@@ -6,6 +6,9 @@ import {
   createDeparture,
   updateDeparture,
 } from '../services/tourDepartureService.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
+import prisma from '../config/prisma.js'
+import * as prismaDep from '../repositories/booking/prismaDepartureInventoryRepository.js'
 
 function assertOrgTour(tour, organizationId) {
   if (!tour) throw new AppError('Tour not found', 404)
@@ -20,12 +23,41 @@ function assertTourManageable(tour) {
   }
 }
 
+async function loadOrgTour(tourId) {
+  if (isPrismaBooking()) {
+    const row = await prisma.tour.findUnique({ where: { id: String(tourId) } })
+    if (!row) return null
+    return {
+      _id: row.id,
+      id: row.id,
+      organizationId: row.organizationId,
+      status: row.status,
+      title: row.title,
+    }
+  }
+  return Tour.findById(tourId)
+}
+
 export const listTourDepartures = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.tourId)
+  const tour = await loadOrgTour(req.params.tourId)
   try {
     assertOrgTour(tour, req.params.organizationId)
   } catch (e) {
     return next(e)
+  }
+
+  if (isPrismaBooking()) {
+    const filter = {
+      tourId: tour._id,
+      organizationId: req.params.organizationId,
+    }
+    if (req.query.status) filter.status = req.query.status
+    const departures = await prismaDep.findDepartures(filter)
+    return res.status(200).json({
+      status: 'success',
+      results: departures.length,
+      data: { data: departures },
+    })
   }
 
   const filter = { tourId: tour._id, organizationId: req.params.organizationId }
@@ -40,7 +72,7 @@ export const listTourDepartures = catchAsync(async (req, res, next) => {
 })
 
 export const createTourDeparture = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.tourId)
+  const tour = await loadOrgTour(req.params.tourId)
   try {
     assertOrgTour(tour, req.params.organizationId)
     assertTourManageable(tour)
@@ -58,7 +90,7 @@ export const createTourDeparture = catchAsync(async (req, res, next) => {
 })
 
 export const updateTourDeparture = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.tourId)
+  const tour = await loadOrgTour(req.params.tourId)
   try {
     assertOrgTour(tour, req.params.organizationId)
     assertTourManageable(tour)
@@ -66,12 +98,24 @@ export const updateTourDeparture = catchAsync(async (req, res, next) => {
     return next(e)
   }
 
-  const departure = await TourDeparture.findOne({
-    _id: req.params.departureId,
-    tourId: tour._id,
-    organizationId: req.params.organizationId,
-  })
-  if (!departure) return next(new AppError('Departure not found', 404))
+  let departure
+  if (isPrismaBooking()) {
+    departure = await prismaDep.findDepartureById(req.params.departureId)
+    if (
+      !departure ||
+      String(departure.tourId) !== String(tour._id) ||
+      String(departure.organizationId) !== String(req.params.organizationId)
+    ) {
+      return next(new AppError('Departure not found', 404))
+    }
+  } else {
+    departure = await TourDeparture.findOne({
+      _id: req.params.departureId,
+      tourId: tour._id,
+      organizationId: req.params.organizationId,
+    })
+    if (!departure) return next(new AppError('Departure not found', 404))
+  }
 
   const updated = await updateDeparture(departure, req.body)
   res.status(200).json({ status: 'success', data: { data: updated } })

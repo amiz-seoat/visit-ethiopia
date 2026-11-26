@@ -1,0 +1,1112 @@
+// =============================================================================
+// Visit Ethiopia — Prisma schema (MongoDB → Supabase PostgreSQL migration)
+// =============================================================================
+// Phase 1: development infrastructure. Express production still uses Mongoose/MongoDB.
+//
+// DATABASE (Mongo) ≠ DATABASE_URL (Postgres). Never point DATABASE_URL at Atlas Mongo.
+//
+// Supabase: use pooled URL in DATABASE_URL and direct (non-pooler) URL in DIRECT_URL
+// for migrations. For local Docker, set both to the same connection string.
+//
+// ID policy: TEXT PKs, ObjectId-compatible 24-char hex; API serializers emit `_id`.
+// Partial unique indexes → raw SQL later (see docs/prisma-migration-audit.md).
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Required by Prisma when present in schema — set equal to DATABASE_URL for local Docker
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums (exact Mongo string values preserved via @map where needed)
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  user
+  customer
+  admin
+  guide
+  tour_operator
+  hotel_manager
+  transport_manager
+}
+
+enum OrgVisibility {
+  private
+  public
+}
+
+enum OrgApprovalStatus {
+  draft
+  submitted
+  under_review
+  approved
+  rejected
+  suspended
+  inactive
+}
+
+enum ProviderType {
+  travel_company
+  hotel
+  tour_bus_provider
+  bus_company
+}
+
+enum OrgRole {
+  owner
+  admin
+  manager
+  staff
+  viewer
+}
+
+enum MembershipRole {
+  tour_operator
+  hotel_manager
+  tour_bus_provider
+  bus_company_manager
+}
+
+enum MemberStatus {
+  active
+  invited
+  suspended
+  removed
+}
+
+enum ProviderVersionStatus {
+  draft
+  submitted
+  approved
+  rejected
+  superseded
+}
+
+enum ApprovalRequestType {
+  initial_approval
+  reapproval
+  update
+}
+
+enum ApprovalRequestStatus {
+  pending
+  processing
+  approved
+  rejected
+  cancelled
+}
+
+enum TourCategory {
+  cultural
+  adventure
+  nature
+  historical
+  religious
+}
+
+enum TourDifficulty {
+  easy
+  moderate
+  challenging
+}
+
+enum TourStatus {
+  draft
+  published
+  unpublished
+  archived
+  active
+  inactive
+}
+
+enum DepartureStatus {
+  scheduled
+  open
+  full
+  cancelled
+  completed
+}
+
+enum CatalogStatus {
+  active
+  inactive
+  draft
+}
+
+enum DestinationStatus {
+  active
+  inactive
+}
+
+enum TransportType {
+  air
+  bus
+  train
+  private_vehicle
+  boat
+}
+
+enum NewsCategory {
+  tourism
+  culture
+  event
+  business
+  general
+}
+
+enum NewsStatus {
+  published
+  draft
+  archived
+}
+
+enum ReviewItemType {
+  tour
+  hotel
+  transport
+  restaurant
+}
+
+enum ReviewStatus {
+  approved
+  pending
+  rejected
+}
+
+enum ContactStatus {
+  new
+  in_progress
+  resolved
+  spam
+}
+
+enum BookingFlowVersion {
+  legacy
+  v2
+}
+
+enum BookingType {
+  tour
+  hotel
+  transport
+  restaurant
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+  payment_pending
+  failed
+  expired
+  partially_refunded
+}
+
+enum FulfillmentStatus {
+  pending
+  confirmed
+  checked_in
+  completed
+  no_show
+  cancelled
+}
+
+enum PaymentStatus {
+  pending
+  processing
+  completed
+  failed
+  cancelled
+  refunded
+  partially_refunded
+}
+
+enum PaymentProvider {
+  mock
+  chapa
+}
+
+enum PaymentAttemptStatus {
+  pending
+  succeeded
+  failed
+}
+
+enum RefundStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum InventoryHoldStatus {
+  pending
+  held
+  released
+  consumed
+  expired
+}
+
+enum WebhookEventStatus {
+  pending
+  processed
+  failed
+}
+
+enum BookingAuditAction {
+  check_in
+  complete
+  check_out
+  no_show
+  add_note
+  fulfillment_confirmed
+}
+
+enum MediaItemType {
+  logo
+  cover
+  gallery
+  portfolio
+}
+
+enum DocVerificationStatus {
+  pending
+  verified
+  rejected
+}
+
+// ---------------------------------------------------------------------------
+// Identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id                   String    @id /// ObjectId-compatible TEXT
+  firstName            String    @map("FirstName")
+  lastName             String    @map("LastName")
+  email                String    @unique
+  password             String /// bcrypt hash; never select by default in repos
+  role                 UserRole  @default(user)
+  isVerified           Boolean   @default(false) @map("isVerified")
+  active               Boolean   @default(true) /// soft-delete; default queries exclude false
+  passwordChangedAt    DateTime? @map("passwordChangedAt")
+  passwordResetToken   String?   @map("passwordResetToken")
+  passwordResetExpires DateTime? @map("passwordResetExpires")
+  createdAt            DateTime  @default(now()) @map("createdAt")
+
+  favorites            UserFavorite[]
+  ownedOrganizations   Organization[]              @relation("OrgOwner")
+  memberships          OrganizationMember[]
+  invitedMembers       OrganizationMember[]        @relation("MemberInviter")
+  orgPreference        UserOrganizationPreference?
+  authoredNews         News[]
+  reviews              Review[]
+  bookings             Booking[]
+  contactsResponded    Contact[]                   @relation("ContactResponder")
+  providerVersionsSubmitted ProviderVersion[]      @relation("VersionSubmitter")
+  providerVersionsApproved  ProviderVersion[]      @relation("VersionApprover")
+  providerVersionsRejected  ProviderVersion[]      @relation("VersionRejecter")
+  approvalRequestsSubmitted ApprovalRequest[]      @relation("ApprovalSubmitter")
+  approvalRequestsReviewed  ApprovalRequest[]      @relation("ApprovalReviewer")
+  suspendedOrganizations    Organization[]         @relation("OrgSuspender")
+  legacyOrganizations       Organization[]         @relation("OrgLegacyCreator")
+  createdTours              Tour[]                 @relation("TourCreator")
+  guidedTours               TourGuide[]
+  createdHotels             Hotel[]                @relation("HotelCreator")
+  createdTransports         Transport[]            @relation("TransportCreator")
+  createdRestaurants        Restaurant[]           @relation("RestaurantCreator")
+  refunds                   Refund[]
+  bookingAudits             BookingOperationAudit[]
+  providerNotes             BookingProviderNote[]
+
+  @@map("users")
+}
+
+model UserFavorite {
+  userId String @map("userId")
+  tourId String @map("tourId")
+  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tour   Tour  @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@id([userId, tourId])
+  @@map("user_favorites")
+}
+
+// ---------------------------------------------------------------------------
+// Organizations / marketplace
+// ---------------------------------------------------------------------------
+
+model Organization {
+  id                    String            @id
+  slug                  String            @unique
+  /// Mongo: previousSlugs[{slug,changedAt}] — relational for redirect lookups
+  name                  String
+  legalName             String?           @map("legalName")
+  providerTypes         ProviderType[]
+  logo                  String?
+  coverImage            String?           @map("coverImage")
+  /// mediaItem[] — JSONB (url, caption, type, sortOrder, uploadedAt, cloudinaryId)
+  gallery               Json              @default("[]")
+  portfolioPhotos       Json              @default("[]") @map("portfolioPhotos")
+  description           String            @default("")
+  shortDescription      String            @default("") @map("shortDescription")
+  uniqueSellingPoints   String[]          @default([]) @map("uniqueSellingPoints")
+  services              String[]          @default([])
+  yearsInBusiness       Int?              @map("yearsInBusiness")
+  /// GeoJSON-ish: { type, coordinates[lng,lat], address, city, region, country }
+  location              Json?
+  /// contactInfoSchema + socialLinks
+  contact               Json?
+  averageRating         Float             @default(0) @map("averageRating")
+  reviewCount           Int               @default(0) @map("reviewCount")
+  visibility            OrgVisibility     @default(private)
+  approvalStatus        OrgApprovalStatus @default(draft) @map("approvalStatus")
+  approvedVersionId     String?           @unique @map("approvedVersionId")
+  latestVersionId       String?           @map("latestVersionId")
+  ownerUserId           String            @map("ownerUserId")
+  /// Deep nested providerVerificationSchema + Mixed providerSpecific
+  verification          Json              @default("{}")
+  legacyCreatedByUserId String?           @map("legacyCreatedByUserId")
+  suspendedAt           DateTime?         @map("suspendedAt")
+  suspendedById         String?           @map("suspendedBy")
+  suspensionReason      String?           @map("suspensionReason")
+  createdAt             DateTime          @default(now()) @map("createdAt")
+  updatedAt             DateTime          @updatedAt @map("updatedAt")
+
+  owner                 User              @relation("OrgOwner", fields: [ownerUserId], references: [id])
+  suspendedBy           User?             @relation("OrgSuspender", fields: [suspendedById], references: [id])
+  legacyCreatedBy       User?             @relation("OrgLegacyCreator", fields: [legacyCreatedByUserId], references: [id])
+  approvedVersion       ProviderVersion?  @relation("OrgApprovedVersion", fields: [approvedVersionId], references: [id])
+  previousSlugs         OrganizationPreviousSlug[]
+  members               OrganizationMember[]
+  versions              ProviderVersion[] @relation("OrgVersions")
+  approvalRequests      ApprovalRequest[]
+  userPreferences       UserOrganizationPreference[]
+  tours                 Tour[]
+  hotels                Hotel[]
+  transports            Transport[]
+  departures            TourDeparture[]
+  bookings              Booking[]
+  payments              Payment[]
+  refunds               Refund[]
+  inventoryHolds        InventoryHold[]
+  bookingAudits         BookingOperationAudit[]
+  hotelDailyInventories HotelDailyInventory[]
+  transportRouteInventories TransportRouteInventory[]
+
+  @@index([ownerUserId])
+  @@index([approvalStatus, visibility])
+  /// Mongo also indexed providerTypes — use GIN in raw SQL later
+  @@map("organizations")
+}
+
+model OrganizationPreviousSlug {
+  id             String       @id /// generated ObjectId-compatible or cuid for child rows
+  organizationId String       @map("organizationId")
+  slug           String
+  changedAt      DateTime     @default(now()) @map("changedAt")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([slug])
+  @@index([organizationId])
+  @@map("organization_previous_slugs")
+}
+
+model OrganizationMember {
+  id              String           @id
+  organizationId  String           @map("organizationId")
+  userId          String           @map("userId")
+  orgRole         OrgRole          @default(staff) @map("orgRole")
+  permissions     String[]         @default([])
+  membershipRoles MembershipRole[] @default([]) @map("membershipRoles")
+  status          MemberStatus     @default(active)
+  invitedById     String?          @map("invitedBy")
+  joinedAt        DateTime         @default(now()) @map("joinedAt")
+  createdAt       DateTime         @default(now()) @map("createdAt")
+  updatedAt       DateTime         @updatedAt @map("updatedAt")
+
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invitedBy       User?            @relation("MemberInviter", fields: [invitedById], references: [id])
+
+  @@unique([organizationId, userId])
+  @@index([userId, status])
+  @@map("organization_members")
+}
+
+model UserOrganizationPreference {
+  id                    String        @id
+  userId                String        @unique @map("userId")
+  activeOrganizationId  String?       @map("activeOrganizationId")
+  createdAt             DateTime      @default(now()) @map("createdAt")
+  updatedAt             DateTime      @updatedAt @map("updatedAt")
+
+  user                  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeOrganization    Organization? @relation(fields: [activeOrganizationId], references: [id])
+
+  @@map("user_organization_preferences")
+}
+
+model ProviderVersion {
+  id                    String                @id
+  organizationId        String                @map("organizationId")
+  versionNumber         Int                   @map("versionNumber")
+  status                ProviderVersionStatus @default(draft)
+  /// Frozen org profile snapshot (Mongo Mixed)
+  snapshot              Json
+  verificationSnapshot  Json                  @default("{}") @map("verificationSnapshot")
+  changedFields         String[]              @default([]) @map("changedFields")
+  requiresReapproval    Boolean               @default(false) @map("requiresReapproval")
+  reapprovalFields      String[]              @default([]) @map("reapprovalFields")
+  submittedById         String?               @map("submittedBy")
+  submittedAt           DateTime?             @map("submittedAt")
+  approvedById          String?               @map("approvedBy")
+  approvedAt            DateTime?             @map("approvedAt")
+  rejectedById          String?               @map("rejectedBy")
+  rejectedAt            DateTime?             @map("rejectedAt")
+  rejectionReason       String?               @map("rejectionReason")
+  frozenAt              DateTime?             @map("frozenAt")
+  createdAt             DateTime              @default(now()) @map("createdAt")
+  updatedAt             DateTime              @updatedAt @map("updatedAt")
+
+  organization          Organization          @relation("OrgVersions", fields: [organizationId], references: [id], onDelete: Cascade)
+  submittedBy           User?                 @relation("VersionSubmitter", fields: [submittedById], references: [id])
+  approvedBy            User?                 @relation("VersionApprover", fields: [approvedById], references: [id])
+  rejectedBy            User?                 @relation("VersionRejecter", fields: [rejectedById], references: [id])
+  approvedForOrg        Organization?         @relation("OrgApprovedVersion")
+  approvalRequests      ApprovalRequest[]
+
+  @@unique([organizationId, versionNumber])
+  @@index([organizationId, status])
+  @@index([status, submittedAt])
+  @@map("provider_versions")
+}
+
+model ApprovalRequest {
+  id                    String                @id
+  organizationId        String                @map("organizationId")
+  providerVersionId     String                @map("providerVersionId")
+  requestType           ApprovalRequestType   @default(initial_approval) @map("requestType")
+  status                ApprovalRequestStatus @default(pending)
+  submittedById         String                @map("submittedBy")
+  submittedAt           DateTime              @default(now()) @map("submittedAt")
+  reviewedById          String?               @map("reviewedBy")
+  reviewedAt            DateTime?             @map("reviewedAt")
+  rejectionReason       String?               @map("rejectionReason")
+  adminNotes            String?               @map("adminNotes")
+  /// checklistItem[] JSONB
+  verificationChecklist Json                  @default("[]") @map("verificationChecklist")
+  providerTypes         String[]              @default([]) @map("providerTypes")
+  changedFields         String[]              @default([]) @map("changedFields")
+  requiresReapproval    Boolean               @default(false) @map("requiresReapproval")
+  createdAt             DateTime              @default(now()) @map("createdAt")
+  updatedAt             DateTime              @updatedAt @map("updatedAt")
+
+  organization          Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  providerVersion       ProviderVersion       @relation(fields: [providerVersionId], references: [id], onDelete: Cascade)
+  submittedBy           User                  @relation("ApprovalSubmitter", fields: [submittedById], references: [id])
+  reviewedBy            User?                 @relation("ApprovalReviewer", fields: [reviewedById], references: [id])
+
+  @@index([organizationId])
+  @@index([providerVersionId])
+  @@index([status, submittedAt])
+  /// PARTIAL UNIQUE (raw SQL): UNIQUE(provider_version_id) WHERE status IN ('pending','processing')
+  @@map("approval_requests")
+}
+
+// ---------------------------------------------------------------------------
+// Catalog
+// ---------------------------------------------------------------------------
+
+model Tour {
+  id                   String          @id
+  title                String
+  slug                 String?
+  description          String
+  shortDescription     String          @map("shortDescription")
+  highlights           String[]        @default([])
+  uniqueSellingPoints  String[]        @default([]) @map("uniqueSellingPoints")
+  durationDays         Int             @map("duration_days")
+  durationNights       Int             @map("duration_nights")
+  /// Mongo destinations are STRING labels, not Destination FKs
+  destinations         String[]
+  /// geoPointSchema JSONB
+  startingLocation     Json?           @map("startingLocation")
+  destinationLocations Json            @default("[]") @map("destinationLocations")
+  categories           TourCategory[]  @default([])
+  difficulty           TourDifficulty
+  price                Float
+  priceMinor           Int?            @map("priceMinor")
+  currency             String          @default("ETB")
+  discount             Float           @default(0)
+  images               String[]        @default([])
+  coverImage           String          @map("coverImage")
+  /// mediaItem[]
+  gallery              Json            @default("[]")
+  portfolioPhotos      Json            @default("[]") @map("portfolioPhotos")
+  startDate            DateTime?       @map("startDate")
+  endDate              DateTime?       @map("endDate")
+  availableDates       DateTime[]      @default([]) @map("availableDates")
+  maxGroupSize         Int             @map("maxGroupSize")
+  currentBookings      Int             @default(0) @map("currentBookings")
+  inclusions           String[]        @default([])
+  exclusions           String[]        @default([])
+  /// { cancellation, refund, other }
+  policies             Json            @default("{}")
+  /// tourPackage[] — keyed packages used by pricing; JSONB OK (see audit)
+  packages             Json            @default("[]")
+  /// itinerary day objects
+  itinerary            Json            @default("[]")
+  createdById          String          @map("createdBy")
+  organizationId       String?         @map("organizationId")
+  secretTour           Boolean         @default(false) @map("secretTour")
+  averageRating        Float           @default(0) @map("averageRating")
+  reviewCount          Int             @default(0) @map("reviewCount")
+  isFeatured           Boolean         @default(false) @map("isFeatured")
+  status               TourStatus      @default(active)
+  publishedAt          DateTime?       @map("publishedAt")
+  archivedAt           DateTime?       @map("archivedAt")
+  createdAt            DateTime        @default(now()) @map("createdAt")
+  updatedAt            DateTime        @updatedAt @map("updatedAt")
+
+  createdBy            User            @relation("TourCreator", fields: [createdById], references: [id])
+  organization         Organization?   @relation(fields: [organizationId], references: [id])
+  guides               TourGuide[]
+  departures           TourDeparture[]
+  destinationLinks     DestinationTour[]
+  favoritedBy          UserFavorite[]
+
+  @@index([organizationId, status])
+  @@index([status, isFeatured])
+  /// PARTIAL UNIQUE (raw SQL): UNIQUE(organization_id, slug) WHERE organization_id IS NOT NULL AND slug IS NOT NULL
+  /// PARTIAL UNIQUE (raw SQL): UNIQUE(slug) WHERE slug IS NOT NULL
+  /// NOTE: non-partial @@unique([slug]) would incorrectly block multiple NULL/legacy rows — deferred to raw SQL
+  @@map("tours")
+}
+
+model TourGuide {
+  tourId String @map("tourId")
+  userId String @map("userId")
+  tour   Tour  @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([tourId, userId])
+  @@map("tour_guides")
+}
+
+model TourDeparture {
+  id             String          @id
+  tourId         String          @map("tourId")
+  organizationId String          @map("organizationId")
+  departureDate  DateTime        @map("departureDate")
+  returnDate     DateTime?       @map("returnDate")
+  capacity       Int
+  availableSpots Int             @map("availableSpots")
+  status         DepartureStatus @default(open)
+  /// departurePackage[] JSONB
+  packages       Json            @default("[]")
+  notes          String          @default("")
+  createdAt      DateTime        @default(now()) @map("createdAt")
+  updatedAt      DateTime        @updatedAt @map("updatedAt")
+
+  tour           Tour            @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  bookings       Booking[]
+  inventoryHolds InventoryHold[]
+
+  @@index([tourId, departureDate])
+  @@index([organizationId, status, departureDate])
+  @@map("tour_departures")
+}
+
+model Hotel {
+  id              String         @id
+  name            String
+  description     String
+  shortDescription String        @map("shortDescription")
+  /// { address, city, region, coordinates: { lat, lng } }
+  location        Json
+  stars           Int?
+  amenities       String[]       @default([])
+  /// roomTypes[] embedded → JSONB
+  roomTypes       Json           @default("[]") @map("roomTypes")
+  images          String[]       @default([])
+  coverImage      String         @map("coverImage")
+  contact         Json
+  policies        Json           @default("{}")
+  createdById     String         @map("createdBy")
+  organizationId  String?        @map("organizationId")
+  averageRating   Float          @default(0) @map("averageRating")
+  isFeatured      Boolean        @default(false) @map("isFeatured")
+  status          CatalogStatus  @default(active)
+  createdAt       DateTime       @default(now()) @map("createdAt")
+  updatedAt       DateTime       @updatedAt @map("updatedAt")
+  /// Mongo reviews[] denormalized — NOT ported; use Review.itemType/itemId
+
+  createdBy       User           @relation("HotelCreator", fields: [createdById], references: [id])
+  organization    Organization?  @relation(fields: [organizationId], references: [id])
+  destinationLinks DestinationHotel[]
+  dailyInventories HotelDailyInventory[]
+  inventoryHolds   InventoryHold[]
+
+  @@index([organizationId, status])
+  @@map("hotels")
+}
+
+/// Date-based room inventory for marketplace hotels (roomTypeKey → Hotel.roomTypes[].key).
+model HotelDailyInventory {
+  id                 String       @id
+  hotelId            String       @map("hotelId")
+  organizationId     String       @map("organizationId")
+  /// Stable key into Hotel.roomTypes JSON (not a relational FK).
+  roomTypeKey        String       @map("roomTypeKey")
+  /// Calendar date (UTC midnight / @db.Date).
+  date               DateTime     @db.Date
+  totalRooms         Int          @map("totalRooms")
+  reservedRooms      Int          @default(0) @map("reservedRooms")
+  availableRooms     Int          @map("availableRooms")
+  priceOverrideMinor Int?         @map("priceOverrideMinor")
+  currency           String?
+  createdAt          DateTime     @default(now()) @map("createdAt")
+  updatedAt          DateTime     @updatedAt @map("updatedAt")
+
+  hotel              Hotel        @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  organization       Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([hotelId, roomTypeKey, date])
+  @@index([hotelId, date])
+  @@index([organizationId, date])
+  @@map("hotel_daily_inventories")
+}
+
+model Transport {
+  id              String         @id
+  name            String
+  description     String
+  type            TransportType
+  vehicleDetails  Json           @default("{}") @map("vehicleDetails")
+  /// Route templates with stable `key` for inventory (from/to/times/price/availableSeats).
+  routes          Json           @default("[]")
+  contact         Json
+  createdById     String         @map("createdBy")
+  organizationId  String?        @map("organizationId")
+  averageRating   Float          @default(0) @map("averageRating")
+  status          CatalogStatus  @default(active)
+  createdAt       DateTime       @default(now()) @map("createdAt")
+  updatedAt       DateTime       @updatedAt @map("updatedAt")
+
+  createdBy       User           @relation("TransportCreator", fields: [createdById], references: [id])
+  organization    Organization?  @relation(fields: [organizationId], references: [id])
+  routeInventories TransportRouteInventory[]
+  inventoryHolds  InventoryHold[]
+
+  @@index([organizationId, status])
+  @@map("transports")
+}
+
+/// Date-based seat inventory for a transport route template (`routes[].key`).
+model TransportRouteInventory {
+  id                 String       @id
+  transportId        String       @map("transportId")
+  organizationId     String       @map("organizationId")
+  /// Stable key into Transport.routes JSON.
+  routeKey           String       @map("routeKey")
+  /// Travel / departure calendar date (UTC midnight / @db.Date).
+  date               DateTime     @db.Date
+  totalSeats         Int          @map("totalSeats")
+  reservedSeats      Int          @default(0) @map("reservedSeats")
+  availableSeats     Int          @map("availableSeats")
+  priceOverrideMinor Int?         @map("priceOverrideMinor")
+  currency           String?
+  createdAt          DateTime     @default(now()) @map("createdAt")
+  updatedAt          DateTime     @updatedAt @map("updatedAt")
+
+  transport          Transport    @relation(fields: [transportId], references: [id], onDelete: Cascade)
+  organization       Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([transportId, routeKey, date])
+  @@index([transportId, date])
+  @@index([organizationId, date])
+  @@map("transport_route_inventories")
+}
+
+model Restaurant {
+  id               String        @id
+  name             String
+  description      String
+  shortDescription String        @map("shortDescription")
+  cuisineType      String[]      @map("cuisineType")
+  location         Json
+  openingHours     Json          @default("{}") @map("openingHours")
+  /// Mongo enum $, $$, $$$, $$$$ — kept as String (Prisma enum cannot use $ identifiers cleanly for API parity)
+  priceRange       String?       @map("priceRange")
+  menu             Json          @default("[]")
+  images           String[]      @default([])
+  coverImage       String        @map("coverImage")
+  contact          Json
+  createdById      String        @map("createdBy")
+  averageRating    Float         @default(0) @map("averageRating")
+  isFeatured       Boolean       @default(false) @map("isFeatured")
+  status           CatalogStatus @default(active)
+  createdAt        DateTime      @default(now()) @map("createdAt")
+  updatedAt        DateTime      @updatedAt @map("updatedAt")
+
+  createdBy        User          @relation("RestaurantCreator", fields: [createdById], references: [id])
+
+  @@map("restaurants")
+}
+
+model Destination {
+  id                     String            @id
+  name                   String            @unique
+  description            String
+  shortDescription       String            @map("shortDescription")
+  region                 String
+  /// { coordinates: { lat, lng }, address } — NOT GeoJSON
+  location               Json
+  attractions            String[]          @default([])
+  bestTimeToVisit        String[]          @default([]) @map("bestTimeToVisit")
+  images                 String[]          @default([])
+  coverImage             String            @map("coverImage")
+  climate                String?
+  localCuisine           String[]          @default([]) @map("localCuisine")
+  isFeatured             Boolean           @default(false) @map("isFeatured")
+  status                 DestinationStatus @default(active)
+  createdAt              DateTime          @default(now()) @map("createdAt")
+  updatedAt              DateTime          @updatedAt @map("updatedAt")
+
+  tours                  DestinationTour[]
+  nearbyAccommodations   DestinationHotel[]
+
+  @@map("destinations")
+}
+
+model DestinationTour {
+  destinationId String      @map("destinationId")
+  tourId        String      @map("tourId")
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  tour          Tour        @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@id([destinationId, tourId])
+  @@map("destination_tours")
+}
+
+model DestinationHotel {
+  destinationId String      @map("destinationId")
+  hotelId       String      @map("hotelId")
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  hotel         Hotel       @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@id([destinationId, hotelId])
+  @@map("destination_hotels")
+}
+
+model News {
+  id           String        @id
+  title        String
+  content      String
+  summary      String
+  category     NewsCategory?
+  images       String[]      @default([])
+  coverImage   String        @map("coverImage")
+  tags         String[]      @default([])
+  authorId     String        @map("author")
+  isFeatured   Boolean       @default(false) @map("isFeatured")
+  status       NewsStatus    @default(published)
+  publishedAt  DateTime      @default(now()) @map("publishedAt")
+  views        Int           @default(0)
+  createdAt    DateTime      @default(now()) @map("createdAt")
+  updatedAt    DateTime      @updatedAt @map("updatedAt")
+
+  author       User          @relation(fields: [authorId], references: [id])
+
+  @@map("news")
+}
+
+model Review {
+  id               String         @id
+  userId           String         @map("user")
+  itemType         ReviewItemType @map("itemType")
+  /// Polymorphic target id (Tour|Hotel|Transport|Restaurant). No DB FK — see audit.
+  itemId           String         @map("itemId")
+  rating           Int
+  title            String?
+  comment          String?
+  images           String[]       @default([])
+  dateOfExperience DateTime?      @map("dateOfExperience")
+  status           ReviewStatus   @default(pending)
+  createdAt        DateTime       @default(now()) @map("createdAt")
+  updatedAt        DateTime       @updatedAt @map("updatedAt")
+
+  user             User           @relation(fields: [userId], references: [id])
+
+  @@index([itemType, itemId])
+  @@index([userId])
+  @@map("reviews")
+}
+
+model Contact {
+  id            String        @id
+  name          String
+  email         String
+  phone         String?
+  subject       String
+  message       String
+  status        ContactStatus @default(new)
+  response      String?
+  respondedById String?       @map("respondedBy")
+  respondedAt   DateTime?     @map("respondedAt")
+  createdAt     DateTime      @default(now()) @map("createdAt")
+  updatedAt     DateTime      @updatedAt @map("updatedAt")
+
+  respondedBy   User?         @relation("ContactResponder", fields: [respondedById], references: [id])
+
+  @@map("contacts")
+}
+
+// ---------------------------------------------------------------------------
+// Bookings / payments / inventory
+// ---------------------------------------------------------------------------
+
+model Booking {
+  id                  String              @id
+  userId              String              @map("user")
+  bookingFlowVersion  BookingFlowVersion  @default(legacy) @map("bookingFlowVersion")
+  bookingType         BookingType         @map("bookingType")
+  /// Polymorphic catalog id — API field bookingItem. No single FK.
+  bookingItemId       String              @map("bookingItem")
+  organizationId      String?             @map("organizationId")
+  departureId         String?             @map("departureId")
+  packageKey          String?             @map("packageKey")
+  /// Immutable bookingPriceSnapshotSchema
+  priceSnapshot       Json?               @map("priceSnapshot")
+  /// Denormalized pointer to Payment.id (Mongo dual link). Payment.bookingId is authoritative FK.
+  paymentId           String?             @unique @map("paymentId")
+  inventoryReserved   Boolean             @default(false) @map("inventoryReserved")
+  inventoryReleasedAt DateTime?           @map("inventoryReleasedAt")
+  inventoryQuantity   Int?                @map("inventoryQuantity")
+  bookingDetails      Json                @default("{}") @map("bookingDetails")
+  contactInfo         Json                @map("contactInfo")
+  /// Legacy embedded payment object
+  legacyPayment       Json?               @map("payment")
+  status              BookingStatus       @default(pending)
+  fulfillmentStatus   FulfillmentStatus   @default(pending) @map("fulfillmentStatus")
+  fulfillmentConfirmedAt DateTime?        @map("fulfillmentConfirmedAt")
+  checkedInAt         DateTime?           @map("checkedInAt")
+  fulfillmentCompletedAt DateTime?        @map("fulfillmentCompletedAt")
+  noShowAt            DateTime?           @map("noShowAt")
+  expiresAt           DateTime?           @map("expiresAt")
+  confirmedAt         DateTime?           @map("confirmedAt")
+  cancelledAt         DateTime?           @map("cancelledAt")
+  idempotencyKey      String?             @map("idempotencyKey")
+  cancellationReason  String?             @map("cancellationReason")
+  notes               String?
+  createdAt           DateTime            @default(now()) @map("createdAt")
+  updatedAt           DateTime            @updatedAt @map("updatedAt")
+
+  user                User                @relation(fields: [userId], references: [id])
+  organization        Organization?       @relation(fields: [organizationId], references: [id])
+  departure           TourDeparture?      @relation(fields: [departureId], references: [id])
+  payments            Payment[]
+  refunds             Refund[]
+  inventoryHolds      InventoryHold[]
+  audits              BookingOperationAudit[]
+  providerNotes       BookingProviderNote[]
+
+  @@index([userId, createdAt])
+  @@index([departureId, status])
+  @@index([organizationId, status, createdAt])
+  @@index([status, expiresAt])
+  @@index([bookingFlowVersion])
+  @@index([fulfillmentStatus])
+  /// PARTIAL UNIQUE (raw SQL): UNIQUE(user_id, idempotency_key) WHERE booking_flow_version='v2' AND idempotency_key IS NOT NULL
+  @@map("bookings")
+}
+
+model BookingProviderNote {
+  id          String   @id
+  bookingId   String   @map("bookingId")
+  note        String
+  createdById String   @map("createdBy")
+  createdAt   DateTime @default(now()) @map("createdAt")
+
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  createdBy   User     @relation(fields: [createdById], references: [id])
+
+  @@index([bookingId])
+  @@map("booking_provider_notes")
+}
+
+model Payment {
+  id                   String          @id
+  bookingId            String          @map("bookingId")
+  /// Nullable for legacy null-org catalog hotels (v2 hotel bookings).
+  organizationId       String?         @map("organizationId")
+  amountMinor          Int             @map("amountMinor")
+  amountRefundedMinor  Int             @default(0) @map("amountRefundedMinor")
+  currency             String          @default("ETB")
+  status               PaymentStatus   @default(pending)
+  provider             PaymentProvider @default(mock)
+  providerPaymentId    String?         @map("providerPaymentId")
+  idempotencyKey       String?         @map("idempotencyKey")
+  expiresAt            DateTime?       @map("expiresAt")
+  metadata             Json            @default("{}")
+  completedAt          DateTime?       @map("completedAt")
+  createdAt            DateTime        @default(now()) @map("createdAt")
+  updatedAt            DateTime        @updatedAt @map("updatedAt")
+
+  booking              Booking         @relation(fields: [bookingId], references: [id])
+  organization         Organization?   @relation(fields: [organizationId], references: [id])
+  attempts             PaymentAttempt[]
+  refunds              Refund[]
+
+  @@index([bookingId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([expiresAt])
+  /// PARTIAL UNIQUE (raw SQL): UNIQUE(booking_id, idempotency_key) WHERE idempotency_key IS NOT NULL
+  @@map("payments")
+}
+
+model PaymentAttempt {
+  id                  String               @id
+  paymentId           String               @map("paymentId")
+  attemptNumber       Int                  @map("attemptNumber")
+  status              PaymentAttemptStatus @default(pending)
+  providerReference   String?              @map("providerReference")
+  failureCode         String?              @map("failureCode")
+  failureMessage      String?              @map("failureMessage")
+  rawProviderResponse Json?                @map("rawProviderResponse")
+  createdAt           DateTime             @default(now()) @map("createdAt")
+
+  payment             Payment              @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@unique([paymentId, attemptNumber])
+  @@map("payment_attempts")
+}
+
+model Refund {
+  id               String          @id
+  bookingId        String          @map("bookingId")
+  paymentId        String          @map("paymentId")
+  userId           String          @map("userId")
+  organizationId   String          @map("organizationId")
+  amountMinor      Int             @map("amountMinor")
+  currency         String          @default("ETB")
+  provider         PaymentProvider @default(mock)
+  status           RefundStatus    @default(pending)
+  reason           String          @default("customer_cancelled")
+  idempotencyKey   String?         @map("idempotencyKey")
+  providerRefundId String?         @map("providerRefundId")
+  failureCode      String?         @map("failureCode")
+  failureMessage   String?         @map("failureMessage")
+  requestedAt      DateTime        @default(now()) @map("requestedAt")
+  processingAt     DateTime?       @map("processingAt")
+  completedAt      DateTime?       @map("completedAt")
+  failedAt         DateTime?       @map("failedAt")
+  metadata         Json            @default("{}")
+  createdAt        DateTime        @default(now()) @map("createdAt")
+  updatedAt        DateTime        @updatedAt @map("updatedAt")
+
+  booking          Booking         @relation(fields: [bookingId], references: [id])
+  payment          Payment         @relation(fields: [paymentId], references: [id])
+  user             User            @relation(fields: [userId], references: [id])
+  organization     Organization    @relation(fields: [organizationId], references: [id])
+
+  @@index([bookingId])
+  @@index([paymentId, status])
+  @@index([userId])
+  @@index([organizationId])
+  /// PARTIAL UNIQUE (raw SQL): UNIQUE(user_id, booking_id, idempotency_key) WHERE idempotency_key IS NOT NULL
+  @@map("refunds")
+}
+
+model InventoryHold {
+  id             String              @id
+  bookingId      String              @map("bookingId")
+  /// Tour departure holds (required for tour v2). Null for hotel/transport holds.
+  departureId    String?             @map("departureId")
+  /// Hotel night holds (required for hotel v2). Null for tour/transport holds.
+  hotelId        String?             @map("hotelId")
+  roomTypeKey    String?             @map("roomTypeKey")
+  /// Reserved stay nights as YYYY-MM-DD strings (checkout night excluded).
+  nights         Json?
+  /// Transport seat holds (required for transport v2). Null for tour/hotel holds.
+  transportId    String?             @map("transportId")
+  routeKey       String?             @map("routeKey")
+  /// Travel date for transport seat holds (UTC midnight / @db.Date).
+  travelDate     DateTime?           @db.Date @map("travelDate")
+  /// Nullable for legacy null-org hotels/transports.
+  organizationId String?             @map("organizationId")
+  quantity       Int
+  status         InventoryHoldStatus @default(pending)
+  expiresAt      DateTime?           @map("expiresAt")
+  releasedAt     DateTime?           @map("releasedAt")
+  releaseReason  String?             @map("releaseReason")
+  createdAt      DateTime            @default(now()) @map("createdAt")
+  updatedAt      DateTime            @updatedAt @map("updatedAt")
+
+  booking        Booking             @relation(fields: [bookingId], references: [id])
+  departure      TourDeparture?      @relation(fields: [departureId], references: [id])
+  hotel          Hotel?              @relation(fields: [hotelId], references: [id])
+  transport      Transport?          @relation(fields: [transportId], references: [id])
+  organization   Organization?       @relation(fields: [organizationId], references: [id])
+
+  @@index([departureId, status])
+  @@index([hotelId, status])
+  @@index([transportId, status])
+  @@index([status, expiresAt])
+  @@index([organizationId])
+  /// PARTIAL UNIQUE (raw SQL): UNIQUE(booking_id) WHERE status IN ('pending','held','consumed')
+  @@map("inventory_holds")
+}
+
+model WebhookEvent {
+  id             String             @id
+  provider       PaymentProvider
+  eventId        String             @map("eventId")
+  eventType      String             @map("eventType")
+  receivedAt     DateTime           @default(now()) @map("receivedAt")
+  processedAt    DateTime?          @map("processedAt")
+  status         WebhookEventStatus @default(pending)
+  /// Optional Payment ref (Mongo ObjectId). No Prisma relation — avoids orphan/cycle issues; validate in app.
+  paymentId      String?            @map("paymentId")
+  payloadHash    String?            @map("payloadHash")
+  metadata       Json               @default("{}")
+  failureCode    String?            @map("failureCode")
+  failureMessage String?            @map("failureMessage")
+  createdAt      DateTime           @default(now()) @map("createdAt")
+  updatedAt      DateTime           @updatedAt @map("updatedAt")
+
+  @@unique([provider, eventId])
+  @@index([paymentId])
+  @@index([status])
+  @@map("webhook_events")
+}
+
+model BookingOperationAudit {
+  id                        String             @id
+  bookingId                 String             @map("bookingId")
+  organizationId            String             @map("organizationId")
+  actorUserId               String             @map("actorUserId")
+  action                    BookingAuditAction
+  previousFulfillmentStatus String?            @map("previousFulfillmentStatus")
+  newFulfillmentStatus      String?            @map("newFulfillmentStatus")
+  metadata                  Json?
+  createdAt                 DateTime           @default(now()) @map("createdAt")
+
+  booking                   Booking            @relation(fields: [bookingId], references: [id])
+  organization              Organization       @relation(fields: [organizationId], references: [id])
+  actorUser                 User               @relation(fields: [actorUserId], references: [id])
+
+  @@index([bookingId, createdAt])
+  @@index([organizationId])
+  @@map("booking_operation_audits")
+}

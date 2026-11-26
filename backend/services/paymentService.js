@@ -14,6 +14,18 @@ import {
 } from './bookingLifecycleService.js'
 import MockPaymentProvider from './payment/MockPaymentProvider.js'
 import { getPaymentProvider } from './payment/paymentProviderRegistry.js'
+import { isMockPaymentAllowed } from '../config/payments.js'
+import { isPrismaBooking } from '../repositories/booking/index.js'
+import {
+  createPaymentForBookingPrisma,
+  finalizeSuccessfulPaymentPrisma,
+  handlePaymentFailurePrisma,
+  getPaymentForUserPrisma,
+  confirmPaymentForUserPrisma,
+  cancelStalePaymentPrisma,
+  applyProviderPaymentSuccessPrisma,
+  applyProviderPaymentFailurePrisma,
+} from './prismaBookingDomainService.js'
 
 const mockProvider = new MockPaymentProvider()
 
@@ -160,6 +172,10 @@ function assertBookingPayable(booking) {
  * Create Payment + initiation attempt for a v2 payment_pending booking.
  */
 export async function createPaymentForBooking(booking) {
+  if (isPrismaBooking()) {
+    return createPaymentForBookingPrisma(booking)
+  }
+
   if (!isV2BookingFlow(booking)) {
     throw new AppError('Payments apply only to v2 bookings', 400)
   }
@@ -247,6 +263,10 @@ async function recordAttempt({
 }
 
 export async function finalizeSuccessfulPayment({ payment, booking }) {
+  if (isPrismaBooking()) {
+    return finalizeSuccessfulPaymentPrisma({ payment, booking })
+  }
+
   await finalizeForBooking({ bookingId: booking._id })
 
   const confirmedBooking = await confirmV2Booking(booking)
@@ -260,6 +280,14 @@ export async function finalizeSuccessfulPayment({ payment, booking }) {
 }
 
 export async function handlePaymentFailure({ payment, booking, providerResult, attemptNumber }) {
+  if (isPrismaBooking()) {
+    return handlePaymentFailurePrisma({
+      payment,
+      booking,
+      providerResult,
+      attemptNumber,
+    })
+  }
   const failedPayment = await Payment.findOneAndUpdate(
     { _id: payment._id, status: { $in: ['pending', 'processing'] } },
     {
@@ -319,6 +347,20 @@ export async function confirmPaymentForUser({
   idempotencyKey = null,
   mockOutcome = 'success',
 }) {
+  if (isPrismaBooking()) {
+    return confirmPaymentForUserPrisma({
+      paymentId,
+      user,
+      body,
+      idempotencyKey,
+      mockOutcome,
+    })
+  }
+
+  if (!isMockPaymentAllowed()) {
+    throw new AppError('Demo payments are disabled on this server', 403)
+  }
+
   rejectConfirmBodyFields(body)
   const confirmKey = validatePaymentIdempotencyKey(idempotencyKey)
 
@@ -425,6 +467,10 @@ export async function confirmPaymentForUser({
 }
 
 export async function getPaymentForUser(paymentId, user) {
+  if (isPrismaBooking()) {
+    return getPaymentForUserPrisma(paymentId, user)
+  }
+
   const { payment, booking } = await loadPaymentContext(paymentId)
   assertUserCanAccessPayment({ payment, booking, user })
   assertBookingPaymentIntegrity(booking, payment)
@@ -437,6 +483,15 @@ export async function applyProviderPaymentSuccess({
   providerReference,
   source = 'provider',
 }) {
+  if (isPrismaBooking()) {
+    return applyProviderPaymentSuccessPrisma({
+      payment,
+      booking,
+      providerReference,
+      source,
+    })
+  }
+
   assertBookingPaymentIntegrity(booking, payment)
 
   if (booking.status === 'expired' || booking.status === 'cancelled') {
@@ -538,6 +593,17 @@ export async function applyProviderPaymentFailure({
   failureMessage = 'Payment failed',
   source = 'provider',
 }) {
+  if (isPrismaBooking()) {
+    return applyProviderPaymentFailurePrisma({
+      payment,
+      booking,
+      providerReference,
+      failureCode,
+      failureMessage,
+      source,
+    })
+  }
+
   if (payment.status === 'failed') {
     if (booking.status === 'payment_pending') {
       await releaseForBooking({
@@ -581,6 +647,10 @@ export async function applyProviderPaymentFailure({
 }
 
 export async function cancelStalePayment(payment, { reason = 'expired' } = {}) {
+  if (isPrismaBooking()) {
+    return cancelStalePaymentPrisma(payment, { reason })
+  }
+
   if (payment.status === 'completed' || payment.status === 'failed' || payment.status === 'cancelled') {
     return { payment, idempotent: true }
   }

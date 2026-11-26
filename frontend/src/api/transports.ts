@@ -23,6 +23,31 @@ export const getTransportById = async (id: string) => {
   return extractOne<Transport>(res.data);
 };
 
+export const getTransportAvailability = async (
+  id: string,
+  params: { travelDate: string; routeKey?: string }
+) => {
+  const res = await api.get(`/transports/${id}/availability`, { params });
+  return res.data.data as {
+    transportId: string;
+    travelDate: string;
+    availability: Array<{
+      routeKey: string;
+      from: string;
+      to: string;
+      departureTime: string;
+      arrivalTime: string;
+      travelDate: string;
+      availableSeats: number;
+      totalSeats: number;
+      hasInventory: boolean;
+      priceMinor: number;
+      currency: string;
+      priceSource: string;
+    }>;
+  };
+};
+
 export const getTransportRoutes = async () => {
   const res = await api.get("/transports/routes");
   return extractList(res.data);

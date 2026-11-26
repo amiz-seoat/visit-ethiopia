@@ -2,16 +2,23 @@ import Tour from '../models/Tour.js'
 import AppError from '../utils/appError.js'
 import { assertTourTransition } from '../config/tourLifecycle.js'
 import { slugify } from '../utils/slugify.js'
+import { isPrismaApp } from '../utils/databaseMode.js'
+import * as catalogWrite from '../repositories/prisma/catalogWriteRepository.js'
 
 export async function ensureTourSlug(organizationId, title, excludeTourId = null) {
   const base = slugify(title)
   let slug = base
   let n = 1
   while (true) {
-    const query = { slug }
-    if (excludeTourId) query._id = { $ne: excludeTourId }
-    const exists = await Tour.exists(query)
-    if (!exists) return slug
+    if (isPrismaApp()) {
+      const exists = await catalogWrite.tourSlugExists(slug, excludeTourId)
+      if (!exists) return slug
+    } else {
+      const query = { slug }
+      if (excludeTourId) query._id = { $ne: excludeTourId }
+      const exists = await Tour.exists(query)
+      if (!exists) return slug
+    }
     n += 1
     slug = `${base}-${n}`
   }
@@ -19,13 +26,35 @@ export async function ensureTourSlug(organizationId, title, excludeTourId = null
 
 async function transitionTourStatus(tour, toStatus, extra = {}) {
   assertTourTransition(tour.status, toStatus)
+
+  if (isPrismaApp()) {
+    const id = tour._id || tour.id
+    const updated = await catalogWrite.transitionTourStatus(
+      id,
+      tour.status,
+      toStatus,
+      extra
+    )
+    if (!updated) {
+      const err = new Error(
+        `Invalid tour status transition: ${tour.status} → ${toStatus}`
+      )
+      err.statusCode = 409
+      throw err
+    }
+    Object.assign(tour, updated)
+    return tour
+  }
+
   const updated = await Tour.findOneAndUpdate(
     { _id: tour._id, status: tour.status },
     { status: toStatus, ...extra },
     { new: true, runValidators: true }
   )
   if (!updated) {
-    const err = new Error(`Invalid tour status transition: ${tour.status} → ${toStatus}`)
+    const err = new Error(
+      `Invalid tour status transition: ${tour.status} → ${toStatus}`
+    )
     err.statusCode = 409
     throw err
   }
@@ -48,7 +77,12 @@ export async function archiveTour(tour) {
 export function stripUnsafeKeys(obj) {
   if (!obj || typeof obj !== 'object') return
   for (const key of Object.keys(obj)) {
-    if (key.startsWith('$') || key.includes('.') || key === '__proto__' || key === 'constructor') {
+    if (
+      key.startsWith('$') ||
+      key.includes('.') ||
+      key === '__proto__' ||
+      key === 'constructor'
+    ) {
       delete obj[key]
     }
   }
@@ -106,7 +140,11 @@ export function validateTourPackages(packages = []) {
       throw new AppError('Duplicate package keys are not allowed', 400)
     }
     keys.add(normalizedKey)
-    if (pkg.priceMinor == null || !Number.isInteger(pkg.priceMinor) || pkg.priceMinor < 0) {
+    if (
+      pkg.priceMinor == null ||
+      !Number.isInteger(pkg.priceMinor) ||
+      pkg.priceMinor < 0
+    ) {
       throw new AppError('Package priceMinor must be a non-negative integer', 400)
     }
   }
@@ -134,7 +172,7 @@ export function normalizeTourInput(body, organization) {
   }
 
   if (organization) {
-    payload.organizationId = organization._id
+    payload.organizationId = organization._id || organization.id
   }
 
   validateTourPackages(payload.packages)
