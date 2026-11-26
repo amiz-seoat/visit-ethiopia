@@ -51,6 +51,7 @@ const app = (await import('../app.js')).default
 // ---------------------------------------------------------------------------
 const chapaTx = new Map() // tx_ref -> { status, amount, currency }
 const chapaCalls = []
+let chapaRefundMode = 'accept'
 async function fakeChapaFetch(url, init = {}) {
   const u = new URL(url)
   const body = init.body ? JSON.parse(init.body) : null
@@ -75,6 +76,11 @@ async function fakeChapaFetch(url, init = {}) {
       status: 'success',
       data: { tx_ref: ref, status: tx.status, amount: tx.amount, currency: tx.currency, reference: `CH${ref.slice(-6)}`, mode: 'test' },
     })
+  }
+  const r = /\/refund\/(.+)$/.exec(u.pathname)
+  if (r) {
+    if (chapaRefundMode === 'reject') return json(400, { status: 'failed', message: 'Refund not allowed', data: null })
+    return json(200, { status: 'success', message: 'Refund queued', data: { ref_id: `RF-${decodeURIComponent(r[1]).slice(-6)}` } })
   }
   return json(404, { status: 'failed', message: 'not found' })
 }
@@ -294,6 +300,23 @@ try {
   const attempts = await prisma.paymentAttempt.findMany({ where: { paymentId }, orderBy: { attemptNumber: 'asc' } })
   check('payment attempts audit trail recorded', attempts.length >= 4 && attempts.some((a) => a.status === 'succeeded') && attempts.some((a) => a.failureCode === 'CHAPA_VERIFY_MISMATCH'), `count=${attempts.length}`)
 
+  // --- refund of a Chapa-paid booking goes through the Chapa refund API -------
+  const otherCancel = await req('PATCH', `/bookings/${bookingId}/cancel`, { token: other, headers: { 'Idempotency-Key': `cancel-other-${RUN}` } })
+  check('other user cannot cancel/refund booking', [403, 404].includes(otherCancel.status), `status=${otherCancel.status}`)
+  chapaRefundMode = 'reject'
+  const cancelRejected = await req('PATCH', `/bookings/${bookingId}/cancel`, { token: guest, headers: { 'Idempotency-Key': `cancel-${RUN}` }, body: { reason: 'change of plans' } })
+  const bAfterReject = await prisma.booking.findUnique({ where: { id: bookingId } })
+  const refundCallsRejected = chapaCalls.filter((c) => c.path.includes('/refund/'))
+  check('rejected Chapa refund keeps booking confirmed and seats held', bAfterReject.status === 'confirmed' && (await inventory()).availableSeats === 8 && refundCallsRejected.length === 1, `status=${cancelRejected.status} booking=${bAfterReject.status}`)
+  chapaRefundMode = 'accept'
+  const cancelOk = await req('PATCH', `/bookings/${bookingId}/cancel`, { token: guest, headers: { 'Idempotency-Key': `cancel-${RUN}` }, body: { reason: 'change of plans' } })
+  const refundCall = chapaCalls.filter((c) => c.path.includes('/refund/')).at(-1)
+  const bCancelled = await prisma.booking.findUnique({ where: { id: bookingId } })
+  const refundRow = await prisma.refund.findFirst({ where: { bookingId }, orderBy: { createdAt: 'desc' } })
+  check('refund calls Chapa with verified tx_ref and server amount', refundCall?.method === 'POST' && refundCall.path.endsWith(`/refund/${tx3}`) && refundCall.body?.amount === '1300.00' && refundCall.auth === 'Bearer CHASECK_TEST-unit-test-fake-key', `${refundCall?.path} ${refundCall?.body?.amount}`)
+  check('successful refund cancels booking and completes refund', cancelOk.status === 200 && bCancelled.status === 'cancelled' && refundRow?.status === 'completed', `status=${cancelOk.status} booking=${bCancelled.status} refund=${refundRow?.status}`)
+  check('cancelled paid booking releases seats', (await inventory()).availableSeats === 10, `available=${(await inventory()).availableSeats}`)
+
   // --- late payment after expiry is flagged ----------------------------------
   const b2 = await book(guest, `chapa-b2-${RUN}`)
   const booking2 = b2.data?.data?._id
@@ -304,7 +327,7 @@ try {
   await runPaymentReconciliation({ limit: 1000 })
   const b2Expired = await prisma.booking.findUnique({ where: { id: booking2 } })
   check('stale unpaid booking expired by reconciliation', b2Expired.status === 'expired', b2Expired.status)
-  check('expired booking released inventory', (await inventory()).availableSeats === 8)
+  check('expired booking released inventory', (await inventory()).availableSeats === 10)
   chapaTx.get(tx21).status = 'success'
   const cb = await req('GET', `/payments/chapa/callback?trx_ref=${tx21}`)
   const p2 = await prisma.payment.findUnique({ where: { id: payment2 } })

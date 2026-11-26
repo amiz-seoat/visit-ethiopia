@@ -30,7 +30,9 @@
     "prisma:transport-fulfillment": "node scripts/transport-fulfillment-prisma.js",
     "build": "prisma generate --schema ../prisma/schema.prisma && node scripts/syncPrismaClient.js",
     "migrate:deploy": "prisma migrate deploy --schema ../prisma/schema.prisma",
-    "prisma:chapa": "node scripts/chapa-payment-prisma.js"
+    "prisma:chapa": "node scripts/chapa-payment-prisma.js",
+    "seed:demo": "node scripts/seedDemoMarketplace.js",
+    "prisma:tour-visibility": "node scripts/tour-visibility-prisma.js"
   },
   "keywords": [],
   "author": "",

@@ -1,66 +1,99 @@
 # Visit Ethiopia
 
-**Visit Ethiopia** is a full-stack travel and tour web application that allows users to explore various tours across Ethiopia. Users can view detailed tour information, pricing, available transportation, and book their trips.
+A full-stack travel marketplace for Ethiopia: travelers browse and book **tours**, **hotels** and **intercity transport** from verified local providers; providers run their listings, inventory and bookings from a workspace; admins approve providers and moderate content.
 
- 
+| | |
+|---|---|
+| **Frontend** | https://visit-ethiopia-rw9b.vercel.app (Vercel) |
+| **API** | https://visit-ethiopia-api.onrender.com (Render, free tier — first request after idle can take ~50 s) |
+| **Database** | PostgreSQL on Neon (Prisma ORM, versioned migrations) |
+| **Payments** | Chapa (Ethiopian payment gateway) — server-side initialize + verify, signed webhooks; demo payment mode when no Chapa keys are configured |
+
+> **Payments are demo/test only.** No live payment credentials are configured. The deployed site uses either clearly-labelled demo payments or Chapa *test mode*. See [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md).
 
 ## Features
-- Browse available tours with detailed descriptions
-- View pricing, transportation options, and itinerary
-- User registration and login
-- Book tours (future payment integration)
-- Admin panel to manage tours
-- Responsive design for desktop and mobile
 
-## Tech Stack
-- **Frontend:** React.js, Tailwind CSS
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB with Mongoose
-- **Authentication:** JWT (JSON Web Tokens)
-- **Styling:** Tailwind CSS
+**Travelers**
+- Browse and search tours, hotels, transport routes, destinations, restaurants and news
+- Tour departures with live seat availability and packages; hotel room types with per-night inventory; transport routes with per-date seat inventory
+- Book with a server-calculated price snapshot and a short inventory hold (15 min) while payment is pending
+- Pay with Chapa (hosted checkout) — booking is confirmed **only** after server-side verification with Chapa, never on a browser redirect
+- Booking history, booking detail, cancellation with server-computed refund amounts; reviews
+- Email verification, password reset and booking-confirmation emails (when an email provider is configured)
 
-## Installation
+**Providers (organizations)**
+- Organization profiles with versioned, admin-approved public snapshots
+- Team membership with permissions per provider type (travel company, hotel, tour bus provider)
+- Workspace: create/publish/archive tours and departures, hotels and room inventory, transport routes and seat inventory; view and fulfil bookings (check-in, no-show, boarding)
 
-1. **Clone the repository**
+**Admins**
+- Provider approval queue (approve / reject / request changes), suspensions
+- Content management and moderation
+
+**Platform**
+- Idempotent payment state machine: compare-and-set status transitions, attempt records, de-duplicated webhook events, late-payment detection (paid after hold expiry → flagged for refund review instead of overbooking)
+- Background reconciliation: re-verifies pending Chapa checkouts and expires stale holds so inventory is released
+- Security: helmet, CORS allow-list, rate limiting (stricter on auth), JWT in httpOnly cookies, input sanitisation, org-scoped authorization on every provider route
+
+## Tech stack
+
+- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, React Router, Axios, Vitest
+- **Backend:** Node.js 22, Express (ESM), Prisma 6, JWT, Nodemailer
+- **Database:** PostgreSQL (Neon in production, Docker locally). A legacy MongoDB/Mongoose code path still exists behind `DATABASE_MODE=mongo` and is kept passing its regression battery, but production runs PostgreSQL only.
+- **Hosting:** Vercel (frontend), Render Blueprint (`render.yaml`, API), Neon (database)
+
+```
+frontend/   React SPA (Vite)            → Vercel
+backend/    Express API                  → Render (rootDir: backend)
+prisma/     schema.prisma + migrations   → applied with `prisma migrate deploy`
+docs/       audit, deployment, env vars, testing, limitations
+```
+
+## Running locally
+
+Prerequisites: Node.js ≥ 20, Docker (for local PostgreSQL).
+
 ```bash
-git clone https://github.com/your-username/visit-ethiopia.git
-cd visit-ethiopia
+# 1. Database
+docker compose -f docker-compose.prisma.yml up -d      # Postgres on localhost:5434
 
-## Integrating frontend and backend (local)
+# 2. API
+cd backend
+cp config.env.example config.env                         # local values only
+npm ci
+npm run build                                            # prisma generate
+npx prisma migrate deploy --schema ../prisma/schema.prisma
+npm run prisma:seed                                      # local test users + catalog
+npm run seed:demo                                        # demo marketplace content (optional)
+npm run dev:prisma                                       # http://localhost:4002
 
-Follow these steps to run the fullstack app locally and integrate frontend with backend:
+# 3. Frontend
+cd ../frontend
+npm ci
+echo "VITE_API_URL=http://localhost:4002/api/v1" > .env.local
+npm run dev -- --port 5200                               # http://localhost:5200
+```
 
-1. Backend setup
-	- Copy the example env file in the backend folder and edit values:
-	  - `cd visit-ethiopia-backend-defence`
-	  - Copy `config.env.example` to `config.env` and fill `DATABASE`, `JWT_SECRET`, etc.
-	- Install and start backend:
-	  ```powershell
-	  cd visit-ethiopia-backend-defence
-	  npm install
-	  npm run dev   # uses nodemon server.js, default port 3000
-	  ```
+`npm run prisma:seed` prints the local-only test logins (traveler, provider owner, admin). They exist only in your local database.
 
-2. Frontend setup
-	- Copy the Vite env example and point it to your backend:
-	  ```powershell
-	  cd visit-eth-front
-	  copy .env.example .env
-	  # Edit .env if you want a different backend port
-	  npm install
-	  npm run dev   # runs vite on port 5173 by default
-	  ```
+## Tests
 
-3. Verify endpoints and CORS
-	- The backend `app.js` already allows `http://localhost:5173` (Vite dev) and the production frontend origin.
-	- Frontend `src/api/axios.ts` uses `VITE_BACKEND_URL` with a default of `http://localhost:3000/api/v1/users` so the auth calls (`/login`, `/signup`, etc.) map correctly to backend routes.
+```bash
+cd backend && npm test          # 12 Prisma/PostgreSQL integration suites (local DB only)
+cd frontend && npm test
+```
 
-4. Notes about cookies & tokens
-	- The backend sets a cookie named `jwt` with `SameSite=None; secure` in production; for local dev you may prefer to rely on the Authorization header stored in localStorage (the frontend already stores the token on login).
-	- If you want cookie auth to work locally over HTTP, change cookie `secure` conditionally in `authController.createSendToken` (set `secure: process.env.NODE_ENV === 'production'`).
+Latest results and what is/isn't covered: [docs/TESTING_REPORT.md](docs/TESTING_REPORT.md).
 
-5. Health-check
-	- Backend exposes a simple `/` route that returns `API is working`.
-	- Swagger docs are available at `/api/v1/api-docs` when backend is running.
+## Documentation
 
-If you'd like I can make the cookie `secure` flag conditional for you, add a small health-check script, or create a single npm script to run both frontend and backend concurrently.
+- [docs/PROJECT_COMPLETION_AUDIT.md](docs/PROJECT_COMPLETION_AUDIT.md) — audit of the codebase and what was completed
+- [docs/PRODUCTION_DEPLOYMENT.md](docs/PRODUCTION_DEPLOYMENT.md) — deploying Neon + Render + Vercel, Chapa setup, operations
+- [docs/ENVIRONMENT_VARIABLES.md](docs/ENVIRONMENT_VARIABLES.md) — every variable, where it lives, secret or not
+- [docs/TESTING_REPORT.md](docs/TESTING_REPORT.md) — automated and manual test results
+- [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md) — honest list of gaps
+- [docs/IMAGE_CREDITS.md](docs/IMAGE_CREDITS.md) — attribution for demo images
+
+## License and credits
+
+Code © the project authors. Demo images are from Wikimedia Commons and Unsplash under their respective licenses — see [docs/IMAGE_CREDITS.md](docs/IMAGE_CREDITS.md).
