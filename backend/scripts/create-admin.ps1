@@ -26,6 +26,11 @@ if ($dbUrl) { $dbUrl = $dbUrl.Trim().Trim("'").Trim('"') }
 Set-Clipboard -Value ' '
 if ($dbUrl -notmatch '^postgres(ql)?://') { throw 'The clipboard does not contain a postgresql:// connection string. Copy it and run the script again.' }
 Write-Host "Connection string read from clipboard ($($dbUrl.Length) characters); clipboard cleared."
+# Neon free-tier computes suspend when idle; waking can exceed Prisma's 5 s default.
+$sep = if ($dbUrl.Contains('?')) { '&' } else { '?' }
+if ($dbUrl -notmatch '[?&]sslmode=') { $dbUrl += "${sep}sslmode=require"; $sep = '&' }
+if ($dbUrl -notmatch '[?&]connect_timeout=') { $dbUrl += "${sep}connect_timeout=30" }
+$dbUrl = $dbUrl -replace '[?&]channel_binding=require', ''
 
 $email = (Read-Host -Prompt 'Admin email').Trim()
 if ($email -notmatch '^[^@\s]+@[^@\s]+\.[^@\s]+$') { throw 'Invalid email address.' }
