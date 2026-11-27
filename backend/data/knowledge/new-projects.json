@@ -1,0 +1,591 @@
+[
+  {
+    "id": "unity-park-addis-ababa",
+    "name": "Unity Park (Andinet Park)",
+    "category": "new_project",
+    "initiative": "Beautifying Sheger (Addis Ababa beautification)",
+    "status": "open — as of November 2026 (inaugurated October 2019)",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": { "lat": 9.0232, "lng": 38.7640 },
+    "summary": "Unity Park is a 20-hectare park opened in 2019 inside the National Palace compound in Addis Ababa's Arat Kilo area. It combines historic palace buildings, a zoo and cultural exhibits.",
+    "details": "Unity Park was inaugurated on 10 October 2019 inside the grounds of the National Palace (Menelik's Palace compound) in the Arat Kilo district of Addis Ababa. It covers about 20 hectares.\n\nThe park includes a zoo with 37 mammal species, among them giraffes, zebras, cheetahs and African wild dogs, plus thirteen aquatic species and an aviary of indigenous birds.\n\nVisitors can also see historical artifacts, including a throne of Emperor Haile Selassie. The park focuses on Ethiopian culture and history, and religious books in Amharic, English and Ge'ez are kept for research and study.\n\nThe park is described as part of Addis Ababa's beautification programme, known as Beautifying Sheger.",
+    "highlights": ["Historic National Palace compound", "Zoo with giraffes, zebras, cheetahs and African wild dogs", "Aviary of indigenous birds", "Imperial-era artifacts including a Haile Selassie throne"],
+    "bestTimeToVisit": "Year-round. The dry season (October to May) is the most comfortable for walking outdoors.",
+    "gettingThere": "In central Addis Ababa at Arat Kilo. It is roughly a 20–30 minute drive from Bole International Airport, depending on traffic.",
+    "tips": [
+      "Buy tickets before you go. Payment options have been SMS, online via Ethio telecom, or the Commercial Bank of Ethiopia, which also sells tickets in person at the compound.",
+      "Opening hours have been reported as 9 am to 4 pm, six days a week, closed on Mondays for cleaning. Check current hours before visiting.",
+      "Abrehot Library, Friendship Park and the Ethiopian Science Museum are all close by and can be combined in one day."
+    ],
+    "hotels": [
+      { "name": "Sheraton Addis, a Luxury Collection Hotel", "area": "Taitu Street, opposite the National Palace", "description": "Marriott describes the hotel as standing opposite the National Palace, and booking sites place it about 0.4–1.1 km from Unity Park.", "sourceUrl": "https://www.marriott.com/en-us/hotels/addlc-sheraton-addis-a-luxury-collection-hotel-addis-ababa/experiences" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://en.wikipedia.org/wiki/Unity_Park",
+      "https://www.marriott.com/en-us/hotels/addlc-sheraton-addis-a-luxury-collection-hotel-addis-ababa/experiences",
+      "https://www.hotels.com/ho141191"
+    ],
+    "confidenceNotes": "Opening hours and ticketing details come from Wikipedia and may be out of date. No named restaurant inside the park could be confirmed. Published distances from the Sheraton to the park vary from about 0.4 km to 2 km depending on the listing."
+  },
+  {
+    "id": "entoto-park-addis-ababa",
+    "name": "Entoto Park (Entoto Natural Park)",
+    "category": "new_project",
+    "initiative": "Beautifying Sheger",
+    "status": "open — as of November 2026 (inaugurated October 2020)",
+    "region": "Addis Ababa City Administration (Mount Entoto)",
+    "nearestCity": "Addis Ababa",
+    "coordinates": { "lat": 9.0866, "lng": 38.7624 },
+    "summary": "Entoto Park is a large recreational park on the forested slopes of Mount Entoto, north of central Addis Ababa. Prime Minister Abiy Ahmed inaugurated it in October 2020.",
+    "details": "Entoto Natural Park officially opened on 10 October 2020 as part of the Beautifying Sheger project. Some sources give 30 September 2020 instead. It covers about 1,300 hectares on the southeastern slopes of Mount Entoto, at 2,600 to 3,100 metres above sea level.\n\nAt its opening, the park had sports centres, restaurants and cafés, horseback riding, an artificial lake, art galleries and children's playgrounds. Capital Ethiopia reported that coffee was served by Kaldi's and Tomoca and that about 12 service providers operated in the park.\n\nKuriftu runs a resort, spa and adventure park inside the area, with rooms and tents, stables, a go-kart track and jogging and cycling trails. Booking sites list rock climbing, hiking, biking and archery.\n\nBy 2022, state media described the park as fully equipped with indoor and outdoor facilities, including sports centres, a library, restaurants and coffee shops.",
+    "highlights": ["Eucalyptus-forested mountain slopes above the city", "Horseback riding, cycling and jogging trails", "Kuriftu Entoto adventure activities", "Cool highland air and views over Addis Ababa"],
+    "bestTimeToVisit": "The dry season (October to May). It can be cold and wet at this altitude during the June–September rains, so bring a warm layer.",
+    "gettingThere": "On Mount Entoto, north of central Addis Ababa. Booking sites give roughly 42–55 minutes by car from Bole International Airport.",
+    "tips": [
+      "The park is 2,600–3,100 m above sea level, so expect cooler temperatures than in central Addis.",
+      "Activity providers inside the park, such as Kuriftu, set their own prices and opening times. Check with them directly.",
+      "The historic Entoto Maryam Church is nearby."
+    ],
+    "hotels": [
+      { "name": "Kuriftu Entoto Adventure Park (Kuriftu Entoto Resort & Spa)", "area": "Inside Entoto Park", "description": "A mountain resort that booking sites list with about 31 rooms, including tent-style units, plus several restaurants and a spa.", "sourceUrl": "https://www.hotels.com/ho3528210208" }
+    ],
+    "restaurants": [
+      { "name": "Kuriftu restaurant and café (Entoto)", "area": "Inside Entoto Park", "description": "Capital Ethiopia reported that Kuriftu operates a café, restaurant and spa in the park.", "sourceUrl": "https://capitalethiopia.com/2020/11/09/entoto-park-the-capitals-recreational-paradise/" },
+      { "name": "Kaldi's Coffee and Tomoca (Entoto outlets)", "area": "Inside Entoto Park", "description": "Capital Ethiopia reported in 2020 that both Ethiopian coffee brands served coffee in the park.", "sourceUrl": "https://capitalethiopia.com/2020/11/09/entoto-park-the-capitals-recreational-paradise/" }
+    ],
+    "sources": [
+      "https://en.wikipedia.org/wiki/Entoto_Natural_Park",
+      "https://ethiopianembassy.org/pm-inaugurates-entoto-natural-park-october-10-2020/",
+      "https://capitalethiopia.com/2020/11/09/entoto-park-the-capitals-recreational-paradise/",
+      "https://www.hotels.com/ho3528210208"
+    ],
+    "confidenceNotes": "Sources give two inauguration dates (10 October or 30 September 2020). Facility and vendor details are from 2020–2022 and may have changed. Kuriftu room counts and activities come from booking sites."
+  },
+  {
+    "id": "friendship-park-addis-ababa",
+    "name": "Friendship Park (Sheger Park / Friendship Square)",
+    "category": "new_project",
+    "initiative": "Beautifying Sheger",
+    "status": "open — as of August 2026 (Phase I opened September 2020; Phase II opened October 2022)",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": null,
+    "summary": "Friendship Park, also called Sheger Park or Friendship Square, is a roughly 46-hectare urban park in central Addis Ababa. It has an artificial lake, musical fountains and riverside recreation areas.",
+    "details": "Friendship Square, the first major piece of Sheger Park, was inaugurated on 10 September 2020, on the eve of the Ethiopian New Year. President Sahle-Work Zewde and Prime Minister Abiy Ahmed attended. China Communications Construction Company built it.\n\nThe park has an artificial lake, a gathering square, musical fountains that are lit at night, jogging tracks, botanical areas, restaurants and event spaces. Amhara Media Corporation puts its area at about 46 hectares.\n\nPrime Minister Abiy inaugurated Friendship Park Phase II on 30 October 2022. It sits between Abrehot Library and the main Friendship Square and includes 1.2 km of riverside development. Facilities include a children's playground, a running track, volleyball, football and basketball areas, an ecological garden, a visitor centre, a picture gallery, a garden cafeteria, an observation tower and a wedding and events venue. It has parking for more than 325 cars.\n\nIn August 2026, the Prime Minister said the park had earned nearly 1 billion birr in its first four years from entrance fees, commercial services and facility rentals.",
+    "highlights": ["Artificial lake with lit musical fountains at night", "Phase II riverside park with an observation tower and ecological garden", "Children's play areas and sports courts", "Short walk from Abrehot Library"],
+    "bestTimeToVisit": "Year-round. Evenings are popular for the lit fountains.",
+    "gettingThere": "In central Addis Ababa near the Prime Minister's office, Arat Kilo and Abrehot Library. It is roughly a 20–30 minute drive from Bole International Airport, depending on traffic.",
+    "tips": [
+      "An entrance fee is charged, according to Amhara Media Corporation. Current prices were not confirmed.",
+      "Phase II has a wedding and event venue that can be hired for social events."
+    ],
+    "hotels": [
+      { "name": "Sheraton Addis, a Luxury Collection Hotel", "area": "Taitu Street, opposite the National Palace", "description": "A luxury hotel opposite the National Palace in the same central district as the park.", "sourceUrl": "https://www.marriott.com/en-us/hotels/addlc-sheraton-addis-a-luxury-collection-hotel-addis-ababa/experiences" }
+    ],
+    "restaurants": [
+      { "name": "Phase II garden cafeteria", "area": "Friendship Park Phase II", "description": "Fana reported that Phase II includes a garden cafeteria among its visitor amenities.", "sourceUrl": "https://www.fanamc.com/english/?p=36647" }
+    ],
+    "sources": [
+      "https://ethiopianembassy.org/?p=7234",
+      "https://en.wikipedia.org/wiki/Sheger_Park",
+      "https://www.fanamc.com/english/?p=36647",
+      "https://www.ameco.et/english/?p=2594",
+      "https://addisfortune.news/ethiopia-inaugurates-chinese-funded-built-park/"
+    ],
+    "confidenceNotes": "Sources use the names Sheger Park, Friendship Park and Friendship Square for the same site. Coordinates are left null because the Wikipedia value (9.0566, 38.7390) did not match the park's described location next to Abrehot Library. The Sheraton is in the same central area, but no source gave its exact distance from this park. Entrance fees and opening hours were not confirmed."
+  },
+  {
+    "id": "addis-ababa-riverside-corridors",
+    "name": "Addis Ababa Riverside Development Corridors (Entoto–Kechene and Entoto–Kebena)",
+    "category": "new_project",
+    "initiative": "Beautifying Sheger (Sheger Riverside Project)",
+    "status": "partially open — as of June 2026 (Entoto–Kechene Medhanealem 9.6 km section opened June 2026; Entoto–Kebena 10.5 km section opened late June 2026; other sections under construction)",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": null,
+    "summary": "A city-wide programme to rehabilitate Addis Ababa's rivers and turn their banks into green corridors with walkways, cycle paths and cafés. The first long sections opened in June 2026.",
+    "details": "The Sheger riverside project, part of Beautifying Sheger, aims to clean up Addis Ababa's rivers and build green corridors along them. An earlier description said it would run about 56 km from the Entoto forest to the Akaki River in the south of the city.\n\nOn 2 June 2026, Prime Minister Abiy Ahmed inaugurated the 9.6 km Entoto–Kechene Medhanealem Riverside Development Project. It runs from the Entoto Qusquam area down to Kechene and has pedestrian walkways, walking and cycling trails, access roads and riverside cafés and restaurants built through public–private partnerships. There are also riverbank plots for strawberries, highland coffee, citrus and honey, and stone terraces built by Konso craftsmen to control erosion.\n\nAt the end of June 2026, he opened the Entoto–Kebena riverfront, about 10.5 km of corridor with flood protection, new bridges and green public spaces. Reports put the area of this section at 87.6 hectares and describe it as part of a much larger programme that is still mostly under construction.\n\nThe remaining sections are planned to continue toward Peacock Park and Bole.",
+    "highlights": ["Riverside walking and cycling trails from the Entoto foothills", "Cafés and restaurants along the riverbanks", "Konso-style stone terracing", "Riverbank coffee, strawberry and citrus plots"],
+    "bestTimeToVisit": "The dry season (October to May), when the trails are less muddy.",
+    "gettingThere": "Within Addis Ababa. The opened sections start in the Entoto foothills in the north of the city and are reachable by taxi or ride-hailing.",
+    "tips": [
+      "Only some sections are finished, and construction continues elsewhere in the corridor.",
+      "Combine the Entoto–Kechene section with a visit to Entoto Park."
+    ],
+    "hotels": [],
+    "restaurants": [],
+    "sources": [
+      "https://www.ena.et/web/eng/w/eng_8973695",
+      "https://www.dawan.africa/news/abiy-opens-entoto-kebena-riverfront-project-in-addis-ababa",
+      "https://allafrica.com/stories/202606290239.html",
+      "https://www.thereporterethiopia.com/10132/",
+      "https://addisfortune.news/healing-rivers-spurs-city-to-bend-growth-around-its-restored-spine"
+    ],
+    "confidenceNotes": "The exact inauguration dates of the Kebena section vary between 25 and 28 June 2026 across reports. No individual riverside café or hotel could be confirmed by name. The total corridor length and area are given differently in different reports."
+  },
+  {
+    "id": "adwa-victory-memorial",
+    "name": "Adwa Victory Memorial (Adwa Zero Kilometre Museum)",
+    "category": "new_project",
+    "initiative": "Addis Ababa city project (Adwa Zero KM Project), inaugurated by PM Abiy Ahmed",
+    "status": "open — as of November 2026 (inaugurated February 2024; opened to the public March 2024)",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa (Piassa)",
+    "coordinates": { "lat": 9.0332, "lng": 38.7533 },
+    "summary": "A memorial and museum in Piassa that commemorates Ethiopia's victory over Italy at the Battle of Adwa on 1 March 1896. It marks Addis Ababa's 'zero kilometre' point.",
+    "details": "Prime Minister Abiy Ahmed inaugurated the Adwa Victory Memorial on 11 February 2024, and it opened to the public on 16 March 2024. It stands in the Piassa area, between the statue of Emperor Menelik II and St. George's Cathedral.\n\nThe project started in 2019 and was delayed by the COVID-19 pandemic. The building has eleven blocks and five floors on about 1.5 hectares, and a bridge links it to the Addis Ababa Mayor's Office.\n\nThere are four entrances, one for each cardinal direction, leading to areas themed 'Heroes of the North', 'Heroes of the South', 'Heroes of the East' and 'Heroes of the West'. The design borrows from Aksum monuments and Lalibela architecture. Statues of Emperor Menelik II and Empress Taytu stand on the plaza near a fountain.\n\nThe complex also has a museum, meeting halls, an amphitheatre, a library, an art gallery and an exhibition centre.",
+    "highlights": ["Battle of Adwa (1896) history exhibits", "Statues of Menelik II and Empress Taytu", "Architecture inspired by Aksum and Lalibela", "Next to St. George's Cathedral in historic Piassa"],
+    "bestTimeToVisit": "Year-round. The area is especially busy around Adwa Victory Day on 1 March.",
+    "gettingThere": "In Piassa, central Addis Ababa. It is roughly a 25–40 minute drive from Bole International Airport, depending on traffic.",
+    "tips": [
+      "The museum's website is adwamuseum.com. Check it for current opening hours and ticket information, which could not be confirmed here.",
+      "St. George's Cathedral and historic Piassa are within walking distance."
+    ],
+    "hotels": [
+      { "name": "Itegue Taitu Hotel", "area": "Piassa", "description": "Ethiopia's oldest hotel, in the historic Piassa district near the memorial. It was damaged by a fire in 2015.", "sourceUrl": "https://en.wikipedia.org/wiki/Taitu_Hotel" },
+      { "name": "Grand Eliana Hotel Conference & Spa", "area": "Piassa / Arada", "description": "Trip.com lists it about 0.4 km from the Adwa Victory Museum.", "sourceUrl": "https://ph.trip.com/hotels/addis-ababa-adwa-victory-museum/hotels-c635m40061351" }
+    ],
+    "restaurants": [
+      { "name": "Tomoca Coffee (original Piassa shop)", "area": "Piassa", "description": "A coffee roaster founded in 1953 in the Piassa area and known for Italian-style coffee made with Ethiopian arabica beans.", "sourceUrl": "https://en.wikipedia.org/wiki/Tomoca_Coffee" }
+    ],
+    "sources": [
+      "https://en.wikipedia.org/wiki/Adwa_00KM_Museum",
+      "https://www.fanabc.com/english/?p=56847",
+      "https://addismayor.gov.et/cityprojects/adwa-museum-project",
+      "https://ph.trip.com/hotels/addis-ababa-adwa-victory-museum/hotels-c635m40061351",
+      "https://en.wikipedia.org/wiki/Taitu_Hotel",
+      "https://en.wikipedia.org/wiki/Tomoca_Coffee"
+    ],
+    "confidenceNotes": "Sources give the site area as either 1.5 hectares or 5 hectares. Opening hours and ticket prices were not confirmed. The Taitu Hotel was damaged by fire in 2015, so check its current condition. The original Tomoca shop's street address was not confirmed beyond 'Piassa'."
+  },
+  {
+    "id": "ethiopian-science-museum",
+    "name": "Ethiopian Science Museum (Ethiopia Museum of Art and Science)",
+    "category": "new_project",
+    "initiative": "Addis Ababa Riverside Green Development Project Phase II (Beautifying Sheger)",
+    "status": "open — as of November 2026 (inaugurated October 2022; permanent exhibition opened June 2025)",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": { "lat": 9.0214, "lng": 38.7624 },
+    "summary": "A dome-shaped science and technology museum near the National Palace. It opened in 2022 with interactive exhibits and a 3D dome theatre.",
+    "details": "Prime Minister Abiy Ahmed inaugurated the Science Museum on 4 October 2022. It is a major part of the China-aided Addis Ababa Riverside Green Development Project Phase II and stands on Niger Street near the National Palace.\n\nThe building is a circular, 9-metre-high exhibition structure on a 6.78-hectare site, described as a 'ring of wisdom'.\n\nIts dome theatre is a 3D cinema about 24 metres high that seats up to 200 people. Exhibition halls have interactive displays on healthcare, finance, cybersecurity, GIS, data analysis, manufacturing and robotics.\n\nThe Prime Minister inaugurated a permanent exhibition at the museum in June 2025.",
+    "highlights": ["Dome theatre showing 3D films", "Interactive technology and robotics exhibits", "Permanent exhibition opened in 2025", "Close to Unity Park and Friendship Park"],
+    "bestTimeToVisit": "Year-round. It is an indoor attraction.",
+    "gettingThere": "In central Addis Ababa near the National Palace. It is roughly a 20–30 minute drive from Bole International Airport.",
+    "tips": [
+      "Opening hours and ticket prices were not confirmed. Check locally before visiting.",
+      "Combine it with Unity Park and Friendship Park nearby."
+    ],
+    "hotels": [
+      { "name": "Sheraton Addis, a Luxury Collection Hotel", "area": "Taitu Street, opposite the National Palace", "description": "A luxury hotel opposite the National Palace, in the same district as the museum.", "sourceUrl": "https://www.marriott.com/en-us/hotels/addlc-sheraton-addis-a-luxury-collection-hotel-addis-ababa/experiences" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ethiopia_Museum_of_Art_and_Science",
+      "https://www.fanabc.com/english/?p=35492",
+      "https://allafrica.com/stories/202506160767.html"
+    ],
+    "confidenceNotes": "Wikipedia gives the floor area as both 15,000 m² and 15,000,000 m²; 15,000 m² is likely correct. Hours and fees were not confirmed. No exact distance from the Sheraton was sourced."
+  },
+  {
+    "id": "abrehot-library",
+    "name": "Abrehot Library",
+    "category": "new_project",
+    "initiative": "Addis Ababa city project, inaugurated by PM Abiy Ahmed",
+    "status": "open — as of November 2026 (opened January 2022)",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa (Arat Kilo)",
+    "coordinates": { "lat": 9.0303, "lng": 38.7624 },
+    "summary": "One of Africa's largest public libraries, opened in January 2022 opposite the Ethiopian Parliament. It is reported to open 24 hours a day.",
+    "details": "Prime Minister Abiy Ahmed inaugurated Abrehot Library in early January 2022. Sources give both 1 and 2 January. It stands in Arat Kilo, in front of the Ethiopian Parliament building.\n\nThe four-storey building has about 19,000 m² of floor space and 1.5 km of shelving, enough for 1.4 million books. It can seat more than 2,000 readers at once.\n\nFacilities include an outdoor Knowledge Garden, an online learning zone called Knowledge Springs, eight bookstores, a meeting room, a cafeteria and a children's reading area.\n\nThe library is reported to open 24 hours a day, including weekends and public holidays, with brief early-morning closures for cleaning.",
+    "highlights": ["Room for more than 2,000 readers", "Children's reading area", "Outdoor Knowledge Garden", "Next to Friendship Park Phase II"],
+    "bestTimeToVisit": "Any time. It is an indoor attraction reported to be open 24 hours a day.",
+    "gettingThere": "In Arat Kilo, central Addis Ababa, opposite Parliament. It is roughly a 20–30 minute drive from Bole International Airport.",
+    "tips": [
+      "It is reported to open 24/7 with short early-morning maintenance closures. Confirm locally.",
+      "Friendship Park Phase II is directly adjacent."
+    ],
+    "hotels": [
+      { "name": "Sheraton Addis, a Luxury Collection Hotel", "area": "Taitu Street, opposite the National Palace", "description": "A luxury hotel opposite the National Palace in central Addis Ababa.", "sourceUrl": "https://www.marriott.com/en-us/hotels/addlc-sheraton-addis-a-luxury-collection-hotel-addis-ababa/experiences" }
+    ],
+    "restaurants": [
+      { "name": "Abrehot Library cafeteria", "area": "Inside the library", "description": "Wikipedia lists a cafeteria among the library's facilities.", "sourceUrl": "https://en.wikipedia.org/wiki/Abrehot_Library" }
+    ],
+    "sources": [
+      "https://en.wikipedia.org/wiki/Abrehot_Library",
+      "https://www.fanabc.com/english/?p=27897",
+      "https://capitalethiopia.com/2022/01/10/ethiopia-inaugurates-state-of-the-art-public-library/"
+    ],
+    "confidenceNotes": "The 24-hour opening comes from Wikipedia and may change. Sources give the opening date as 1 or 2 January 2022. No exact distance from the Sheraton was sourced."
+  },
+  {
+    "id": "gorgora-eco-resort",
+    "name": "Gorgora Eco Resort (Gorgora Project, Lake Tana)",
+    "category": "new_project",
+    "initiative": "Gebeta Lehager (Dine for Ethiopia / Dine for Nation)",
+    "status": "open — as of May 2026 (inaugurated 13 July 2024)",
+    "region": "Amhara Regional State",
+    "nearestCity": "Gorgora (Central Gondar), about 60 km south of Gondar",
+    "coordinates": null,
+    "summary": "A lakeside eco-resort on the northern shore of Lake Tana at Gorgora, southwest of Gondar. It was built under the Dine for Ethiopia initiative and inaugurated in July 2024.",
+    "details": "The Gorgora Project was launched under the Dine for Ethiopia (Gebeta Lehager) initiative. Its first phase started in March 2021, and the project's 4.2 billion birr budget was shared with the sister projects at Wonchi and Koysha.\n\nPrime Minister Abiy Ahmed inaugurated the Gorgora Eco Resort on 13 July 2024. It sits on the shore of Lake Tana at Gorgora town, in Amhara Region.\n\nBooking listings describe lakeside villas and cottages set in gardens, with lake-view rooms about a minute's walk from the water. One listing gives about 95 rooms.\n\nHistoric sites around Gorgora include the Debre Sina Maryam church and Emperor Susenyos's old palace. Listings put the palace about a 30-minute drive away.",
+    "highlights": ["Lakefront setting on northern Lake Tana", "Lake-view villas and cottages", "Nearby Debre Sina Maryam church", "Easy combination with historic Gondar"],
+    "bestTimeToVisit": "October to May, the dry season. The landscape is greenest just after the rains, in September and October.",
+    "gettingThere": "Fly from Addis Ababa to Gondar, then drive about 60 km south to Gorgora. Allow roughly 1–1.5 hours by road.",
+    "tips": [
+      "Book accommodation in advance. The resort is listed on major booking sites as 'Gorgora Eco Resort by Ethiopian Skylight'.",
+      "Ask the resort about boat trips on Lake Tana. These were not confirmed from sources."
+    ],
+    "hotels": [
+      { "name": "Gorgora Eco Resort (by Ethiopian Skylight)", "area": "Gorgora, Lake Tana shore", "description": "The resort built by the Gorgora Project, offering lake-view rooms, villas and cottages.", "sourceUrl": "https://www.hotels.com/ho3644581504/" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://en.wikipedia.org/wiki/Gorgora_Project",
+      "https://www.fanamc.com/english/?p=62811",
+      "https://www.ena.et/web/eng/w/eng_4775708",
+      "https://atcnews.org/ethiopian-skylight-hotel-assumes-management-role-for-ethiopias-new-legacy-lodges",
+      "https://addisinsight.net/2026/05/04/ethiopia-unveils-felege-gion-eco-resort-a-4-5-billion-birr-tourism-bet/",
+      "https://www.hotels.com/ho3644581504/"
+    ],
+    "confidenceNotes": "The operator is unclear. A May 2024 report says Ethiopian Skylight Hotel manages the resort, while a May 2026 report says Roda Hospitality Group operates it. Fana describes the location as 'Lake Gorgora', but other sources say Lake Tana at Gorgora. Room count and distances come from booking sites. The ~60 km distance from Gondar is approximate."
+  },
+  {
+    "id": "halala-kella-resort-koysha",
+    "name": "Halala Kella Resort (Koysha Project, Dawro)",
+    "category": "new_project",
+    "initiative": "Gebeta Lehager (Dine for Ethiopia / Dine for Nation) — Koysha Project, Halala Kella cluster",
+    "status": "open — as of May 2024 (inaugurated 1 May 2023)",
+    "region": "South West Ethiopia Peoples' Region",
+    "nearestCity": "Dawro Zone (about 500 km southwest of Addis Ababa)",
+    "coordinates": null,
+    "summary": "A hilltop resort inside the historic Halala Kella wall in Dawro Zone. It overlooks the man-made lake of the Gibe III dam on the Omo River.",
+    "details": "The Halala Kella cluster of the Koysha Project was launched on 21 February 2021 under the Dine for Ethiopia initiative. Prime Minister Abiy Ahmed inaugurated the resort on 1 May 2023, after less than two years of construction.\n\nThe resort combines indigenous and modern architecture and has presidential and modern rooms. It overlooks the man-made lake of the Gibe III hydropower dam.\n\nIt lies within the historic Halala Kella wall, attributed to King Kawo Halala, which originally ran about 175 km through a landscape of the Omo River valley.\n\nIn June 2023 the resort was handed over to the South West Ethiopia Peoples' Regional State, which agreed with Paradise Lodges Resorts and Hotels Management to run it. A May 2024 report lists it among the lodges managed by Ethiopian Skylight Hotel.",
+    "highlights": ["Views over the Gibe III lake on the Omo River", "Historic Halala Kella stone wall", "Hiking and bird-watching", "Combine with Chebera Churchura National Park"],
+    "bestTimeToVisit": "The dry season (roughly October to May), when rural roads are easier.",
+    "gettingThere": "About 500 km southwest of Addis Ababa by road, which takes a full day of driving. The nearest commercial airports are Jimma and Arba Minch. Ask the lodge about transfers.",
+    "tips": [
+      "This is a remote area, so book accommodation and transport in advance.",
+      "Booking sites list the property as 'Halala Kella Eco Lodge'."
+    ],
+    "hotels": [
+      { "name": "Halala Kella Eco Lodge / Halala Kella Resort", "area": "Dawro Zone, overlooking the Gibe III lake", "description": "The resort built by the Koysha Project, which Trip.com lists with about 20 rooms and a pool, spa and restaurant.", "sourceUrl": "https://www.trip.com/hotels/dawro-hotel-detail-126613289/halala-kella-eco-lodge/" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://www.ena.et/web/eng/w/eng_2746185",
+      "https://www.ena.et/web/eng/w/eng_2876779",
+      "https://www.fanabc.com/english/?p=46249",
+      "https://www.ena.et/en/?p=21833",
+      "https://www.archdaily.com/1031411",
+      "https://atcnews.org/ethiopian-skylight-hotel-assumes-management-role-for-ethiopias-new-legacy-lodges",
+      "https://www.trip.com/hotels/dawro-hotel-detail-126613289/halala-kella-eco-lodge/"
+    ],
+    "confidenceNotes": "The operator changed or is unclear: Paradise Lodges was named in June 2023, and Ethiopian Skylight in May 2024. Booking sites give 'opened' years of 2024 or 2025 that conflict with the May 2023 inauguration. The room count comes from Trip.com. Coordinates were not confirmed."
+  },
+  {
+    "id": "chebera-churchura-elephant-paw-lodge",
+    "name": "Chebera Churchura Elephant Paw Lodge",
+    "category": "new_project",
+    "initiative": "Gebeta Lehager (Dine for Ethiopia / Dine for Nation) — Koysha / Halala Kella cluster",
+    "status": "open — as of May 2024 (inaugurated December 2023)",
+    "region": "South West Ethiopia Peoples' Region",
+    "nearestCity": "Konta / Dawro area, Chebera Churchura National Park",
+    "coordinates": null,
+    "summary": "A villa-style lodge in Chebera Churchura National Park, which is known for its forest elephants. Prime Minister Abiy inaugurated it in December 2023.",
+    "details": "Prime Minister Abiy Ahmed inaugurated the Elephant Paw Lodge in December 2023. Fana's report is dated 23 December 2023. It is part of the Koysha and Halala Kella cluster under the Dine for Ethiopia initiative.\n\nThe lodge is in Chebera Churchura National Park, in the Omo–Gibe basin between Dawro Zone and Konta. The area was a controlled hunting zone before becoming a national park in 2005 or 2006, and it has a significant elephant population.\n\nBooking sites list one-, two- and three-bedroom villas, including a presidential villa, along with an outdoor pool, restaurant, bar and spa.\n\nA May 2024 report lists it among the 'legacy lodges' managed by Ethiopian Skylight Hotel and says guests can see African elephants up close.",
+    "highlights": ["Wildlife viewing in Chebera Churchura National Park, including elephants", "Villa accommodation", "Combine with Halala Kella Resort"],
+    "bestTimeToVisit": "The dry season (roughly October to May) for easier road access and wildlife viewing.",
+    "gettingThere": "Remote. Expect a long drive from Addis Ababa, roughly 500 km or more, via Jimma or the Dawro area. Arrange transfers with the lodge.",
+    "tips": [
+      "Wildlife sightings are not guaranteed. Go with park guides.",
+      "Booking sites list check-in from 2 pm and check-out at noon. Confirm with the lodge."
+    ],
+    "hotels": [
+      { "name": "Chebera Elephant Paw Lodge", "area": "Chebera Churchura National Park", "description": "The lodge built under the project, which booking sites list with villas, an outdoor pool and a restaurant.", "sourceUrl": "https://www.expedia.com/Chebera-Elephant-Paw-Lodge.h107196100.Hotel-Information" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://www.fanamc.com/english/?p=54965",
+      "https://ena.et/web/eng/w/eng_3770954",
+      "https://atcnews.org/ethiopian-skylight-hotel-assumes-management-role-for-ethiopias-new-legacy-lodges",
+      "https://en.wikipedia.org/wiki/Chebera_Churchura_National_Park",
+      "https://www.expedia.com/Chebera-Elephant-Paw-Lodge.h107196100.Hotel-Information"
+    ],
+    "confidenceNotes": "Sources disagree on the park's area, its elephant numbers and its founding year (2005 or 2006). Room details come from booking sites. The distance from Addis Ababa is a rough estimate. Coordinates were not confirmed."
+  },
+  {
+    "id": "wonchi-dendi-ecotourism-village",
+    "name": "Wonchi (Wenchi) Crater Lake Eco-Tourism Village",
+    "category": "new_project",
+    "initiative": "Gebeta Lehager (Dine for Ethiopia / Dine for Nation) — Wonchi-Dendi Project",
+    "status": "open — as of May 2024 (inaugurated 13 January 2024)",
+    "region": "Oromia Regional State (South West Shewa)",
+    "nearestCity": "Ambo / Woliso",
+    "coordinates": null,
+    "summary": "A developed eco-tourism destination at Wonchi crater lake, between Ambo and Woliso. It includes an eco-lodge and community guesthouses, and was the third Dine for Ethiopia destination to open.",
+    "details": "Prime Minister Abiy launched the Wonchi tourism development in March 2021. The project shared a 4.2 billion birr budget with Gorgora and Koysha and was built by China Communications Construction Company.\n\nThe Wonchi-Dendi Eco Tourism Village was inaugurated on 13 January 2024. The Office of the Prime Minister described it as the third destination completed under the Dine for Ethiopia initiative. The homes of 13 local farmers were prepared as guesthouses for tourists.\n\nWonchi is a volcanic crater lake between Ambo and Woliso. It has two islands, one with the ancient Cherkos (Kirkos) monastery, which visitors usually reach by small boat. Lukewarm springs southwest of the lake are believed locally to have healing powers.\n\nThe eco-lodge on site is managed by Ethiopian Skylight Hotel and listed as 'Wenchi Eco Lodge by Ethiopian Skylight' (also 'Wanchi Ija Eco Lodge').",
+    "highlights": ["Wonchi crater lake views", "Boat trip to the Cherkos monastery island", "Hot springs and highland hiking", "Community farmer guesthouses"],
+    "bestTimeToVisit": "October to May, the dry season. Expect rain from June to September.",
+    "gettingThere": "Roughly 130–155 km west/southwest of Addis Ababa by road, about 3–3.5 hours, via Ambo (about 28 km away) or Woliso (about 38 km away).",
+    "tips": [
+      "Wonchi is a popular day trip from Addis Ababa, but staying overnight lets you hike and take the boat trip at a relaxed pace.",
+      "Ask locally about boat and horse hire to the monastery."
+    ],
+    "hotels": [
+      { "name": "Wenchi Eco Lodge by Ethiopian Skylight (Wanchi Ija Eco Lodge)", "area": "Wonchi crater rim, Shube / West Shewa", "description": "The eco-lodge developed under the project and managed by Ethiopian Skylight Hotel.", "sourceUrl": "https://uk.trip.com/hotels/west-shewa-hotel-detail-118299423/wenchi-eco-lodge-by-ethiopian-skylight" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://en.wikipedia.org/wiki/Wenchi_Project",
+      "https://ethiopianembassy.org/pm-launches-wenchi-project-march-20-2021/",
+      "https://allafrica.com/stories/202401160060.html",
+      "https://fanabc.com/english/amp/wenchi-dendi-eco-tourism-village-to-be-inaugurated-today",
+      "https://atcnews.org/ethiopian-skylight-hotel-assumes-management-role-for-ethiopias-new-legacy-lodges",
+      "https://en.wikipedia.org/wiki/Wonchi_(volcano)",
+      "https://selamta.ethiopianairlines.com/?p=1669"
+    ],
+    "confidenceNotes": "Published distances from Addis Ababa range from 98 to 155 km; most tour sources say about 150 km. Sources disagree on whether the Wenchi project launched in August 2020 or March 2021. Haroo Dendi Lodge, at the nearby Dendi crater lake, is a separate project with its own entry."
+  },
+  {
+    "id": "beynouna-village-lake-beseka",
+    "name": "Beynouna Village (Lake Beseka, Metehara)",
+    "category": "new_project",
+    "initiative": "Gebeta Lehager / 'Bounty of the Basket' initiative (as ENA names it), inaugurated by PM Abiy Ahmed",
+    "status": "open — as of November 2024 (inaugurated November 2024)",
+    "region": "Oromia Regional State (East Shewa / Fentale area)",
+    "nearestCity": "Metehara",
+    "coordinates": null,
+    "summary": "A resort village on the shore of Lake Beseka near Metehara and Awash National Park. It was built on old volcanic lava fields and inaugurated by Prime Minister Abiy in November 2024.",
+    "details": "Prime Minister Abiy Ahmed inaugurated Beynouna Village in November 2024. ENA's report is dated 10 November 2024. The village sits on the shores of Lake Beseka near Metehara, close to Awash National Park, on land that was previously a landscape of volcanic remnants.\n\nENA reports that it has modern bedrooms and a lounge, a cinema hall, amusement facilities and a spa. Its traditional and modern architecture is surrounded by orchards and farmland with oranges, lemons, papaya and mangoes, and the site keeps chickens, camels, cattle and goats.\n\nAt the opening, the Prime Minister noted the area's harsh climate and difficult landscape, and said Beynouna Village 'stands as a testament to the belief that anything is possible'.\n\nThe accommodation is listed on booking sites as 'Beynouna Village Eco Lodge', with air-conditioned rooms, an outdoor pool and on-site restaurants.",
+    "highlights": ["Lakeside setting on Lake Beseka", "Spa, cinema hall and amusement facilities", "Fruit orchards and livestock", "Close to Awash National Park"],
+    "bestTimeToVisit": "The cooler months (roughly November to February). The lowland Metehara area can be very hot from March to June.",
+    "gettingThere": "About 200 km east of Addis Ababa by road along the Addis–Djibouti highway, roughly 3–4 hours.",
+    "tips": [
+      "Combine it with a visit to Awash National Park.",
+      "Book through the listed lodge in advance. Check current rates and amenities directly, since booking-site details vary."
+    ],
+    "hotels": [
+      { "name": "Beynouna Village Eco Lodge", "area": "Lake Beseka shore, Metehara", "description": "The lodge in the village, which booking sites list with about 43 air-conditioned units, an outdoor pool and three restaurants.", "sourceUrl": "https://www.expedia.com/Beynouna-Village-Eco-Lodge.h117046886.Hotel-Information" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://www.ena.et/web/eng/w/eng_5434911",
+      "https://allafrica.com/stories/202411110063.html",
+      "https://www.expedia.com/Beynouna-Village-Eco-Lodge.h117046886.Hotel-Information",
+      "https://www.tourismupdate.com/article/ethiopia-unveils-new-village-lodge"
+    ],
+    "confidenceNotes": "This entry matches the user's 'Beynuna village'. 'Beynouna' is the official spelling used by ENA, and it is a village-resort inaugurated by PM Abiy, which fits the description. ENA labels the programme 'Bounty of the Basket'. This appears to be an English rendering of 'Gebeta' (Gebeta Lehager) rather than Dine for Generations, but that is not certain. Room counts and restaurants come from booking sites only. Coordinates were not confirmed."
+  },
+  {
+    "id": "logo-hayk-resort",
+    "name": "Logo Hayk Resort (Lake Hayk, South Wollo)",
+    "category": "new_project",
+    "initiative": "Dine for Generations",
+    "status": "open — as of February 2026 (inaugurated 7 February 2026)",
+    "region": "Amhara Regional State (South Wollo Zone)",
+    "nearestCity": "Hayk (north of Dessie)",
+    "coordinates": null,
+    "summary": "A resort at Hayk town in South Wollo, built under the Dine for Generations initiative and inaugurated in February 2026. It is the second 'Dine' project in Amhara Region, after Gorgora.",
+    "details": "Prime Minister Abiy Ahmed reviewed progress on the Logo Hayk project at Hayk town, South Wollo Zone, in mid-2024. The aim was to make Wollo and the surrounding areas a tourist destination.\n\nThe resort was officially inaugurated on 7 February 2026 under the Dine for Generations initiative. The Prime Minister called it the second Dine project in Amhara Region, after Gorgora, and described it as built through a government–private sector partnership.\n\nENA reports that the resort covers 13.3 hectares and has several restaurants, swimming pools, internal asphalt roads, a helipad, fruit orchards and landscaped grounds.\n\nLake Hayk (Hayq) is a freshwater lake north of Dessie in South Wollo. The historic Istifanos monastery stands on its western shore.",
+    "highlights": ["Lakeside setting at Lake Hayk", "Swimming pools and several restaurants", "Nearby Hayk Istifanos monastery", "Gateway to the Wollo highlands"],
+    "bestTimeToVisit": "October to May, the dry season.",
+    "gettingThere": "Fly from Addis Ababa to Kombolcha (serving Dessie), then drive north to Hayk, roughly 1 hour. By road from Addis Ababa it is a long day's drive of roughly 400+ km.",
+    "tips": [
+      "The resort opened recently, so confirm booking channels and services directly.",
+      "Combine it with Dessie and the Istifanos monastery."
+    ],
+    "hotels": [
+      { "name": "Logo Hayk Resort", "area": "Hayk, South Wollo", "description": "The 13.3-hectare resort built under the project, with pools and several restaurants.", "sourceUrl": "https://www.ena.et/web/eng/w/eng_8258716" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://www.ena.et/web/eng/w/eng_8258444",
+      "https://www.ena.et/web/eng/w/eng_8258716",
+      "https://www.ena.et/web/eng/w/eng_4683147",
+      "https://en.wikipedia.org/wiki/Lake_Hayq"
+    ],
+    "confidenceNotes": "ENA places the project in Hayk city, South Wollo. 'Logo Hayk' appears to be the project's name for the Lake Hayk site, but no source explicitly confirmed that the resort is on the shore of Lake Hayk rather than another lake named Logo. No room count, operator or booking listing was found. Travel distances and times are approximate."
+  },
+  {
+    "id": "denbi-eco-lodge",
+    "name": "Denbi Eco Lodge",
+    "category": "new_project",
+    "initiative": "Dine for Generations",
+    "status": "open — as of January 2026 (inaugurated 18 January 2026)",
+    "region": "South West Ethiopia Peoples' Region (Bench Sheko Zone)",
+    "nearestCity": "Mizan Aman",
+    "coordinates": null,
+    "summary": "A forest eco-lodge on a 36.7-hectare site near Mizan Aman. It was the first completed destination under the Dine for Generations initiative.",
+    "details": "Prime Minister Abiy Ahmed laid the foundation stone for the Denbi Lake Lodge as part of Dine for Generations and inaugurated the Denbi Eco Lodge on 18 January 2026. The PMO describes it as the first completed destination under the initiative.\n\nThe lodge is in Bench Sheko Zone, near Mizan Aman, on a 36.7-hectare site of forest and natural scenery. It was built with locally sourced materials and local expertise.\n\nThe launch introduced a timeshare ownership model for Ethiopians.\n\nBooking listings mention an outdoor pool, villas and lake-view rooms. Bebeka, Ethiopia's largest and oldest coffee plantation, is about 28 km southwest of Mizan Teferi.",
+    "highlights": ["Forest and lake setting", "First completed Dine for Generations destination", "Coffee country of southwest Ethiopia"],
+    "bestTimeToVisit": "The drier months (roughly November to March). This is one of Ethiopia's wettest regions.",
+    "gettingThere": "Fly from Addis Ababa to Mizan Teferi. A booking listing puts the lodge about 8 km (5 miles) from the airport.",
+    "tips": [
+      "Confirm booking details directly, because star ratings and amenity details differ between listings.",
+      "Combine it with a visit to the Bebeka coffee plantation."
+    ],
+    "hotels": [
+      { "name": "Denbi Eco Lodge", "area": "Near Mizan Aman, Bench Sheko Zone", "description": "The lodge built under the project, which booking sites list with villas and an outdoor pool.", "sourceUrl": "https://www.expedia.com/Denbi-Lodge.h133018111.Hotel-Information" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://www.ena.et/web/eng/w/eng_8140094",
+      "https://www.ena.et/web/eng/w/eng_8140879",
+      "https://www.ena.et/web/eng/w/eng_8141712",
+      "https://www.ena.et/web/eng/w/eng_3401442",
+      "https://bantugazette.com/ethiopias-abiy-ahmed-opens-denbi-eco-lodge-to-boost-tourism/",
+      "https://www.expedia.com/Denbi-Lodge.h133018111.Hotel-Information"
+    ],
+    "confidenceNotes": "ENA's articles do not give the location. Bench Sheko Zone and Mizan Aman come from Bantu Gazette and booking listings. The lake and amenity details come from booking sites only. Coordinates were not confirmed."
+  },
+  {
+    "id": "shabeely-resort-jigjiga",
+    "name": "Shabeely Resort",
+    "category": "new_project",
+    "initiative": "Dine for Generations",
+    "status": "open — as of January 2026 (inaugurated 31 January 2026)",
+    "region": "Somali Regional State",
+    "nearestCity": "Jigjiga (about 29 km away)",
+    "coordinates": null,
+    "summary": "A 385-hectare resort about 29 km from Jigjiga, designed to reflect Somali heritage. It was inaugurated in January 2026 with the presidents of Somalia and Djibouti in attendance.",
+    "details": "Prime Minister Abiy Ahmed inaugurated Shabeely Resort on 31 January 2026. Somali President Hassan Sheikh Mohamud, Djiboutian President Ismaïl Omar Guelleh and Somali Region President Mustafa Mohammed Omar attended. The name is also spelled Shabelley or Shebele.\n\nThe resort covers 385 hectares and is about 29 km from Jigjiga, the regional capital. Officials confirmed in early January 2026 that its first phase was complete.\n\nENA reports 51 completed rooms, three restaurants seating up to 400 guests, a cultural venue, meeting halls, children's play areas and 15.4 km of shaded walkways.\n\nThere is also a fruit park with about 10,000 trees and a camel park.",
+    "highlights": ["Somali cultural heritage architecture", "Camel park", "Fruit park with about 10,000 trees", "15.4 km of walkways"],
+    "bestTimeToVisit": "The cooler months (roughly November to February).",
+    "gettingThere": "Fly from Addis Ababa to Jigjiga, then drive about 29 km to the resort.",
+    "tips": [
+      "The resort is new. Confirm booking and access arrangements directly before travelling."
+    ],
+    "hotels": [
+      { "name": "Shabeely Resort", "area": "About 29 km from Jigjiga", "description": "The resort itself, with 51 rooms completed at its inauguration.", "sourceUrl": "https://www.ena.et/web/eng/w/eng_8216120" }
+    ],
+    "restaurants": [
+      { "name": "Shabeely Resort restaurants", "area": "Inside the resort", "description": "ENA reports three on-site restaurants that together seat up to 400 guests.", "sourceUrl": "https://www.ena.et/web/eng/w/eng_8216120" }
+    ],
+    "sources": [
+      "https://www.ena.et/web/eng/w/eng_8216120",
+      "https://www.ena.et/web/eng/w/eng_8218024",
+      "https://www.ena.et/web/eng/w/eng_8096104",
+      "https://ethiopianmonitor.com/2026/02/02/dine-for-generations-initiative-shabeely-resort-is-officially-inaugurated/"
+    ],
+    "confidenceNotes": "The name is spelled several ways (Shabeely, Shabelley, Shebele). No booking listing or operator was found. The 29 km distance from Jigjiga is from press reports. Coordinates were not confirmed."
+  },
+  {
+    "id": "niin-lee-palm-lodge-afar",
+    "name": "Niin Lee Palm Lodge",
+    "category": "new_project",
+    "initiative": "Dine for Generations",
+    "status": "open — as of March 2026 (inaugurated March 2026)",
+    "region": "Afar Regional State",
+    "nearestCity": "Afar Region (exact town not confirmed)",
+    "coordinates": null,
+    "summary": "A palm-oasis lodge in Afar Region built around the 'Blue Eye' natural hot-spring pool. It was inaugurated in March 2026 under Dine for Generations.",
+    "details": "Prime Minister Abiy Ahmed laid the foundation stone for the Niin Lee Palm Spring Lodge on 28 October 2023, as one of seven destinations under the Dine for Generations initiative. He inaugurated it in March 2026, and ENA's report is dated 22 March 2026.\n\nThe lodge covers about 78,000 m². It has two presidential villas with private pools, twelve interconnected bedrooms and sixteen one-bedroom units.\n\nOther facilities include dining venues, a reception complex, a conference hall, parking and a helipad.\n\nVisitors can see the 'Blue Eye' natural hot-spring pool, two artificial lakes, fruit and forest trees, and walk a 3.2 km eco-tourism trail. ENA links the region to the discovery site of the hominin fossil 'Lucy'.",
+    "highlights": ["'Blue Eye' natural hot-spring pool", "3.2 km scenic eco-trail", "Palm oasis and artificial lakes", "Afar Region heritage, including the 'Lucy' discovery area"],
+    "bestTimeToVisit": "The cooler months (roughly November to February). Afar can be extremely hot from May to September.",
+    "gettingThere": "In Afar Region, northeast of Addis Ababa. The exact location and access route were not confirmed, so check with the lodge.",
+    "tips": [
+      "Expect intense heat. Carry water and sun protection.",
+      "Confirm booking channels directly, because no booking listing was found."
+    ],
+    "hotels": [
+      { "name": "Niin Lee Palm Lodge", "area": "Afar Region", "description": "The lodge itself, with villas, interconnected bedrooms and one-bedroom units around a hot-spring pool.", "sourceUrl": "https://www.ena.et/web/eng/w/eng_8530872" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://www.ena.et/web/eng/w/eng_8530872",
+      "https://www.ena.et/web/eng/w/eng_8532121",
+      "https://www.ena.et/web/eng/w/eng_4408270"
+    ],
+    "confidenceNotes": "The zone, woreda and nearest town were not stated in the sources reviewed. Travel time from Addis Ababa was not confirmed. The exact inauguration day is around 22–23 March 2026."
+  },
+  {
+    "id": "haroo-dendi-lodge",
+    "name": "Haroo Dendi Lodge (Dendi Crater Lake)",
+    "category": "new_project",
+    "initiative": "Dine for Generations",
+    "status": "open — as of April 2026 (inaugurated 19 April 2026)",
+    "region": "Oromia Regional State (West Shewa)",
+    "nearestCity": "Dendi area, west of Addis Ababa",
+    "coordinates": null,
+    "summary": "An eco-lodge overlooking Dendi crater lake in Oromia, inaugurated in April 2026 as a flagship Dine for Generations project.",
+    "details": "Prime Minister Abiy Ahmed inaugurated Haroo Dendi Lodge on 19 April 2026. It overlooks the Dendi crater lake in Oromia Regional State.\n\nENA describes it as an eco-conscious, community-centred lodge with modern architecture, designed to protect the lake's natural beauty and respect local heritage.\n\nA travel blog places it about 115 km from Addis Ababa and describes it as a base for hiking and for visiting the Wonchi crater lake. This has not been independently confirmed.",
+    "highlights": ["Views over Dendi crater lake", "Eco-lodge design", "Possible combination with Wonchi crater lake"],
+    "bestTimeToVisit": "October to May, the dry season.",
+    "gettingThere": "West of Addis Ababa by road. One blog gives about 115 km, so allow roughly 2–3 hours. Confirm the route with the lodge.",
+    "tips": [
+      "The lodge is new. Confirm booking channels and facilities directly."
+    ],
+    "hotels": [
+      { "name": "Haroo Dendi Lodge", "area": "Dendi crater lake", "description": "The eco-lodge itself, built under Dine for Generations.", "sourceUrl": "https://www.ena.et/web/eng/w/eng_8679735" }
+    ],
+    "restaurants": [],
+    "sources": [
+      "https://www.ena.et/web/eng/w/eng_8679403",
+      "https://www.ena.et/web/eng/w/eng_8679735",
+      "https://travelwithfranco.blogspot.com/2026/05/haroo-dendi-lodge-ethiopia-new-eco.html"
+    ],
+    "confidenceNotes": "Official sources give no facility list or exact location. The distance comes from a travel blog. This is a different lodge from the Wonchi eco-lodge. Coordinates were not confirmed."
+  },
+  {
+    "id": "arba-minch-conference-resort",
+    "name": "Arba Minch Conference Resort",
+    "category": "new_project",
+    "initiative": "Dine for Generations",
+    "status": "open — as of July 2026 (inaugurated 4 July 2026)",
+    "region": "South Ethiopia Regional State (Gamo Zone)",
+    "nearestCity": "Arba Minch",
+    "coordinates": null,
+    "summary": "A 120-hectare conference and leisure resort at Arba Minch overlooking Lake Abaya. It has a 1,300-seat conference hall and a floating restaurant on the lake.",
+    "details": "Prime Minister Abiy Ahmed laid the foundation stone on 3 July 2023 on a 120-hectare site overlooking Lake Abaya, as part of Dine for Generations. He inaugurated the resort on 4 July 2026.\n\nThe resort has about 85 guest rooms, including two presidential suites, and a conference centre that holds more than 1,300 delegates.\n\nOther facilities include floating restaurants on the lake, wellness facilities, landscaped gardens and cultural experiences. The architecture draws on Gamo vernacular design.\n\nArba Minch lies between Lakes Abaya and Chamo, next to Nech Sar National Park.",
+    "highlights": ["Floating restaurant on the lake", "1,300-seat conference hall", "Lake Abaya and Lake Chamo scenery", "Close to Nech Sar National Park"],
+    "bestTimeToVisit": "The dry seasons (roughly December to February and June to August are commonly drier in the south). Conference events run year-round.",
+    "gettingThere": "Fly from Addis Ababa to Arba Minch Airport. Kana TV says the journey from Bole takes under two hours including the domestic flight.",
+    "tips": [
+      "Combine it with a boat trip on Lake Chamo or a visit to Nech Sar National Park.",
+      "The resort is new. Confirm booking channels directly."
+    ],
+    "hotels": [
+      { "name": "Arba Minch Conference Resort", "area": "Arba Minch, overlooking Lake Abaya", "description": "The resort itself, reported to have about 85 rooms including two presidential suites.", "sourceUrl": "https://atta.travel/resource/ethiopia-inaugurates-arba-minch-conference-resort-to-strengthen-mice-and-leisure-tourism.html" },
+      { "name": "Haile Resort Arba Minch", "area": "Arba Minch", "description": "An established resort with views over Lakes Abaya and Chamo, about 10 minutes from Nech Sar National Park.", "sourceUrl": "https://www.expedia.com/Arba-Minch-Hotels-Haile-Resort-Arbaminch.h25021946.Hotel-Information" }
+    ],
+    "restaurants": [
+      { "name": "Floating restaurant (Arba Minch Conference Resort)", "area": "On the lake at the resort", "description": "Reported as a restaurant built on the lake as part of the resort.", "sourceUrl": "https://kanatelevision.com/news/ethiopia-opens-conference-resort-with-1,300-seat-hall-and-floating-restaurant-at-arba-minch-two-hours-from-addis-ababa-on-the-edge-of-africa-s-rift-valley-lakes./" }
+    ],
+    "sources": [
+      "https://www.ena.et/web/eng/w/eng_3007801",
+      "https://www.fanabc.com/english/?p=47763",
+      "https://atta.travel/resource/ethiopia-inaugurates-arba-minch-conference-resort-to-strengthen-mice-and-leisure-tourism.html",
+      "https://kanatelevision.com/news/ethiopia-opens-conference-resort-with-1,300-seat-hall-and-floating-restaurant-at-arba-minch-two-hours-from-addis-ababa-on-the-edge-of-africa-s-rift-valley-lakes./",
+      "https://www.ena.et/web/eng/w/eng_7147939",
+      "https://www.expedia.com/Arba-Minch-Hotels-Haile-Resort-Arbaminch.h25021946.Hotel-Information"
+    ],
+    "confidenceNotes": "The room count comes from ATTA/ATQ, not from an official source. The operator was not named. The best-time-to-visit advice is general guidance for the region, not taken from a project source. Coordinates were not confirmed."
+  },
+  {
+    "id": "jimma-boye-lake-project",
+    "name": "Jimma Dine for Generations Project (Boye Lake)",
+    "category": "new_project",
+    "initiative": "Dine for Generations",
+    "status": "under construction — as of July 2026 (reported as nearing completion)",
+    "region": "Oromia Regional State",
+    "nearestCity": "Jimma",
+    "coordinates": null,
+    "summary": "A Dine for Generations destination under development at Jimma, including rehabilitation of Boye Lake. In July 2026 it was reported to be nearing completion.",
+    "details": "Jimma is one of the seven sites announced under the Dine for Generations initiative.\n\nIn January 2025, the Prime Minister's Office reported significant progress at the Jimma site, especially extensive rehabilitation work at Boye Lake.\n\nOn 1 July 2026, the Jimma project was reported to be nearing completion. No inauguration had been confirmed in the sources reviewed.",
+    "highlights": ["Boye Lake rehabilitation"],
+    "bestTimeToVisit": "Not yet open. Check for an announcement of its opening.",
+    "gettingThere": "Jimma has an airport with flights from Addis Ababa. By road it is roughly 350 km southwest of the capital.",
+    "tips": ["Not yet open to visitors as of the latest source. Check the Prime Minister's Office or ENA for an opening announcement."],
+    "hotels": [],
+    "restaurants": [],
+    "sources": [
+      "https://www.fanamc.com/english/pm-office-highlights-milestones-in-dine-for-generations-project-at-jimma-site",
+      "https://fr.allafrica.com/stories/202607010727.html",
+      "https://ethiopianmonitor.com/2026/02/02/dine-for-generations-initiative-shabeely-resort-is-officially-inaugurated/"
+    ],
+    "confidenceNotes": "The project may have opened after July 2026, but no source confirmed this. Planned facilities have not been published. The ~350 km road distance is approximate."
+  }
+]

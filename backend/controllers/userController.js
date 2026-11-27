@@ -1,4 +1,5 @@
 import catchAsync from '../utils/catchAsync.js'
+import { USER_ROLES, updateUserByAdmin } from '../services/adminService.js'
 import AppError from '../utils/appError.js'
 import factory from './handlerFactory.js'
 import User from '../models/User.js'
@@ -74,6 +75,22 @@ export const updateUserRole = catchAsync(async (req, res, next) => {
   if (!role) {
     return next(new AppError('Please provide a role to update.', 400))
   }
+  if (!USER_ROLES.includes(role)) {
+    return next(new AppError('Invalid role', 400))
+  }
+  if (String(req.params.id) === String(req.user._id || req.user.id)) {
+    return next(new AppError('You cannot change your own role or status', 403))
+  }
+
+  if (isPrismaApp()) {
+    // Same guards and audit trail as the admin console (last-admin protection).
+    const user = await updateUserByAdmin(req.user, req.params.id, { role })
+    return res.status(200).json({
+      status: 'success',
+      message: 'User role updated successfully.',
+      data: { user },
+    })
+  }
 
   const users = getUserRepository()
   const user = await users.updateRole(req.params.id, role)
@@ -128,7 +145,8 @@ export const deleteUser = catchAsync(async (req, res, next) => {
     if (!existing) {
       return next(new AppError('No document found with that ID', 404))
     }
-    await users.softDelete(req.params.id)
+    // Deactivation goes through the guarded path (no self-suspension, keeps one admin).
+    await updateUserByAdmin(req.user, req.params.id, { active: false })
     return res.status(204).json({
       status: 'success',
       data: null,

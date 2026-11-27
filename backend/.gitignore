@@ -3,4 +3,5 @@ node_modules/
 config.env
 .memory-db-uri
 .phase4g-gate-uri-*
-/data/
+/data/*
+!/data/knowledge/

@@ -6,6 +6,7 @@ import { getTourBySlug, getPublicTourDepartures, type TourDeparture } from '../a
 import { TourBookingPanel } from '../components/booking/TourBookingPanel'
 import { PageError, PageLoader } from '../components/ui/PageStatus'
 import { ReviewForm } from '../components/reviews/ReviewForm'
+import { TourRouteMap } from '../components/maps/TourRouteMap'
 import { getErrorMessage } from '../services/api'
 import { formatTourDuration } from '../utils/apiHelpers'
 import { availabilityLabel } from '../utils/bookingValidation'
@@ -226,6 +227,8 @@ export function TourDetailPage() {
                 </div>
               )}
             </div>
+
+            <TourRouteMap tour={tour} />
 
             {departures.length > 0 && (
               <div className="mb-8">

@@ -82,6 +82,19 @@ These are the existing policy parameters. Changing them changes business rules, 
 
 When email is **not** configured in production, new accounts are auto-verified so signup still works. Password-reset emails can't be sent in that state (see Known Limitations).
 
+### Travel assistant (AI chatbot, optional)
+
+The assistant answers from the curated knowledge base in `backend/data/knowledge/*.json` and live listings. With no key it still works in **search-only mode**, quoting the matching guide section. With a key, a free LLM writes the answer and cites its sources.
+
+| Variable | Prod value | Notes |
+|---|---|---|
+| `LLM_API_KEY` | 🔒👤 optional | Free **Groq** API key from [console.groq.com/keys](https://console.groq.com/keys). No card is needed. Never commit it; set it only in Render. |
+| `LLM_BASE_URL` | optional | Default `https://api.groq.com/openai/v1`. Any OpenAI-compatible endpoint works. For Google Gemini's free tier use `https://generativelanguage.googleapis.com/v1beta/openai` with a Gemini key. |
+| `LLM_MODEL` | optional | Default `openai/gpt-oss-120b` (Groq). Use e.g. `gemini-2.5-flash` with Gemini. |
+| `LLM_TIMEOUT_MS` | optional | Default 25000. |
+| `ASSISTANT_DAILY_LLM_CAP` | optional | Default 900 LLM calls per day (Groq's free tier allows about 1,000). After the cap, answers fall back to search-only mode until midnight UTC. |
+| `ASSISTANT_RATE_LIMIT_PER_MIN` | optional | Default 12 chat requests per minute per IP in production. |
+
 ### Not used in production
 
 | Variable | Notes |

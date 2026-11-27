@@ -4,6 +4,8 @@ import { ArrowLeft, MapPin, Phone, Star } from 'lucide-react';
 import { getRestaurantById, type Restaurant } from '../api/restaurants';
 import { PageError, PageLoader } from '../components/ui/PageStatus';
 import { ReviewForm } from '../components/reviews/ReviewForm';
+import { PlaceMap, GoogleMapsButtons } from '../components/maps/PlaceMap';
+import { extractLatLng } from '../utils/geo';
 import { getErrorMessage } from '../services/api';
 
 export function RestaurantDetailPage() {
@@ -69,6 +71,26 @@ export function RestaurantDetailPage() {
         </div>
 
         <p className="text-gray-700 leading-relaxed mb-8">{restaurant.description}</p>
+
+        {(() => {
+          const address = [restaurant.location?.address, restaurant.location?.city, restaurant.location?.region]
+            .filter(Boolean)
+            .join(', ');
+          const p = extractLatLng(restaurant.location);
+          return (
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">Location</h2>
+              {p ? (
+                <PlaceMap height={280} zoom={16} points={[{ id: restaurant._id, title: restaurant.name, subtitle: address, ...p }]} />
+              ) : (
+                <>
+                  {address && <p className="text-gray-600 text-sm">{address}</p>}
+                  <GoogleMapsButtons point={null} label={`${restaurant.name}, ${address || 'Ethiopia'}`} />
+                </>
+              )}
+            </div>
+          );
+        })()}
 
         {restaurant.menu?.length ? (
           <div>

@@ -3,6 +3,8 @@ import { DestinationCard } from '../components/ui/DestinationCard';
 import { PageError, PageLoader } from '../components/ui/PageStatus';
 import { Search, Filter } from 'lucide-react';
 import { getDestinations } from '../api/destinations';
+import { PlaceMap, type MapPoint } from '../components/maps/PlaceMap';
+import { extractLatLng } from '../utils/geo';
 import { getErrorMessage } from '../services/api';
 import type { Destination } from '../types';
 
@@ -70,6 +72,16 @@ export function DestinationsPage() {
         {loading ? <PageLoader /> : error ? <PageError message={error} /> : destinations.length === 0 ? (
           <div className="text-center py-16 text-gray-500">No destinations found.</div>
         ) : (
+          <>
+          {(() => {
+            const points: MapPoint[] = destinations.flatMap((d) => {
+              const p = extractLatLng((d as { location?: unknown }).location);
+              return p ? [{ id: d._id, title: d.name, subtitle: d.shortDescription, href: `/destinations/${d._id}`, ...p }] : [];
+            });
+            return points.length > 1 ? (
+              <PlaceMap className="mb-8" height={380} points={points} showGoogleLinks={false} />
+            ) : null;
+          })()}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {destinations.map(dest => <DestinationCard
               key={dest._id}
@@ -79,6 +91,7 @@ export function DestinationsPage() {
               region={dest.region}
             />)}
           </div>
+          </>
         )}
       </div>
     </div>;

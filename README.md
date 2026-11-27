@@ -26,9 +26,19 @@ A full-stack travel marketplace for Ethiopia: travelers browse and book **tours*
 - Team membership with permissions per provider type (travel company, hotel, tour bus provider)
 - Workspace: create/publish/archive tours and departures, hotels and room inventory, transport routes and seat inventory; view and fulfil bookings (check-in, no-show, boarding)
 
+**Travel assistant and maps**
+- An AI travel assistant on every page (RAG). It covers historic sites (Lalibela, Gondar, Axum, Harar…), the new tourism projects (Unity and Entoto Parks, Gorgora, Beynouna Village, Logo Hayk…) and their hotels and restaurants.
+  - It cites its sources and links to bookable listings and Google Maps.
+  - It runs on a free LLM (Groq by default, any OpenAI-compatible endpoint) and falls back to search-only answers with no key.
+- OpenStreetMap maps on destination, hotel, restaurant and tour pages, with "Open in Google Maps" and "Directions" buttons.
+
 **Admins**
-- Provider approval queue (approve / reject / request changes), suspensions
-- Content management and moderation
+- **Overview:** net revenue, bookings and users, daily trend charts, and a "needs attention" queue (flagged payments, failed refunds, approvals, reviews, messages, expired holds).
+- **Bookings:** search and filters, a detail drawer (payments, attempts, refunds, history), and cancel/refund through the guarded lifecycle.
+- **Payments:** late-payment refund-review queue (recording the decision never moves money) and a re-check with Chapa.
+- **Users:** search, role changes and suspension. Self-change is blocked and the last active admin is protected.
+- An audit log of admin actions, plus travel-assistant insights (unanswered questions, most-cited sources).
+- Provider approval queue (approve / reject / request changes), suspensions, content management and moderation.
 
 **Platform**
 - Idempotent payment state machine: compare-and-set status transitions, attempt records, de-duplicated webhook events, late-payment detection (paid after hold expiry → flagged for refund review instead of overbooking)

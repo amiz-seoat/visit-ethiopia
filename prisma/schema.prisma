@@ -1110,3 +1110,32 @@ model BookingOperationAudit {
   @@index([organizationId])
   @@map("booking_operation_audits")
 }
+
+/// Append-only log of privileged admin actions (role changes, suspensions, payment reviews).
+model AdminAuditLog {
+  id         String   @id
+  actorId    String   @map("actorId")
+  action     String
+  targetType String   @map("targetType")
+  targetId   String   @map("targetId")
+  details    Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("createdAt")
+
+  @@index([createdAt])
+  @@index([targetType, targetId])
+  @@map("admin_audit_logs")
+}
+
+/// Travel-assistant questions (no personal data) for admin insights on what travellers ask.
+model AssistantQuery {
+  id          String   @id
+  question    String
+  answered    Boolean  @default(true)
+  mode        String   @default("llm")
+  sourceIds   String[] @default([]) @map("sourceIds")
+  latencyMs   Int?     @map("latencyMs")
+  createdAt   DateTime @default(now()) @map("createdAt")
+
+  @@index([createdAt])
+  @@map("assistant_queries")
+}

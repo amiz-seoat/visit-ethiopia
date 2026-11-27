@@ -13,6 +13,8 @@ import router from './routes/authRoutes.js'
 import bookingRouter from './routes/bookingRoutes.js'
 import paymentRouter from './routes/paymentRoutes.js'
 import adminBookingRouter from './routes/adminBookingRoutes.js'
+import adminRouter from './routes/adminRoutes.js'
+import assistantRouter from './routes/assistantRoutes.js'
 import providerBookingRouter from './routes/providerBookingRoutes.js'
 import contactRouter from './routes/contactRoutes.js'
 import destinationRouter from './routes/destinationRoutes.js'
@@ -197,6 +199,7 @@ app.use('/api/v1/organizations', requireDb, organizationRouter)
 app.use('/api/v1/bookings', requireDb, bookingRouter)
 app.use('/api/v1/payments', requireDb, paymentRouter)
 app.use('/api/v1/admin/bookings', requireDb, adminBookingRouter)
+app.use('/api/v1/admin', requireDb, adminRouter)
 app.use('/api/v1/provider/bookings', requireDb, providerBookingRouter)
 app.use('/api/v1/contacts', requireDb, contactRouter)
 app.use('/api/v1/destinations', requireDb, destinationRouter)
@@ -207,6 +210,8 @@ app.use('/api/v1/reviews', requireDb, reviewRouter)
 app.use('/api/v1/tours', requireDb, tourRouter)
 app.use('/api/v1/transports', requireDb, transportRouter)
 app.use('/api/v1/stats', requireDb, statsRouter)
+// Travel assistant works without a DB (knowledge base is bundled); listings are added when available.
+app.use('/api/v1/assistant', assistantRouter)
 
 // Catch unmatched routes
 app.all(/(.*)/, (req, res, next) => {

@@ -1,14 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  deleteUser,
-  getAdminContacts,
-  getAdminUsers,
-  getStats,
-  updateUserRole,
-  type PlatformStats,
-} from '../api/admin';
-import { getAllBookings, updateBookingStatus } from '../api/bookings';
+import { getAdminContacts } from '../api/admin';
 import { getTours, deleteTour } from '../api/tours';
 import { getHotels } from '../api/hotels';
 import { deleteHotel } from '../api/hotelMutations';
@@ -26,10 +18,15 @@ import {
 import { updateContactStatus } from '../api/contact';
 import { AdminCreateForm } from '../components/admin/AdminCreateForm';
 import { AdminApprovalsPanel } from '../components/admin/AdminApprovalsPanel';
+import { OverviewPanel } from '../components/admin/console/OverviewPanel';
+import { BookingsPanel } from '../components/admin/console/BookingsPanel';
+import { PaymentsPanel } from '../components/admin/console/PaymentsPanel';
+import { UsersPanel } from '../components/admin/console/UsersPanel';
+import { AuditLogPanel, AssistantInsightsPanel } from '../components/admin/console/AuditAndInsightsPanels';
 import { PageLoader } from '../components/ui/PageStatus';
 import { getErrorMessage } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import type { Booking, Tour, User, UserRole } from '../types';
+import type { Tour } from '../types';
 
 type CreateKind =
   | 'tour'
@@ -47,7 +44,10 @@ function ownerIdOf(item: { createdBy?: unknown }): string | undefined {
 }
 
 type AdminTab =
-  | 'stats'
+  | 'overview'
+  | 'payments'
+  | 'audit'
+  | 'assistant'
   | 'users'
   | 'tours'
   | 'hotels'
@@ -60,33 +60,21 @@ type AdminTab =
   | 'contacts'
   | 'approvals';
 
-const ROLE_OPTIONS: UserRole[] = [
-  'user',
-  'customer',
-  'admin',
-  'guide',
-  'tour_operator',
-  'hotel_manager',
-  'transport_manager',
-];
-
 export function AdminDashboardPage() {
   const { user, hasRole } = useAuth();
-  const [tab, setTab] = useState<AdminTab>('stats');
+  const [tab, setTab] = useState<AdminTab>('overview');
+  const [tabFilter, setTabFilter] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [creating, setCreating] = useState<CreateKind | null>(null);
 
-  const [stats, setStats] = useState<PlatformStats | null>(null);
-  const [users, setUsers] = useState<User[]>([]);
   const [tours, setTours] = useState<Tour[]>([]);
   const [hotels, setHotels] = useState<unknown[]>([]);
   const [transports, setTransports] = useState<unknown[]>([]);
   const [restaurants, setRestaurants] = useState<unknown[]>([]);
   const [destinations, setDestinations] = useState<unknown[]>([]);
   const [news, setNews] = useState<unknown[]>([]);
-  const [bookings, setBookings] = useState<Booking[]>([]);
   const [pendingReviews, setPendingReviews] = useState<any[]>([]);
   const [contacts, setContacts] = useState<any[]>([]);
 
@@ -105,85 +93,72 @@ export function AdminDashboardPage() {
     [isAdmin, myId]
   );
 
+  // Pick the first tab this role can use.
+  useEffect(() => {
+    if (isAdmin) return;
+    if (canManageTours) setTab('tours');
+    else if (canManageHotels) setTab('hotels');
+    else if (canManageTransport) setTab('transport');
+  }, [isAdmin, canManageTours, canManageHotels, canManageTransport]);
+
+  // Listing tabs load lazily: only the data the open tab needs. Console panels
+  // (overview, bookings, payments, users, audit, assistant) load themselves.
   const load = useCallback(async () => {
+    const loaders: Partial<Record<AdminTab, () => Promise<void>>> = {
+      tours: async () => setTours((await getTours({ limit: 100, allStatuses: true })).tours),
+      hotels: async () => setHotels((await getHotels({ limit: 100, allStatuses: true })).hotels),
+      transport: async () => setTransports((await getTransports({ limit: 100, allStatuses: true })).transports),
+      restaurants: async () => setRestaurants((await getRestaurants({ limit: 100 })).restaurants),
+      destinations: async () => setDestinations((await getDestinations({ limit: 100 })).destinations),
+      news: async () => setNews((await getNews({ limit: 100 })).articles),
+      reviews: async () => setPendingReviews(await getPendingReviews()),
+      contacts: async () => setContacts(await getAdminContacts()),
+    };
+    const fn = loaders[tab];
+    if (!fn) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError('');
     try {
-      if (isAdmin) {
-        const [
-          s,
-          u,
-          t,
-          h,
-          tr,
-          r,
-          d,
-          n,
-          b,
-          pr,
-          c,
-        ] = await Promise.all([
-          getStats(),
-          getAdminUsers(),
-          getTours({ limit: 50, allStatuses: true }),
-          getHotels({ limit: 50, allStatuses: true }),
-          getTransports({ limit: 50, allStatuses: true }),
-          getRestaurants({ limit: 50 }),
-          getDestinations({ limit: 50 }),
-          getNews({ limit: 50 }),
-          getAllBookings(),
-          getPendingReviews(),
-          getAdminContacts(),
-        ]);
-        setStats(s);
-        setUsers(u);
-        setTours(t.tours);
-        setHotels(h.hotels);
-        setTransports(tr.transports);
-        setRestaurants(r.restaurants);
-        setDestinations(d.destinations);
-        setNews(n.articles);
-        setBookings(b);
-        setPendingReviews(pr);
-        setContacts(c);
-      } else if (canManageTours) {
-        const t = await getTours({ limit: 50, allStatuses: true });
-        setTours(t.tours);
-        setTab('tours');
-      } else if (canManageHotels) {
-        const h = await getHotels({ limit: 50, allStatuses: true });
-        setHotels(h.hotels);
-        setTab('hotels');
-      } else if (canManageTransport) {
-        const tr = await getTransports({ limit: 50, allStatuses: true });
-        setTransports(tr.transports);
-        setTab('transport');
-      }
+      await fn();
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to load admin data'));
     } finally {
       setLoading(false);
     }
-  }, [isAdmin, canManageTours, canManageHotels, canManageTransport]);
+  }, [tab]);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  const tabs: { id: AdminTab; label: string; show: boolean }[] = [
-    { id: 'stats', label: 'Statistics', show: isAdmin },
-    { id: 'users', label: 'Users', show: isAdmin },
-    { id: 'tours', label: 'Tours', show: isAdmin || canManageTours },
-    { id: 'hotels', label: 'Hotels', show: isAdmin || canManageHotels },
-    { id: 'transport', label: 'Transport', show: isAdmin || canManageTransport },
-    { id: 'restaurants', label: 'Restaurants', show: isAdmin },
-    { id: 'destinations', label: 'Destinations', show: isAdmin },
-    { id: 'news', label: 'News', show: isAdmin },
-    { id: 'bookings', label: 'Bookings', show: isAdmin },
-    { id: 'reviews', label: 'Reviews', show: isAdmin },
-    { id: 'contacts', label: 'Contacts', show: isAdmin },
-    { id: 'approvals', label: 'Provider approvals', show: isAdmin },
+  const tabs: { id: AdminTab; label: string; show: boolean; group: string }[] = [
+    { id: 'overview', label: 'Overview', show: isAdmin, group: 'Operations' },
+    { id: 'bookings', label: 'Bookings', show: isAdmin, group: 'Operations' },
+    { id: 'payments', label: 'Payments & refunds', show: isAdmin, group: 'Operations' },
+    { id: 'approvals', label: 'Provider approvals', show: isAdmin, group: 'Operations' },
+    { id: 'users', label: 'Users', show: isAdmin, group: 'People' },
+    { id: 'reviews', label: 'Reviews', show: isAdmin, group: 'People' },
+    { id: 'contacts', label: 'Messages', show: isAdmin, group: 'People' },
+    { id: 'tours', label: 'Tours', show: isAdmin || canManageTours, group: 'Catalogue' },
+    { id: 'hotels', label: 'Hotels', show: isAdmin || canManageHotels, group: 'Catalogue' },
+    { id: 'transport', label: 'Transport', show: isAdmin || canManageTransport, group: 'Catalogue' },
+    { id: 'restaurants', label: 'Restaurants', show: isAdmin, group: 'Catalogue' },
+    { id: 'destinations', label: 'Destinations', show: isAdmin, group: 'Catalogue' },
+    { id: 'news', label: 'News', show: isAdmin, group: 'Catalogue' },
+    { id: 'assistant', label: 'Travel assistant', show: isAdmin, group: 'Insights' },
+    { id: 'audit', label: 'Audit log', show: isAdmin, group: 'Insights' },
   ];
+  const go = (t: AdminTab, filter?: string) => {
+    setTab(t);
+    setTabFilter(filter);
+    setMessage('');
+    setCreating(null);
+  };
+  const visibleTabs = tabs.filter((t) => t.show);
+  const groups = [...new Set(visibleTabs.map((t) => t.group))];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -200,21 +175,27 @@ export function AdminDashboardPage() {
         <div className="flex flex-col lg:flex-row gap-6">
           <aside className="lg:w-56 shrink-0">
             <nav className="bg-white rounded-lg shadow-sm p-2 space-y-1">
-              {tabs
-                .filter((t) => t.show)
-                .map((t) => (
-                  <button
-                    key={t.id}
-                    onClick={() => setTab(t.id)}
-                    className={`w-full text-left px-3 py-2 rounded-md text-sm ${
-                      tab === t.id
-                        ? 'bg-amber-100 text-amber-900 font-medium'
-                        : 'text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    {t.label}
-                  </button>
-                ))}
+              {groups.map((g) => (
+                <div key={g} className="pb-1">
+                  <p className="px-3 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-gray-400">{g}</p>
+                  {visibleTabs
+                    .filter((t) => t.group === g)
+                    .map((t) => (
+                      <button
+                        key={t.id}
+                        onClick={() => go(t.id)}
+                        aria-current={tab === t.id ? 'page' : undefined}
+                        className={`w-full text-left px-3 py-1.5 rounded-md text-sm ${
+                          tab === t.id
+                            ? 'bg-amber-100 text-amber-900 font-medium'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                </div>
+              ))}
               <Link
                 to="/dashboard"
                 className="block px-3 py-2 text-sm text-gray-500 hover:text-amber-700"
@@ -239,87 +220,12 @@ export function AdminDashboardPage() {
               <PageLoader message="Loading management data..." />
             ) : (
               <>
-                {tab === 'stats' && stats && (
-                  <div>
-                    <h2 className="text-xl font-bold mb-4">Platform Statistics</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <StatCard label="Users" value={stats.users.total} />
-                      <StatCard label="Tours" value={stats.tours.total} />
-                      <StatCard label="Hotels" value={stats.hotels.total} />
-                      <StatCard label="Bookings" value={stats.bookings.total} />
-                      <StatCard label="Pending bookings" value={stats.bookings.pending} />
-                      <StatCard label="Pending reviews" value={stats.reviews.pending} />
-                      <StatCard label="New contacts" value={stats.contacts.new} />
-                      <StatCard label="Destinations" value={stats.destinations.total} />
-                    </div>
-                  </div>
-                )}
-
-                {tab === 'users' && (
-                  <div>
-                    <h2 className="text-xl font-bold mb-4">Users</h2>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="text-left border-b">
-                            <th className="py-2">Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th />
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {users.map((u) => (
-                            <tr key={u._id} className="border-b">
-                              <td className="py-2">
-                                {u.FirstName} {u.LastName}
-                              </td>
-                              <td>{u.email}</td>
-                              <td>
-                                <select
-                                  className="border rounded px-2 py-1"
-                                  value={u.role}
-                                  onChange={async (e) => {
-                                    try {
-                                      await updateUserRole(u._id, e.target.value);
-                                      setMessage(`Updated role for ${u.email}`);
-                                      load();
-                                    } catch (err) {
-                                      setError(getErrorMessage(err));
-                                    }
-                                  }}
-                                >
-                                  {ROLE_OPTIONS.map((role) => (
-                                    <option key={role} value={role}>
-                                      {role}
-                                    </option>
-                                  ))}
-                                </select>
-                              </td>
-                              <td className="text-right">
-                                <button
-                                  className="text-red-600 text-xs"
-                                  onClick={async () => {
-                                    if (!confirm(`Delete ${u.email}?`)) return;
-                                    try {
-                                      await deleteUser(u._id);
-                                      setMessage('User deleted');
-                                      load();
-                                    } catch (err) {
-                                      setError(getErrorMessage(err));
-                                    }
-                                  }}
-                                >
-                                  Delete
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
+                {tab === 'overview' && isAdmin && <OverviewPanel onNavigate={(t, f) => go(t as AdminTab, f)} />}
+                {tab === 'bookings' && isAdmin && <BookingsPanel key={tabFilter || 'all'} initialStatus={tabFilter} />}
+                {tab === 'payments' && isAdmin && <PaymentsPanel key={tabFilter || 'all'} initialFlagged={tabFilter === 'flagged'} />}
+                {tab === 'users' && isAdmin && <UsersPanel />}
+                {tab === 'audit' && isAdmin && <AuditLogPanel />}
+                {tab === 'assistant' && isAdmin && <AssistantInsightsPanel />}
 
                 {tab === 'tours' && (
                   <div>
@@ -570,55 +476,6 @@ export function AdminDashboardPage() {
                   </div>
                 )}
 
-                {tab === 'bookings' && (
-                  <div>
-                    <h2 className="text-xl font-bold mb-4">Bookings</h2>
-                    <div className="space-y-3">
-                      {bookings.map((b) => (
-                        <div
-                          key={b._id}
-                          className="border rounded-lg p-3 flex flex-wrap items-center justify-between gap-2"
-                        >
-                          <div>
-                            <p className="font-medium capitalize">
-                              {b.bookingType} · {b.status}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              {b.contactInfo?.fullName} ·{' '}
-                              {b.payment?.amount?.toLocaleString()}{' '}
-                              {b.payment?.currency || 'ETB'}
-                            </p>
-                          </div>
-                          <select
-                            className="border rounded px-2 py-1 text-sm"
-                            value={b.status || 'pending'}
-                            onChange={async (e) => {
-                              try {
-                                await updateBookingStatus(b._id, e.target.value);
-                                setMessage('Booking status updated');
-                                load();
-                              } catch (err) {
-                                setError(getErrorMessage(err));
-                              }
-                            }}
-                          >
-                            {['pending', 'confirmed', 'cancelled', 'completed'].map(
-                              (s) => (
-                                <option key={s} value={s}>
-                                  {s}
-                                </option>
-                              )
-                            )}
-                          </select>
-                        </div>
-                      ))}
-                      {!bookings.length && (
-                        <p className="text-gray-500">No bookings yet.</p>
-                      )}
-                    </div>
-                  </div>
-                )}
-
                 {tab === 'reviews' && (
                   <div>
                     <h2 className="text-xl font-bold mb-4">Pending Reviews</h2>
@@ -729,15 +586,6 @@ export function AdminDashboardPage() {
           </main>
         </div>
       </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="bg-amber-50 rounded-lg p-4">
-      <div className="text-2xl font-bold text-amber-800">{value}</div>
-      <div className="text-sm text-gray-600">{label}</div>
     </div>
   );
 }

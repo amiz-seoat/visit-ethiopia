@@ -5,6 +5,8 @@ import { getHotelById, getHotelReviews, getHotelAvailability } from '../api/hote
 import { createHotelBooking } from '../api/bookings';
 import { PageError, PageLoader } from '../components/ui/PageStatus';
 import { ReviewForm } from '../components/reviews/ReviewForm';
+import { PlaceMap, GoogleMapsButtons } from '../components/maps/PlaceMap';
+import { extractLatLng } from '../utils/geo';
 import { useAuth } from '../context/AuthContext';
 import { getErrorMessage } from '../services/api';
 import type { Hotel, Review } from '../types';
@@ -272,6 +274,25 @@ export function HotelDetailPage() {
                 </div>
               </div>
             )}
+
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">Location</h2>
+              {(() => {
+                const p = extractLatLng(hotel.location);
+                return p ? (
+                  <PlaceMap
+                    height={300}
+                    zoom={15}
+                    points={[{ id: hotel._id, title: hotel.name, subtitle: locationStr, ...p }]}
+                  />
+                ) : (
+                  <>
+                    <p className="text-gray-600 text-sm">{locationStr}</p>
+                    <GoogleMapsButtons point={null} label={`${hotel.name}, ${locationStr}, Ethiopia`} />
+                  </>
+                );
+              })()}
+            </div>
 
             <div>
               <h2 className="text-xl font-bold mb-4">Reviews</h2>

@@ -38,7 +38,22 @@ This is an honest list of what the project does **not** do yet, or does only par
 
 - **Transport** covers scheduled coach routes with per-date seats. There's no seat map, no vehicle hire or charter, and no multi-leg journeys.
 - **Hotels** use calendar-date inventory in UTC. Hotel-local time zones and check-in times aren't modelled.
-- **Not built:** maps, the AI trip assistant, multi-language UI (Amharic), wishlist, messaging between traveler and provider.
+- **Not built:** multi-language UI (Amharic), wishlist, messaging between traveler and provider.
+- **Maps** use OpenStreetMap tiles through Leaflet, which needs no key, plus "Open in Google Maps" and "Directions" links (official keyless Google Maps URLs). There's no embedded Google map, which would need a billed API key.
+  - Restaurants and tours in the seed have no coordinates. Restaurants show Google Maps buttons by name; tours plot their destinations by matching names to the destinations catalogue.
+  - Heavy production traffic should move to a commercial tile provider, as the OSM tile policy asks.
+- **Travel assistant (AI chatbot)**
+  - Answers only from the curated knowledge base (37 places: 18 classic sites, 19 new tourism projects) plus live public listings.
+  - Retrieval is keyword-based (BM25 with typo and transliteration tolerance), not semantic embeddings. Paraphrases that share no words with the guide may miss.
+  - The knowledge base is static JSON, sourced and dated November 2026. Several entries carry caveats in `confidenceNotes`:
+    - travel advisories for Tigray, Amhara and Afar;
+    - a hotel whose operating status is unclear;
+    - missing coordinates for most new projects;
+    - conflicting operator names.
+  - Update the JSON files to refresh it.
+  - "Beynuna village" is **Beynouna Village** (Lake Beseka, Metehara, inaugurated November 2024). The Chaka project and "Wawa" were left out: one is unopened, the other unverified.
+  - The free Groq tier limits volume (about 1,000 requests a day). The daily cap then falls back to search-only answers.
+  - Questions are stored (truncated to 500 characters, no user ID or IP) for the admin "Travel assistant" insights. They are not deleted automatically.
 - **Restaurants and news** are read-only content managed by admins. You can't book restaurants.
 - **Search** is a simple case-insensitive text match on titles and descriptions. It has no full-text ranking and no geo search.
 

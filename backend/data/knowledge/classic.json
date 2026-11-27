@@ -1,0 +1,411 @@
+[
+  {
+    "id": "lalibela",
+    "name": "Lalibela Rock-Hewn Churches",
+    "category": "historic",
+    "region": "Amhara",
+    "nearestCity": "Lalibela",
+    "coordinates": { "lat": 12.0325, "lng": 39.0433 },
+    "summary": "A highland town in northern Ethiopia famous for its eleven medieval monolithic churches carved out of solid rock, a UNESCO World Heritage Site and one of the holiest places of Ethiopian Orthodox Christianity.",
+    "details": "Lalibela's churches are attributed to King Gebre Meskel Lalibela of the Zagwe dynasty, who ruled in the late 12th and early 13th centuries. Tradition holds that he intended the town as a 'New Jerusalem', and several features carry biblical names, such as the stream called the Jordan.\n\nThe eleven churches were hewn downward from the volcanic rock and are linked by trenches, tunnels and passageways. They are usually visited in two main clusters (the northern and the eastern groups), plus the free-standing cross-shaped Bete Giyorgis (Church of St George), the most photographed of all.\n\nThe churches are still in active use by priests and pilgrims, not museums. Bete Medhane Alem is often described as the largest monolithic church in the world.\n\nThe site was inscribed on the UNESCO World Heritage List in 1978 as the 'Rock-Hewn Churches, Lalibela'. Large pilgrimages take place at Genna (Ethiopian Christmas, 7 January) and Timket (Epiphany, around 19 January).",
+    "highlights": ["Bete Giyorgis (Church of St George)", "Bete Medhane Alem", "Bete Maryam", "Northern and eastern church clusters with connecting tunnels", "Genna (Christmas) and Timket (Epiphany) pilgrimages"],
+    "bestTimeToVisit": "October to March (dry season); January for Genna and Timket celebrations, when the town is very busy and rooms must be booked well ahead. June to September is the main rainy season.",
+    "gettingThere": "Ethiopian Airlines has historically flown Addis Ababa to Lalibela in about 1 hour. By road it is roughly 680 km from Addis Ababa (a long 1.5–2 day drive). Check whether flights are currently operating given the security situation.",
+    "tips": ["Hire a licensed local guide; the church complex is large and the guide explains the history and symbolism.", "Shoes must be removed inside the churches; bring socks and consider a light bag for shoes.", "Dress modestly; women are expected to cover their heads inside churches.", "Lalibela is at about 2,500 m altitude; take it easy on the first day.", "A torch (flashlight) is useful for dark tunnels and church interiors.", "Check current government travel advisories: several governments advise against all travel to the Amhara region (late 2026)."],
+    "hotels": [
+      { "name": "Mountain View Hotel", "area": "Lalibela town (escarpment edge)", "description": "Hotel noted for its panoramic views from the escarpment and a rooftop terrace with a restaurant serving Ethiopian and international dishes.", "sourceUrl": "https://brilliant-ethiopia.com/accommodation-in-lalibela" },
+      { "name": "Maribela Hotel", "area": "Lalibela town", "description": "Mid-range hotel with an on-site restaurant, listed on major booking platforms.", "sourceUrl": "https://www.hotels.com/ho3935729952/maribela-hotel" },
+      { "name": "Tukul Village", "area": "Lalibela town, below the churches", "description": "Hotel built in the style of traditional round tukul huts, a short walk from the rock-hewn churches.", "sourceUrl": "https://brilliant-ethiopia.com/regions/lalibela/hotels" },
+      { "name": "Seven Olives Hotel", "area": "Lalibela town", "description": "One of Lalibela's long-established hotels, set in a garden with its own restaurant.", "sourceUrl": "https://wanderlog.com/place/details/90948" }
+    ],
+    "restaurants": [
+      { "name": "Ben Abeba", "area": "Hilltop on the edge of Lalibela", "description": "Distinctive spiral-shaped hilltop restaurant serving a mix of Ethiopian and international dishes with sweeping views.", "sourceUrl": "https://www.atlasobscura.com/places/ben-abeba" },
+      { "name": "Unique Restaurant", "area": "Lalibela town", "description": "Small, popular local restaurant listed in Lalibela travel guides and on Trip.com.", "sourceUrl": "https://nz.trip.com/travel-guide/foods/lalibela-20019-restaurant/Unique%20Restaurant-19890207" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Rock-Hewn_Churches,_Lalibela", "https://en.wikipedia.org/wiki/Lalibela", "https://whc.unesco.org/en/list/18/", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "SECURITY: As of November 2026 the UK FCDO advises against all travel to Amhara region, and the US embassy (Oct 2026) specifically warned against travel to Lalibela. Flights and road access may be disrupted; always check current advisories. Hotel and restaurant operating status may be affected by the reduced tourism."
+  },
+  {
+    "id": "gondar-fasil-ghebbi",
+    "name": "Gondar (Fasil Ghebbi)",
+    "category": "historic",
+    "region": "Amhara",
+    "nearestCity": "Gondar",
+    "coordinates": { "lat": 12.6075, "lng": 37.4700 },
+    "summary": "Former royal capital of Ethiopia from the 17th century, known for the castle compound of Fasil Ghebbi, often nicknamed the 'Camelot of Africa'.",
+    "details": "Gondar was founded as a permanent capital by Emperor Fasilides (Fasil) around 1636 and remained the seat of Ethiopian emperors until the mid-19th century.\n\nThe royal enclosure, Fasil Ghebbi, is a walled compound containing castles and palaces built by successive emperors, combining local, Portuguese/Indian and Baroque architectural influences. Fasilides' Castle is the oldest and most impressive building.\n\nOutside the enclosure are Fasilides' Bath, a pool with a two-storey pavilion that is filled for the Timket (Epiphany) celebrations, and Debre Berhan Selassie church, famous for its ceiling painted with rows of winged angel faces.\n\nThe 'Fasil Ghebbi, Gondar Region' was inscribed on the UNESCO World Heritage List in 1979. Gondar is also the usual starting point for trips to the Simien Mountains.",
+    "highlights": ["Fasilides' Castle inside the Fasil Ghebbi royal enclosure", "Debre Berhan Selassie church with its painted angel ceiling", "Fasilides' Bath (Timket celebrations)", "Kuskuam (Empress Mentewab's palace complex)"],
+    "bestTimeToVisit": "October to March (dry season). Timket (around 19 January) at Fasilides' Bath is spectacular but busy.",
+    "gettingThere": "Flights from Addis Ababa to Gondar take about 1 hour. By road it is roughly 730 km (about 2 days, often combined with Bahir Dar). Gondar to Bahir Dar is about 180 km (3 hours).",
+    "tips": ["Use a licensed guide for the royal enclosure to understand which emperor built which structure.", "Dress modestly and remove shoes at churches such as Debre Berhan Selassie.", "Combine with the Simien Mountains (Debark is about 100 km north).", "Check current travel advisories: several governments advise against all travel to Amhara region (late 2026)."],
+    "hotels": [
+      { "name": "Goha Hotel", "area": "Hilltop overlooking Gondar", "description": "Long-established hotel on a hill above the town with an outdoor pool and restaurants.", "sourceUrl": "https://ie.hotels.com/ho430015/goha-hotel-gondar-ethiopia" },
+      { "name": "Florida International Hotel", "area": "Gondar", "description": "Larger modern hotel with pools, listed on major booking platforms.", "sourceUrl": "https://hotels.com/ho429070/florida-international-hotel-gondar-ethiopia" },
+      { "name": "Taye Belay Hotel", "area": "Central Gondar", "description": "Mid-range hotel in central Gondar listed on booking platforms.", "sourceUrl": "https://www.kayak.com/Gondar-Hotels-Taye-Belay-Hotel.531521.ksp" }
+    ],
+    "restaurants": [
+      { "name": "The Four Sisters Restaurant", "area": "Gondar", "description": "Well-known traditional Ethiopian restaurant in Gondar, popular with visitors and reviewed on TripAdvisor.", "sourceUrl": "https://www.tripadvisor.co.nz/Restaurant_Review-g317059-d2496016-Reviews-The_Four_Sisters_Restaurant-Gonder_Amhara_Region.html" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Fasil_Ghebbi", "https://en.wikipedia.org/wiki/Gondar", "https://whc.unesco.org/en/list/19/", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "SECURITY: As of November 2026 the UK FCDO advises against all travel to Amhara region; the US also lists Amhara as do-not-travel. Verify before planning. Coordinates are for the Fasil Ghebbi site per Wikipedia."
+  },
+  {
+    "id": "axum",
+    "name": "Axum (Aksum)",
+    "category": "historic",
+    "region": "Tigray",
+    "nearestCity": "Axum",
+    "coordinates": { "lat": 14.1322, "lng": 38.7197 },
+    "summary": "Ancient capital of the Aksumite Kingdom, famous for its giant carved granite stelae and as the place where Ethiopian Orthodox tradition holds the Ark of the Covenant is kept.",
+    "details": "Aksum was the centre of the Kingdom of Aksum, a major trading power of the first millennium AD that minted its own coins and adopted Christianity in the 4th century under King Ezana.\n\nThe Northern Stelae Field contains huge carved granite obelisks that marked royal tombs. The tallest, the Great Stele, lies broken where it fell. The Obelisk of Axum, taken to Rome by Italian forces in 1937, was returned to Ethiopia in 2005 and re-erected in 2008.\n\nThe Church of Our Lady Mary of Zion complex is, according to Ethiopian Orthodox tradition, the resting place of the Ark of the Covenant, kept in a chapel that only a guardian monk may enter. Other sights include the Ezana Stone with inscriptions in three scripts, royal tombs, and the ruins traditionally associated with the Queen of Sheba.\n\nThe archaeological sites of Aksum were inscribed on the UNESCO World Heritage List in 1980.",
+    "highlights": ["Northern Stelae Field and the re-erected Obelisk of Axum", "Church of Our Lady Mary of Zion (tradition of the Ark of the Covenant)", "Ezana Stone (trilingual inscription)", "Tombs of Kings Kaleb and Gebre Meskel", "Dungur ruins ('Queen of Sheba's Palace')"],
+    "bestTimeToVisit": "October to March (dry season). The Hidar Tsion festival (late November) draws large numbers of pilgrims.",
+    "gettingThere": "Normally reached by flight from Addis Ababa (about 1–1.5 hours) or by road via Gondar or Mekele. The UK FCDO reports that all civilian flights to and from Tigray have been suspended since 29 January 2026.",
+    "tips": ["A local guide is strongly recommended to make sense of the archaeological sites.", "Women are not permitted inside the old Church of Mary of Zion; the new cathedral is open to all.", "Dress modestly and remove shoes at churches.", "Check advisories: governments advise against all travel to Tigray (late 2026)."],
+    "hotels": [
+      { "name": "Sabean International Hotel", "area": "Main street, Axum", "description": "Long-standing hotel on Axum's main road with an indoor and outdoor restaurant, often described as one of the town's best options.", "sourceUrl": "https://www.brilliant-ethiopia.com/sabean-international-hotel" },
+      { "name": "Yeha Hotel", "area": "Hill above the Northern Stelae Field", "description": "Hotel on a bluff overlooking Axum's northern stelae and the Mary of Zion churches, with restaurant and bar.", "sourceUrl": "https://www.exclusiveethiopia.com/accommodation/view/northern/yeha_hotel_axum" },
+      { "name": "Atse Kaleb Hotel", "area": "Central Axum", "description": "Centrally located hotel with a restaurant and bar listed on major booking platforms.", "sourceUrl": "https://uk.hotels.com/ho3257775552/atse-kaleb-hotel-axum-ethiopia" }
+    ],
+    "restaurants": [
+      { "name": "Abyssinia (cafe)", "area": "Axum town", "description": "Cafe listed by Lonely Planet as having Aksum's best cakes.", "sourceUrl": "https://www.lonelyplanet.com/ethiopia/northern-ethiopia/aksum/restaurants" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Aksum", "https://en.wikipedia.org/wiki/Obelisk_of_Axum", "https://whc.unesco.org/en/list/15/", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "SECURITY: Fighting in Tigray resumed in September 2026; the UK FCDO and US advise against all travel to Tigray and civilian flights to Tigray were reported suspended since January 2026. Hotels and restaurants may not be operating normally. Coordinates are those of the Obelisk of Axum."
+  },
+  {
+    "id": "bahir-dar-lake-tana",
+    "name": "Bahir Dar, Lake Tana & Blue Nile Falls",
+    "category": "nature",
+    "region": "Amhara",
+    "nearestCity": "Bahir Dar",
+    "coordinates": { "lat": 11.5850, "lng": 37.3900 },
+    "summary": "Lakeside city on Ethiopia's largest lake, the source of the Blue Nile, known for its island and peninsula monasteries and the nearby Blue Nile Falls (Tis Abay).",
+    "details": "Lake Tana is the largest lake in Ethiopia and the source of the Blue Nile (Abay). Bahir Dar, on its southern shore, is a relaxed, palm-lined city and a regional capital.\n\nThe lake's islands and peninsulas hold around twenty or more monasteries, some dating back to the 14th century, decorated with colourful religious paintings. Ura Kidane Mehret on the Zege Peninsula is the most visited and is open to both men and women; some island monasteries admit men only.\n\nThe Blue Nile Falls (Tis Abay, 'great smoke') lie about 30 km downstream from Bahir Dar. Their flow is now partly diverted for hydroelectric power, so the falls are most impressive in and just after the rainy season.\n\nLake Tana and its surroundings were designated a UNESCO Biosphere Reserve in 2015.",
+    "highlights": ["Boat trips to Lake Tana monasteries (Ura Kidane Mehret on the Zege Peninsula)", "Blue Nile Falls (Tis Abay)", "Outflow of the Blue Nile from the lake, with hippos sometimes seen", "Papyrus tankwa boats used by local fishermen"],
+    "bestTimeToVisit": "October to March for dry weather; the Blue Nile Falls are fullest from about August to October, after the rains.",
+    "gettingThere": "Flights from Addis Ababa to Bahir Dar take about 1 hour. By road it is about 560 km (one long day). Blue Nile Falls is about 30 km (under 1 hour) from Bahir Dar.",
+    "tips": ["Arrange lake boat trips through hotels or licensed operators; agree which monasteries are included.", "Some island monasteries do not admit women; Ura Kidane Mehret does.", "Separate entry fees are charged at most monasteries and at the falls.", "Check current travel advisories: governments advise against all travel to Amhara region (late 2026)."],
+    "hotels": [
+      { "name": "Kuriftu Resort & Spa Lake Tana", "area": "Lakeshore, Bahir Dar", "description": "Lakeside resort with an outdoor pool, spa and restaurant.", "sourceUrl": "https://uk.hotels.com/ho624407040/kuriftu-resort-spa-lake-tana-bahir-dar-ethiopia" },
+      { "name": "Abay Minch Lodge", "area": "About 2 km west of the town centre", "description": "Garden lodge with stone bungalows, a restaurant and bar.", "sourceUrl": "https://hotels.com/ho463166/abay-minch-lodge-bahir-dar-ethiopia" },
+      { "name": "Blue Nile Resort (Avanti Blue Nile)", "area": "Lakeshore near the Blue Nile Bridge", "description": "Waterfront hotel with a restaurant offering lake views.", "sourceUrl": "https://www.tiket.com/en-my/hotel/ethiopia/blue-nile-resort-108001534518004161" }
+    ],
+    "restaurants": [
+      { "name": "Wude Coffee", "area": "Bahir Dar", "description": "Garden cafe listed by Lonely Planet for upscale Ethiopian food and coffee.", "sourceUrl": "https://wanderlog.com/place/details/94025/wude-coffee" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Lake_Tana", "https://en.wikipedia.org/wiki/Blue_Nile_Falls", "https://en.wikipedia.org/wiki/Bahir_Dar", "https://en.wikipedia.org/wiki/Ura_Kidane_Mehret", "https://laketana-biosphere.com/visit/places-to-eat", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "SECURITY: As of November 2026 the UK FCDO advises against all travel to Amhara region. Coordinates are for Bahir Dar city (Wikidata); Blue Nile Falls is at about 11.4905, 37.5878. Desset Lodge restaurant was excluded because a listing marked it temporarily closed."
+  },
+  {
+    "id": "simien-mountains",
+    "name": "Simien Mountains National Park",
+    "category": "nature",
+    "region": "Amhara",
+    "nearestCity": "Debark",
+    "coordinates": { "lat": 13.1833, "lng": 38.0667 },
+    "summary": "Dramatic highland national park of jagged peaks and sheer escarpments, home to gelada monkeys, the endemic Walia ibex and the Ethiopian wolf, and one of Africa's great trekking areas.",
+    "details": "The Simien Mountains rise north of Gondar and include Ras Dashen (Ras Dejen), Ethiopia's highest peak at about 4,550 m. Erosion has carved the plateau into spectacular cliffs, pinnacles and deep valleys.\n\nThe park is famous for large troops of gelada monkeys, the Walia ibex (found nowhere else) and the rare Ethiopian wolf, as well as lammergeyers (bearded vultures).\n\nVisitors can do day trips by vehicle from Debark or multi-day treks between camps such as Sankaber, Geech and Chennek.\n\nThe park was inscribed on the UNESCO World Heritage List in 1978. It was placed on the List of World Heritage in Danger in 1996 because of declining wildlife populations and was removed from that list in 2017 after conservation improvements.",
+    "highlights": ["Gelada monkey troops on the escarpment", "Walia ibex at Chennek", "Ras Dashen, Ethiopia's highest peak", "Geech plateau and Imet Gogo viewpoint", "Multi-day trekking"],
+    "bestTimeToVisit": "October to March (dry, clear views; nights can be below freezing). September–October is green after the rains.",
+    "gettingThere": "Fly from Addis Ababa to Gondar (about 1 hour), then drive about 100 km (around 2–3 hours) on a paved road to Debark, the park headquarters town.",
+    "tips": ["Park fees are paid at the park office in Debark; an armed scout is required in the park, and guides are strongly recommended.", "Altitudes range from about 3,000 to over 4,000 m; acclimatise and watch for altitude sickness.", "Bring warm layers; nights are cold.", "Check current travel advisories: governments advise against all travel to Amhara region (late 2026)."],
+    "hotels": [
+      { "name": "Simien Lodge", "area": "Buyit Ras, inside the national park", "description": "Lodge inside the park at about 3,260 m offering accommodation in tukul-style huts, and billed as one of Africa's highest hotels.", "sourceUrl": "https://brilliant-ethiopia.com/national-parks/simien-mountains/hotels/simien-lodge" },
+      { "name": "Limalimo Lodge", "area": "Simien escarpment, about 10–15 minutes from Debark", "description": "Eco-lodge opened in 2016 by local founders, built from local materials with sweeping escarpment views.", "sourceUrl": "https://www.brilliant-ethiopia.com/national-parks/simien-mountains/hotels/limalimo-lodge" },
+      { "name": "Simien Park Hotel", "area": "Debark town", "description": "Basic hotel on the main road in Debark, the park's gateway town.", "sourceUrl": "https://en.wikivoyage.org/wiki/Simien_National_Park" }
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Simien_Mountains_National_Park", "https://whc.unesco.org/en/list/9/", "https://en.wikivoyage.org/wiki/Simien_National_Park", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "SECURITY: As of November 2026 the UK FCDO advises against all travel to Amhara region. No independent restaurants were verified; visitors eat at lodges or in Debark. Ras Dashen height is commonly given as 4,550 m (some sources 4,533 m)."
+  },
+  {
+    "id": "harar-jugol",
+    "name": "Harar Jugol (Old Walled City)",
+    "category": "culture",
+    "region": "Harari",
+    "nearestCity": "Harar",
+    "coordinates": { "lat": 9.3111, "lng": 42.1278 },
+    "summary": "Walled Muslim city in eastern Ethiopia with a maze of alleys, colourful houses, dozens of mosques and shrines, and the famous nightly hyena feeding.",
+    "details": "Harar is a historic centre of Islamic learning and trade in the Horn of Africa, often described as one of the holiest cities of Islam. Its old walled town is known as Jugol, after the city wall built in the 16th century under Emir Nur ibn Mujahid.\n\nInside the wall are narrow lanes, a large number of mosques and shrines, and traditional Harari townhouses with distinctive decorated interiors. Five historic gates lead into the old city, the main one being Harar Gate (Duke's Gate).\n\nOther sights include the house associated with French poet Arthur Rimbaud, who traded in Harar in the 1880s, Ras Tafari's house, colourful markets, and the nightly feeding of wild spotted hyenas by 'hyena men' just outside the walls.\n\nThe 'Harar Jugol, the Fortified Historic Town' was inscribed on the UNESCO World Heritage List in 2006.",
+    "highlights": ["Walking the alleys of the walled Jugol", "Hyena feeding at dusk outside the walls", "Arthur Rimbaud House (museum)", "Traditional Harari houses", "Markets and Harar coffee"],
+    "bestTimeToVisit": "Pleasant year-round thanks to its altitude (about 1,885 m); October to March is driest.",
+    "gettingThere": "Fly from Addis Ababa to Dire Dawa (about 1 hour), then drive about 55 km (roughly 1–1.5 hours) to Harar. By road from Addis Ababa it is about 525 km (a long day).",
+    "tips": ["Use a local guide to navigate the maze of alleys and visit traditional homes.", "Dress modestly, especially near mosques and shrines.", "Ask before photographing people.", "Khat chewing is common and legal locally; be discreet when photographing it."],
+    "hotels": [
+      { "name": "Ras Hotel Harar", "area": "New town, outside the walls", "description": "Long-established hotel with a restaurant and bar, listed by Lonely Planet as a solid budget choice.", "sourceUrl": "https://www.expedia.com/Harar-Hotels-Ras-Hotel-Harar.h133921576.Hotel-Information" },
+      { "name": "Rewda Guesthouse", "area": "Inside the old walled city", "description": "Small family-run guesthouse in a traditional Harari house with a handful of rooms and breakfast included.", "sourceUrl": "https://www.lonelyplanet.com/ethiopia/eastern-ethiopia/harar/hotels" },
+      { "name": "Wonderland Hotel", "area": "Harar", "description": "Hotel included in Lonely Planet's Harar accommodation listings.", "sourceUrl": "https://www.lonelyplanet.com/ethiopia/eastern-ethiopia/harar/hotels" }
+    ],
+    "restaurants": [
+      { "name": "Hirut Restaurant", "area": "Harar", "description": "Ethiopian restaurant listed as a Lonely Planet 'top choice' in Harar.", "sourceUrl": "https://www.lonelyplanet.com/pois/487714" },
+      { "name": "Fresh Touch Restaurant", "area": "Bole Road, Harar new town", "description": "Popular restaurant described by Lonely Planet as a favourite of locals and visitors.", "sourceUrl": "https://www.lonelyplanet.com/ethiopia/eastern-ethiopia/harar/restaurants" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Harar", "https://whc.unesco.org/en/list/1189/", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "Coordinates are for Harar city centre (Wikipedia). Wonderland Hotel is listed by Lonely Planet but no further detail was confirmed. UNESCO counts of mosques/shrines were not re-verified, so they are not quoted."
+  },
+  {
+    "id": "addis-ababa-classic-sights",
+    "name": "Addis Ababa (Classic Sights)",
+    "category": "city",
+    "region": "Addis Ababa (chartered city)",
+    "nearestCity": "Addis Ababa",
+    "coordinates": { "lat": 9.0383, "lng": 38.7619 },
+    "summary": "Ethiopia's high-altitude capital and gateway, whose classic sights include the National Museum (home of 'Lucy'), Holy Trinity Cathedral, the vast Merkato market and the historic Entoto Maryam church.",
+    "details": "Addis Ababa was founded in the late 1880s by Emperor Menelik II and Empress Taytu. At about 2,355 m it is one of the highest capitals in the world, and it hosts the headquarters of the African Union.\n\nThe National Museum of Ethiopia displays the fossil cast of 'Lucy' (Dinkinesh), a 3.2-million-year-old Australopithecus afarensis skeleton found at Hadar in the Afar region in 1974, along with other hominid fossils, Aksumite artefacts and imperial items.\n\nHoly Trinity Cathedral (Kidist Selassie) is the city's most important Orthodox cathedral and contains the tombs of Emperor Haile Selassie and Empress Menen; British activist Sylvia Pankhurst is buried in its grounds.\n\nMerkato is one of the largest open-air markets in Africa, a sprawling district of stalls and workshops. On the Entoto hills north of the city, Entoto Maryam church is where Menelik II was crowned emperor in 1889, and a small museum displays historic items.",
+    "highlights": ["Lucy (Dinkinesh) at the National Museum of Ethiopia", "Holy Trinity Cathedral and Haile Selassie's tomb", "Merkato market", "Entoto Maryam church and the Entoto hills", "Traditional coffee and cultural dinner shows"],
+    "bestTimeToVisit": "October to May is mostly dry; the main rains are June to September. Meskel (late September) and Timket (January) festivals are celebrated widely in the city.",
+    "gettingThere": "Addis Ababa Bole International Airport is Ethiopian Airlines' hub with direct flights from many countries; the city centre is a short taxi ride (about 20–40 minutes depending on traffic).",
+    "tips": ["The altitude (about 2,355 m) can cause breathlessness on arrival; hydrate and take it slow.", "Merkato is crowded; watch for pickpockets, leave valuables at the hotel and consider going with a guide.", "Dress modestly and remove shoes when entering churches.", "Traffic can be heavy; allow extra time to reach the airport."],
+    "hotels": [
+      { "name": "Sheraton Addis, a Luxury Collection Hotel", "area": "Taitu Street, near the National Palace", "description": "Landmark luxury hotel on a hilltop between the National Palace and the Prime Minister's office, part of Marriott's Luxury Collection.", "sourceUrl": "https://www.marriott.com/hotels/travel/addlc-sheraton-addis/" },
+      { "name": "Hilton Addis Ababa", "area": "City centre (Menelik II Avenue)", "description": "Long-established city-centre hotel in a leafy compound with a pool and gardens.", "sourceUrl": "https://theculturetrip.com/africa/ethiopia/articles/the-best-hotels-to-book-in-addis-ababa-ethiopia" },
+      { "name": "Radisson Blu Hotel, Addis Ababa", "area": "Kazanchis, next to the UN Economic Commission for Africa", "description": "International business hotel beside the United Nations compound with a spa and restaurant.", "sourceUrl": "https://theculturetrip.com/africa/ethiopia/articles/the-best-hotels-to-book-in-addis-ababa-ethiopia" },
+      { "name": "Ethiopian Skylight Hotel", "area": "Near Bole International Airport", "description": "Large hotel owned by Ethiopian Airlines, close to Bole International Airport.", "sourceUrl": "https://selamta.ethiopianairlines.com/?p=2068" }
+    ],
+    "restaurants": [
+      { "name": "Yod Abyssinia Traditional Restaurant", "area": "Bole", "description": "Traditional restaurant, established in 2003, known for Ethiopian food served with live music and dance performances.", "sourceUrl": "https://shebamiles.ethiopianairlines.com/partners/dining/yod-abyssinia-traditional-restaurant" },
+      { "name": "Tomoca Coffee", "area": "Piassa (flagship), with branches across the city", "description": "Historic Italian-style coffee house and roaster operating since 1953, with its flagship stand-up cafe in Piassa.", "sourceUrl": "https://en.wikipedia.org/wiki/Tomoca_Coffee" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Addis_Ababa", "https://en.wikipedia.org/wiki/National_Museum_of_Ethiopia", "https://en.wikipedia.org/wiki/Lucy_(Australopithecus)", "https://en.wikipedia.org/wiki/Holy_Trinity_Cathedral_(Addis_Ababa)", "https://en.wikipedia.org/wiki/Merkato_(Addis_Ababa)", "https://en.wikipedia.org/wiki/Entoto", "https://www.lonelyplanet.com/pois/1316185"],
+    "confidenceNotes": "Coordinates are for the National Museum of Ethiopia. The museum displays a cast of Lucy; the original fossil is kept in a vault and is only occasionally shown. Newer city parks are intentionally excluded (covered elsewhere)."
+  },
+  {
+    "id": "danakil-depression-erta-ale",
+    "name": "Danakil Depression & Erta Ale",
+    "category": "nature",
+    "region": "Afar",
+    "nearestCity": "Mekele (tour base) / Semera",
+    "coordinates": { "lat": 14.2417, "lng": 40.3000 },
+    "summary": "One of the hottest and lowest places on Earth, with the otherworldly colourful hot springs of Dallol, salt flats worked by Afar salt caravans, and the Erta Ale shield volcano with its lava lake.",
+    "details": "The Danakil Depression in the Afar Triangle lies more than 100 m below sea level and is one of the hottest places on Earth by year-round average temperature. It is a geologically active rift where three tectonic plates are pulling apart.\n\nAt Dallol, hydrothermal activity creates fields of brilliant yellow, green and orange sulphur and salt formations, acidic pools and salt pillars. Nearby, on the salt flats around Lake Assale (Karum), Afar workers cut salt blocks by hand that are carried by camel caravans.\n\nErta Ale ('smoking mountain' in Afar) is a 613 m basaltic shield volcano known for one of the world's few long-lived lava lakes. Visitors usually hike up in the evening (about 3 hours) and sleep at the crater rim.\n\nVisits are only practical on organised multi-day 4x4 tours (typically 3–4 days) with Afar guides and police escorts.",
+    "highlights": ["Dallol hydrothermal field", "Salt flats and camel salt caravans near Lake Assale", "Erta Ale lava lake viewed from the crater rim", "Lake Afrera salt lake"],
+    "bestTimeToVisit": "November to March, when temperatures are lowest (still very hot). Avoid May to September, when daytime temperatures can be extreme.",
+    "gettingThere": "Tours have traditionally started in Mekele (about 1 hour by air from Addis Ababa) or Semera, the Afar regional capital, followed by long 4x4 drives on rough tracks.",
+    "tips": ["Travel only with an established tour operator; visits require Afar guides, permits and armed escorts.", "Carry plenty of water, sun protection and closed shoes; acidic pools and thin salt crusts at Dallol are dangerous.", "The Erta Ale climb is done at night; bring a headlamp.", "Tourists were attacked near Erta Ale in 2012 and 2017; follow escort instructions strictly."],
+    "hotels": [
+      { "name": "Planet Hotel", "area": "Mekele (Hawulti)", "description": "Four-star hotel in Mekele with restaurants and a pool, used as a base before Danakil tours.", "sourceUrl": "https://www.lonelyplanet.com/ethiopia/mekele/hotels" },
+      { "name": "Axum Hotel", "area": "Mekele", "description": "Tall landmark hotel in Mekele popular with tour groups, with a pool and fitness centre.", "sourceUrl": "https://www.exclusiveethiopia.com/accommodation/view/eastern/axum_hotel_mekele" }
+    ],
+    "restaurants": [
+      { "name": "Geza Gerlase", "area": "Mekele", "description": "Cultural restaurant inside a large traditional tukul serving Ethiopian dishes, highly rated on TripAdvisor.", "sourceUrl": "https://www.lonelyplanet.com/pois/1424743" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Danakil_Depression", "https://en.wikipedia.org/wiki/Erta_Ale", "https://en.wikipedia.org/wiki/Dallol_(hydrothermal_system)", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "SECURITY (high uncertainty): As of November 2026 the UK FCDO advises against all travel within 50 km of the Tigray boundary and 20 km of the Eritrea border in Afar (which covers much of the Danakil route), and all but essential travel elsewhere in Afar; the US lists Afar as do-not-travel. Mekele is in Tigray, where all travel is advised against and civilian flights were reported suspended, so the Mekele hotels/restaurant may not be usable. Erta Ale's lava lake activity varies over time and may not always be visible. Coordinates are for the Danakil Depression (Wikipedia); Erta Ale is at about 13.6064, 40.6614."
+  },
+  {
+    "id": "bale-mountains",
+    "name": "Bale Mountains National Park",
+    "category": "nature",
+    "region": "Oromia",
+    "nearestCity": "Robe / Goba",
+    "coordinates": { "lat": 6.6667, "lng": 39.6667 },
+    "summary": "Vast highland park of Afro-alpine plateau and cloud forest, the best place in the world to see the endangered Ethiopian wolf, and a UNESCO World Heritage Site since 2023.",
+    "details": "The Bale Mountains in south-eastern Ethiopia contain the Sanetti Plateau, the largest area of Afro-alpine habitat in Africa, and Tullu Dimtu, Ethiopia's second-highest peak at about 4,377 m.\n\nThe park holds the world's largest population of the Ethiopian wolf and is a stronghold of the endemic mountain nyala and Menelik's bushbuck, as well as giant mole-rats and many endemic birds.\n\nSouth of the plateau, the land drops into the Harenna Forest, one of Ethiopia's largest remaining moist forests, home to wild coffee and colobus monkeys.\n\nThe park headquarters are at Dinsho, where short walks reveal nyala and warthogs. Bale Mountains National Park was inscribed on the UNESCO World Heritage List in 2023.",
+    "highlights": ["Ethiopian wolves on the Sanetti Plateau", "Mountain nyala around Dinsho headquarters", "Tullu Dimtu, Ethiopia's second-highest peak", "Harenna cloud forest", "Endemic birdwatching"],
+    "bestTimeToVisit": "November to March (dry season) is best for wildlife viewing and trekking.",
+    "gettingThere": "By road from Addis Ababa to Robe/Goba is about 430 km (around 7–8 hours). Ethiopian Airlines has served Robe (Bale Robe Airport); check current schedules.",
+    "tips": ["Pay park fees at Dinsho headquarters; hiring a local guide is recommended and required for treks.", "The plateau is above 4,000 m: dress for cold, wind and sudden weather changes.", "Arrive early on the Sanetti Plateau for the best chance of seeing wolves.", "Check current advisories for Oromia, which vary by zone."],
+    "hotels": [
+      { "name": "Bale Mountain Lodge", "area": "Harenna Forest, inside the park", "description": "Boutique lodge in a forest clearing at about 2,380 m in the Harenna Forest.", "sourceUrl": "https://brilliant-ethiopia.com/national-parks/bale-mountains/hotels/bale-mountain-lodge" },
+      { "name": "Wabe Shebelle Hotel", "area": "Goba", "description": "Budget hotel in Goba, under an hour's drive from the park, often used by tour operators.", "sourceUrl": "https://brilliant-ethiopia.com/national-parks/bale-mountains/hotels" }
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Bale_Mountains_National_Park", "https://whc.unesco.org/en/list/1688/", "https://brilliant-ethiopia.com/regions/bale-mountains-national-park", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "Bale Mountain Lodge's operating status is uncertain: one operator reported it closed in April 2022 and a later report said it was to fully reopen by end of 2023. Confirm before booking. No independent restaurants verified. The FCDO page (Nov 2026) did not list Bale zone among restricted areas, but nearby Arsi and Guji zones carry 'all but essential travel' warnings."
+  },
+  {
+    "id": "omo-valley",
+    "name": "Omo Valley (Jinka & Turmi)",
+    "category": "culture",
+    "region": "South Ethiopia",
+    "nearestCity": "Jinka",
+    "coordinates": { "lat": 5.7833, "lng": 36.5667 },
+    "summary": "Remote south-western region home to diverse agro-pastoralist peoples such as the Hamer, Mursi, Karo and Dassanech, known for their markets, ceremonies and body adornment.",
+    "details": "The Lower Omo Valley is one of the most culturally diverse areas of Africa, with many ethnic groups living along the Omo River and its surroundings, each with distinct dress, body decoration and traditions.\n\nJinka is the main town and administrative centre of the South Omo Zone and the base for visits to the Mursi in Mago National Park and to the Ari villages. The South Omo Museum and Research Center in Jinka introduces the region's cultures.\n\nTurmi is the centre of Hamer country, known for its Monday market and the Hamer bull-jumping coming-of-age ceremony. From Turmi visitors also reach Karo villages along the Omo River and Dassanech communities near Omorate.\n\nThe Lower Valley of the Omo was inscribed on the UNESCO World Heritage List in 1980 for its paleoanthropological fossil finds, including early Homo sapiens remains.",
+    "highlights": ["Weekly markets (e.g. Turmi on Mondays)", "Hamer bull-jumping ceremony (when held)", "Mursi villages in Mago National Park", "Karo villages above the Omo River", "South Omo Museum and Research Center, Jinka"],
+    "bestTimeToVisit": "June to September and December to February are drier; heavy rains (around March–May and October–November) can make dirt roads impassable.",
+    "gettingThere": "Flights from Addis Ababa to Jinka (about 1.5 hours, sometimes via Arba Minch). By road from Addis Ababa it is about 750 km (2 days). Turmi is about 3 hours' drive from Jinka.",
+    "tips": ["Visit with a local guide; villages charge entrance and per-photo fees, so agree on terms before photographing anyone.", "Be respectful; some visits can feel intrusive, so prefer community-based or market visits.", "Bring cash, as ATMs are limited outside Jinka.", "Malaria is present in the lowlands; take precautions."],
+    "hotels": [
+      { "name": "Eco-Omo Lodge", "area": "Jinka, on the Neri River", "description": "Eco-lodge of safari tents just outside Jinka, regarded as one of the better options in the area.", "sourceUrl": "https://www.brilliant-ethiopia.com/eco-omo-lodge" },
+      { "name": "Jinka Resort", "area": "Jinka", "description": "Simple, colourful lodge in Jinka listed by tour operators.", "sourceUrl": "https://www.timbuktutravel.com/region/omo-valley-trip/where-to-stay" },
+      { "name": "Turmi Lodge", "area": "Turmi, Hamer country", "description": "Lodge in Turmi at the heart of Hamer territory, used as a base for the southern Omo.", "sourceUrl": "https://timbuktutravel.com/lodge/turmi-lodge" }
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Jinka", "https://en.wikipedia.org/wiki/Turmi", "https://whc.unesco.org/en/list/17/", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "Coordinates are for Jinka town. The FCDO advises against all travel within 10 km of the South Sudan and Kenya borders (including Lake Turkana shores). Ceremonies such as bull-jumping are not scheduled for tourists and may not occur during a visit. No independent restaurants were verified; meals are usually taken at lodges."
+  },
+  {
+    "id": "tigray-rock-hewn-churches-gheralta",
+    "name": "Tigray Rock-Hewn Churches (Gheralta)",
+    "category": "historic",
+    "region": "Tigray",
+    "nearestCity": "Hawzen",
+    "coordinates": { "lat": 13.9153, "lng": 39.3431 },
+    "summary": "More than a hundred ancient rock-hewn churches scattered across Tigray, the most dramatic of which are carved into the sandstone cliffs of the Gheralta massif near Hawzen.",
+    "details": "Eastern Tigray contains a large concentration of rock-hewn churches, many thought to date from roughly the 4th to the 15th centuries, though dating is debated. They became widely known to outsiders only from the 1960s.\n\nThe Gheralta cluster is the most spectacular. Abuna Yemata Guh is carved into a sandstone pinnacle about 2,580 m high and is reached by a steep climb using hand- and footholds, a narrow ledge and a short wooden bridge; inside are well-preserved early murals.\n\nOther highlights include Maryam Korkor and Daniel Korkor high on a cliff, Abraha we Atsbeha with its painted interior, and Wukro Cherkos near the town of Wukro.\n\nThe churches are still used for worship and are looked after by priests who hold the keys.",
+    "highlights": ["Abuna Yemata Guh cliff church", "Maryam Korkor and Daniel Korkor", "Abraha we Atsbeha", "Wukro Cherkos", "Gheralta mountain scenery"],
+    "bestTimeToVisit": "October to March (dry season).",
+    "gettingThere": "Traditionally reached via Mekele (about 1 hour by air from Addis Ababa) followed by about 2 hours' drive to Hawzen; also by road from Axum. Civilian flights to Tigray were reported suspended from January 2026.",
+    "tips": ["Guides are mandatory for some churches (e.g. Abuna Yemata Guh, Maryam Korkor, Daniel Korkor) and can be hired from the Gheralta Guides Association in Megab.", "The climb to Abuna Yemata Guh is exposed and not suitable for those with vertigo; shoes are removed for the final section.", "Priests may need to be found to open churches; bring small notes for entry fees and tips.", "Check advisories: governments advise against all travel to Tigray (late 2026)."],
+    "hotels": [
+      { "name": "Gheralta Lodge", "area": "Near Hawzen", "description": "Italian-owned lodge of stone bungalows on a plateau overlooking the Gheralta mountains.", "sourceUrl": "https://brilliant-ethiopia.com/tigray/hotels/gheralta-lodge" },
+      { "name": "Korkor Lodge", "area": "Northern foot of the Gheralta mountains", "description": "Lodge with panoramic views of the Gheralta range, used as a base for the rock churches.", "sourceUrl": "https://jacadatravel.com/africa/ethiopia/tigray-region/accommodation/korkor-lodge" }
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Abuna_Yemata_Guh", "https://en.wikipedia.org/wiki/Rock-hewn_churches_of_Tigray", "https://brilliant-ethiopia.com/tigray", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "SECURITY: Fighting in Tigray resumed in September 2026; the UK FCDO and US advise against all travel to Tigray. Lodges may be closed. Several churches reportedly suffered during the 2020–2022 war; condition of individual churches was not verified. Coordinates are for Abuna Yemata Guh. Church dating is contested among scholars."
+  },
+  {
+    "id": "arba-minch-nechisar",
+    "name": "Arba Minch & Nechisar National Park",
+    "category": "nature",
+    "region": "South Ethiopia",
+    "nearestCity": "Arba Minch",
+    "coordinates": { "lat": 6.0300, "lng": 37.5800 },
+    "summary": "Rift Valley town set above lakes Abaya and Chamo, gateway to Nechisar National Park, the giant crocodiles of Lake Chamo and the Dorze highland villages.",
+    "details": "Arba Minch ('forty springs' in Amharic) sits on the escarpment of the Great Rift Valley between Lake Abaya and Lake Chamo, the two largest lakes of the southern Rift Valley in Ethiopia.\n\nNechisar National Park lies between the two lakes, separated by a land bridge known as the 'Bridge of God'. It protects groundwater forest, savannah grasslands and the lakeshores, with wildlife including Burchell's zebra, Grant's gazelle, and abundant birds.\n\nBoat trips on Lake Chamo visit the so-called 'crocodile market', where large Nile crocodiles bask on the shore, alongside hippos and many water birds.\n\nIn the highlands above town, the Dorze people near Chencha are known for their tall beehive-shaped bamboo houses and cotton weaving.",
+    "highlights": ["Lake Chamo boat trip to see Nile crocodiles and hippos", "Nechisar National Park plains and the 'Bridge of God'", "Views over lakes Abaya and Chamo", "Dorze villages and weaving near Chencha"],
+    "bestTimeToVisit": "October to February is generally driest; heavy rains can occur in spring (around March–May).",
+    "gettingThere": "Flights from Addis Ababa to Arba Minch take about 1 hour. By road it is about 500 km (roughly 8–9 hours).",
+    "tips": ["Arrange Lake Chamo boat trips and park visits with the park office or a licensed operator; a scout may be required in the park.", "Malaria is present at lake level; take precautions.", "Combine with Konso (about 90 km south) and the Omo Valley."],
+    "hotels": [
+      { "name": "Paradise Lodge", "area": "Arba Minch escarpment", "description": "Lodge of thatched huts on the ridge with views over the lakes and its own Abaya Restaurant.", "sourceUrl": "https://www.adventure-life.com/africa/ethiopia/arba-minch/hotels/paradise-lodge" },
+      { "name": "Haile Resort Arbaminch", "area": "Arba Minch, overlooking the lake", "description": "Resort owned by athlete Haile Gebrselassie's hotel group, with pool, sauna and fitness centre.", "sourceUrl": "https://www.booking.com/hotel/et/haile-resort-arbaminch.html" },
+      { "name": "Emerald Resort Arbaminch", "area": "Shecha area, high on the escarpment", "description": "Resort with an outdoor pool and mountain and lake views, within 15 km of Nechisar National Park.", "sourceUrl": "https://www.exclusiveethiopia.com/accommodation/view/southern/emerald_resort_and_lodge_arba_minch" },
+      { "name": "Dorze Lodge", "area": "Dorze highlands above Arba Minch", "description": "Community-based lodge run by the Dorze people in the mountains above Arba Minch.", "sourceUrl": "https://www.exclusiveethiopia.com/accommodation/view/southern/dorze_lodge_nr_arba_minch" }
+    ],
+    "restaurants": [
+      { "name": "Abaya Restaurant (Paradise Lodge)", "area": "Arba Minch escarpment", "description": "Restaurant at Paradise Lodge described by Lonely Planet as the most atmospheric ridgetop dining in town.", "sourceUrl": "https://www.lonelyplanet.com/ethiopia/arba-minch/restaurants" },
+      { "name": "Soma Restaurant", "area": "Arba Minch", "description": "Local restaurant listed by Lonely Planet for its grilled fish.", "sourceUrl": "https://www.lonelyplanet.com/ethiopia/arba-minch/restaurants" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Arba_Minch", "https://en.wikipedia.org/wiki/Nechisar_National_Park", "https://en.wikipedia.org/wiki/Lake_Chamo", "https://en.wikipedia.org/wiki/Chencha"],
+    "confidenceNotes": "Coordinates are for Nechisar National Park (Wikipedia). Nechisar's large-mammal populations have declined and sightings are not guaranteed. Distances to Dorze Lodge vary between sources (16–28 km)."
+  },
+  {
+    "id": "tiya-stelae",
+    "name": "Tiya Stelae",
+    "category": "historic",
+    "region": "Central Ethiopia",
+    "nearestCity": "Butajira",
+    "coordinates": { "lat": 8.4333, "lng": 38.6167 },
+    "summary": "Archaeological site south of Addis Ababa with a field of ancient carved stone stelae marking a burial ground, a UNESCO World Heritage Site since 1980.",
+    "details": "Tiya is one of the most important of the roughly 160 archaeological sites in the Soddo area of the Gurage Zone, south of Addis Ababa.\n\nThe site contains dozens of stelae (UNESCO cites 36 monuments, 32 of them carved), many decorated with enigmatic symbols such as swords, which mark a large ancient burial ground. Their age and the people who made them are still not fully understood.\n\nTiya was inscribed on the UNESCO World Heritage List in 1980.\n\nIt is commonly visited as a day trip from Addis Ababa, often combined with the rock-hewn church of Adadi Maryam and the prehistoric site of Melka Kunture.",
+    "highlights": ["Field of carved stelae with sword symbols", "Small on-site museum/interpretation", "Combination with Adadi Maryam rock church and Melka Kunture"],
+    "bestTimeToVisit": "October to May (dry season); accessible year-round as a day trip.",
+    "gettingThere": "About 85–90 km south of Addis Ababa by road on the route towards Butajira (around 2 hours).",
+    "tips": ["A local site guardian usually shows visitors around; small entry fees apply.", "Facilities are minimal; bring water and snacks.", "Best done as a day trip from Addis Ababa."],
+    "hotels": [],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Tiya_(archaeological_site)", "https://whc.unesco.org/en/list/12/"],
+    "confidenceNotes": "Region updated to Central Ethiopia Regional State (Gurage Zone was part of SNNPR until 2023). No hotels or restaurants at the site were verified; visitors normally stay in Addis Ababa. Driving distance and time are approximate."
+  },
+  {
+    "id": "konso-cultural-landscape",
+    "name": "Konso Cultural Landscape",
+    "category": "culture",
+    "region": "South Ethiopia",
+    "nearestCity": "Karat (Konso)",
+    "coordinates": { "lat": 5.3397, "lng": 37.4419 },
+    "summary": "Arid highland landscape of stone-walled hilltop towns and extensive dry-stone agricultural terraces created by the Konso people, a UNESCO World Heritage Site since 2011.",
+    "details": "The Konso people have shaped their hilly, dry environment over many generations with dry-stone terraces that conserve soil and water, supporting intensive farming.\n\nThey live in fortified, stone-walled towns (paletas) with communal houses (mora), public squares and generation poles that mark the passing of generations.\n\nKonso is also known for its waka, carved wooden grave markers representing honoured dead, which have been the target of theft and are now protected, partly in the Konso museum.\n\nKarat (Karati), the main town, and the surrounding villages were inscribed on the UNESCO World Heritage List in 2011 as the Konso Cultural Landscape.",
+    "highlights": ["Walled villages such as Mecheke and Gamole", "Stone agricultural terraces", "Waka carved wooden grave statues", "Mora communal houses and generation poles", "Konso market days"],
+    "bestTimeToVisit": "October to February (drier); heavy rains can occur in spring.",
+    "gettingThere": "About 90 km (2 hours) south of Arba Minch, which has flights from Addis Ababa. By road from Addis Ababa it is about 600 km.",
+    "tips": ["Visit villages with a local guide arranged in Karat; entry fees are charged.", "Ask permission before photographing people and homes.", "Konso is often combined with Arba Minch and the Omo Valley."],
+    "hotels": [
+      { "name": "Kanta Lodge", "area": "Karat-Konso", "description": "Eco-lodge opened around 2009 with traditional tukul rooms, using solar power and rainwater harvesting.", "sourceUrl": "https://www.rainbowtours.co.uk/ethiopia/omo-south-omo-and-konso/hotels/kanta-lodge" },
+      { "name": "Strawberry Fields Eco Lodge", "area": "Karat-Konso", "description": "Eco-lodge, farm and permaculture training centre with local-style Konso huts and a restaurant.", "sourceUrl": "https://adventuretravelnews.com/strawberry-fields-eco-lodge-sfel" }
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Konso_Cultural_Landscape", "https://en.wikipedia.org/wiki/Karati", "https://whc.unesco.org/en/list/1333/"],
+    "confidenceNotes": "Coordinates are for Karat (Karati) town per Wikipedia. No independent restaurants verified; meals are usually at lodges."
+  },
+  {
+    "id": "sof-omar-caves",
+    "name": "Sof Omar Caves",
+    "category": "nature",
+    "region": "Oromia",
+    "nearestCity": "Robe",
+    "coordinates": { "lat": 6.9000, "lng": 40.8500 },
+    "summary": "Ethiopia's longest cave system, carved by the Weyib River through limestone and sacred to both Muslims and followers of traditional Oromo religion.",
+    "details": "Sof Omar is the longest cave in Ethiopia at about 15.1 km. When surveyed in 1972 it was the longest known cave in Africa.\n\nThe Weyib River sinks into the cave at the Ayiew Maco entrance and re-emerges about 1 km away at the Holuca resurgence, having carved a network of passages and chambers.\n\nThe caves are known for their limestone pillars, particularly in the 'Chamber of Columns'.\n\nAccording to tradition the cave is named after Sheikh Sof Omar, a Muslim holy man who lived there; it is a long-standing religious site for both Islam and traditional Oromo religion. It is on Ethiopia's UNESCO tentative list.",
+    "highlights": ["Chamber of Columns", "Weyib River flowing through the cave", "Religious significance as a pilgrimage site", "Often combined with Bale Mountains National Park"],
+    "bestTimeToVisit": "Dry season (roughly November to March); high water in the rains can make river passages difficult.",
+    "gettingThere": "About 100–110 km east of Robe (roughly 2–3 hours on partly rough roads); Robe is about 430 km from Addis Ababa or reachable by flight.",
+    "tips": ["Hire a local guide at the site; bring a strong torch and expect to wade through water.", "Respect the site's religious importance.", "Best combined with a Bale Mountains trip, using Robe or Goba as a base."],
+    "hotels": [
+      { "name": "Wabe Shebelle Hotel", "area": "Goba (base for Bale and Sof Omar)", "description": "Budget hotel in Goba often used by tour operators as a base for the Bale region.", "sourceUrl": "https://brilliant-ethiopia.com/national-parks/bale-mountains/hotels" }
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Sof_Omar_Caves", "https://www.lonelyplanet.com/points-of-interest/sof-omar-cave/1543904", "https://walkopedia.net/best-world-walks/Ethiopia/Sof-Omar-Caves", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "Coordinates are low-precision (Wikidata, 6.9, 40.85); treat as approximate. Only one base hotel verified. Check Oromia zone-level advisories before travel."
+  },
+  {
+    "id": "yeha-debre-damo",
+    "name": "Yeha & Debre Damo",
+    "category": "historic",
+    "region": "Tigray",
+    "nearestCity": "Adwa / Adigrat",
+    "coordinates": { "lat": 14.2857, "lng": 39.0191 },
+    "summary": "Two of Ethiopia's oldest religious sites: the pre-Aksumite Great Temple of Yeha, and Debre Damo, a 6th-century clifftop monastery reachable only by a rope climb.",
+    "details": "Yeha, north-east of Adwa, is considered the oldest known settlement of significance in Ethiopia. Its Great Temple, built of finely dressed stone blocks around the 8th–7th centuries BC, shows strong South Arabian (Sabaean) influence and is among the oldest standing buildings in the country. A later church and small museum stand beside it.\n\nDebre Damo is a flat-topped mountain (amba) about 1,000 by 400 m at around 2,216 m elevation, near the Eritrean border north-west of Adigrat. Its monastery, founded in the 6th century and associated with Abuna Aregawi, one of the Nine Saints, has one of the oldest standing church buildings in Ethiopia.\n\nThe only access to Debre Damo is up a sheer cliff of about 15 m using a leather rope, with monks helping to haul visitors up. The monastery admits men only; women may view the site from below.",
+    "highlights": ["Great Temple of Yeha", "Debre Damo monastery and its ancient church", "Rope climb up the cliff to Debre Damo", "Adwa (site of the 1896 Battle of Adwa) en route"],
+    "bestTimeToVisit": "October to March (dry season).",
+    "gettingThere": "Yeha is usually visited as an excursion from Axum (about 1 hour by road). Debre Damo lies further east towards Adigrat. Both have traditionally been combined on a drive between Axum and Mekele.",
+    "tips": ["Debre Damo is closed to women; men climb the rope with monks' assistance and should be reasonably fit.", "Monks may ask about visitors' faith before the climb; dress modestly.", "Bring small notes for donations and fees.", "Check advisories: governments advise against all travel to Tigray (late 2026)."],
+    "hotels": [
+      { "name": "Yeha Hotel", "area": "Axum (base for Yeha)", "description": "Hotel overlooking Axum's northern stelae, a common base for excursions to Yeha.", "sourceUrl": "https://www.exclusiveethiopia.com/accommodation/view/northern/yeha_hotel_axum" },
+      { "name": "Sabean International Hotel", "area": "Axum (base for Yeha)", "description": "Long-standing hotel on Axum's main road.", "sourceUrl": "https://www.brilliant-ethiopia.com/sabean-international-hotel" }
+    ],
+    "restaurants": [
+      { "name": "Geza Gereslase Cultural Restaurant", "area": "Adigrat (near Debre Damo)", "description": "Traditional tukul restaurant described by Lonely Planet as Adigrat's best for Ethiopian food.", "sourceUrl": "https://www-lonelyplanet-com-57e2.imagizer.com/ethiopia/adigrat/restaurants/geza-gereslase-cultural-restaurant/a/poi-eat/1424258/1337194" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Yeha", "https://en.wikipedia.org/wiki/Debre_Damo", "https://www.lonelyplanet.com/points-of-interest/debre-damo/1425204", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "SECURITY: Tigray is under do-not-travel advice (late 2026), and Debre Damo is close to the Eritrean border. Hotels listed are in Axum, as no hotels at Yeha or Debre Damo were verified. Coordinates are for Yeha; Debre Damo is at about 14.3739, 39.2903. Reported cliff heights for Debre Damo vary by source; 15 m is the most common figure. Damage from the 2020–2022 war to Debre Damo was reported in the media but was not verified here."
+  },
+  {
+    "id": "awash-national-park",
+    "name": "Awash National Park",
+    "category": "nature",
+    "region": "Afar / Oromia",
+    "nearestCity": "Awash",
+    "coordinates": { "lat": 9.1425, "lng": 40.0000 },
+    "summary": "Rift Valley park of acacia savannah, the dormant Fentale volcano and the Awash River gorge and falls, known for beisa oryx and rich birdlife.",
+    "details": "Awash National Park, established in 1966, is one of Ethiopia's oldest national parks and lies in the Rift Valley east of Addis Ababa, straddling the Afar and Oromia regions.\n\nThe park is dominated by the dormant Fentale (Fantalle) volcano, with its crater and lava fields. The Awash River runs along the southern edge, plunging over the Awash Falls into a gorge.\n\nWildlife includes beisa oryx, Soemmering's gazelle, gerenuk, lesser kudu and Anubis and hamadryas baboons, and the park is noted for its birdlife.\n\nIn the north of the park, the Filwoha hot springs are surrounded by palms.",
+    "highlights": ["Awash Falls and gorge", "Fentale volcano crater", "Beisa oryx and other dryland wildlife", "Filwoha hot springs", "Birdwatching"],
+    "bestTimeToVisit": "September to March is the cooler, more pleasant period; it is hot year-round.",
+    "gettingThere": "About 220 km east of Addis Ababa on the main Addis–Djibouti road (roughly 4 hours).",
+    "tips": ["Scouts are generally required for game drives; arrange at the park headquarters.", "A 4x4 is recommended for park tracks.", "Bring water and sun protection; temperatures are high.", "The FCDO advises against all but essential travel in most of East Shewa (Oromia) and in Afar outside border zones (Nov 2026); check before travelling."],
+    "hotels": [
+      { "name": "Doho Lodge & Hotsprings", "area": "Near Awash town (about 30–40 km from the park)", "description": "Lodge with natural hot-spring pools, roughly an hour's drive from Awash National Park.", "sourceUrl": "https://www.hotels.com/ho2923115968/doho-lodge-hotsprings-awash-ethiopia" }
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Awash_National_Park", "https://www.gov.uk/foreign-travel-advice/ethiopia"],
+    "confidenceNotes": "Only one lodge verified; 'Awash Falls Lodge' inside the park could not be confirmed as currently operating, so it was excluded. Distances from Doho Lodge to the park vary between listings. Wildlife numbers have declined due to grazing pressure. Security advice for East Shewa/Afar may change."
+  },
+  {
+    "id": "dire-dawa",
+    "name": "Dire Dawa",
+    "category": "city",
+    "region": "Dire Dawa (chartered city)",
+    "nearestCity": "Dire Dawa",
+    "coordinates": { "lat": 9.6000, "lng": 41.8667 },
+    "summary": "Ethiopia's second chartered city, founded with the arrival of the Ethio-Djibouti railway, with a laid-back colonial-era centre, busy markets and easy access to Harar.",
+    "details": "Dire Dawa was founded in 1902 when the Franco-Ethiopian railway from Djibouti reached the area, and it grew as a railway and trade town. Its older quarter (Kezira) has tree-lined streets and French-influenced colonial-era buildings around the old railway station.\n\nThe Kafira market, near the old town, draws traders including Afar, Oromo and Somali people, with goods ranging from spices to camels.\n\nThe new electrified Addis Ababa–Djibouti Railway (opened in 2016–2018) has a station at Dire Dawa.\n\nDire Dawa is the main air gateway for visitors heading to Harar, about 55 km away.",
+    "highlights": ["Kezira colonial-era quarter and old railway station", "Kafira market", "Gateway to Harar", "Addis Ababa–Djibouti railway"],
+    "bestTimeToVisit": "November to February, when it is cooler; it is hot for much of the year.",
+    "gettingThere": "Flights from Addis Ababa to Dire Dawa take about 1 hour. By road it is about 450–500 km. The Addis Ababa–Djibouti electric railway also stops at Dire Dawa.",
+    "tips": ["It is hot and low-lying compared with the highlands; carry water and sun protection.", "Combine with Harar, about 1–1.5 hours' drive away.", "Ask before photographing people in markets."],
+    "hotels": [
+      { "name": "Ras Hotel Dire Dawa", "area": "Dire Dawa", "description": "Long-established hotel in Dire Dawa with its own restaurant, reviewed on TripAdvisor (reviews mixed).", "sourceUrl": "https://www.tripadvisor.fr/Hotel_Feature-g667260-d5113674-zft1-Ras_Hotel.html" },
+      { "name": "History Hotel", "area": "Near the railway station", "description": "Hotel near the train station with about 40 rooms and breakfast included.", "sourceUrl": "https://vi.hotels.com/ho4060827232" }
+    ],
+    "restaurants": [
+      { "name": "Paradiso Restaurant", "area": "Harar Road, Dire Dawa", "description": "Italian-influenced restaurant described by Lonely Planet as the most respected restaurant in town.", "sourceUrl": "https://www.lonelyplanet.com/ethiopia/eastern-ethiopia/dire-dawa/restaurants" }
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Dire_Dawa", "https://en.wikipedia.org/wiki/Addis_Ababa%E2%80%93Djibouti_Railway", "https://de.wikivoyage.org/wiki/Dire_Dawa"],
+    "confidenceNotes": "Coordinates are for the city (Wikipedia, low precision). Hotel listings in Dire Dawa are thin and reviews mixed; Samrat Hotel could not be confirmed and was excluded."
+  }
+]

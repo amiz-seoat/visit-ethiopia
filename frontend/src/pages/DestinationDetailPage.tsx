@@ -4,6 +4,8 @@ import { MapPin } from 'lucide-react';
 import { getDestinationById, getDestinationTours } from '../api/destinations';
 import { PageError, PageLoader } from '../components/ui/PageStatus';
 import { TourCard } from '../components/ui/TourCard';
+import { PlaceMap, GoogleMapsButtons } from '../components/maps/PlaceMap';
+import { extractLatLng } from '../utils/geo';
 import { getErrorMessage } from '../services/api';
 import type { Destination, Tour } from '../types';
 
@@ -87,6 +89,19 @@ export function DestinationDetailPage() {
             <div className="bg-gray-50 rounded-lg p-6 sticky top-24">
               <h3 className="font-bold text-lg mb-4">Quick Info</h3>
               <p className="text-gray-600 text-sm mb-4">{destination.shortDescription}</p>
+              {(() => {
+                const p = extractLatLng((destination as { location?: unknown }).location);
+                return p ? (
+                  <PlaceMap
+                    className="mb-4"
+                    height={220}
+                    zoom={11}
+                    points={[{ id: destination._id, title: destination.name, ...p }]}
+                  />
+                ) : (
+                  <div className="mb-4"><GoogleMapsButtons point={null} label={`${destination.name}, Ethiopia`} /></div>
+                );
+              })()}
               <Link to="/tours" className="block text-center bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-md">
                 Browse All Tours
               </Link>
