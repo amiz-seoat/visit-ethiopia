@@ -6,7 +6,7 @@ Date: 2026-11-27. Every number below comes from a run that was actually executed
 
 | Area | Result |
 |---|---|
-| Backend: Prisma/PostgreSQL integration suites (`npm test`) | **14 / 14 suites, 390 / 390 checks passed** |
+| Backend: Prisma/PostgreSQL integration suites (`npm test`) | **15 / 15 suites, 406 / 406 checks passed** |
 | Backend: legacy MongoDB regression battery | **11 / 11 suites, 319 / 319 checks passed** |
 | Frontend: unit tests (`vitest run`) | **17 / 17 passed** |
 | Frontend: production build (`vite build`) | **Passes** |
@@ -35,7 +35,8 @@ Date: 2026-11-27. Every number below comes from a run that was actually executed
 | tour-visibility | 21 | Organization tours listed only when the org is approved, public and has an approved version; drafts, secret tours and non-approved orgs hidden from list, detail and departures; `?status=` and `?secretTour=` can't override visibility; org snapshot omits private fields; hiding an org hides its tours immediately |
 | admin-console | 44 | Admin API: anonymous gets 401 and customers 403 on every endpoint; the existing `/admin/bookings` router still works. Overview KPIs: 30-day series, flagged-payment queue, net revenue, users by role. Booking search, filters and detail; bad filters get 400. Flagged-payment review: validation, customers rejected, compare-and-set (a second resolve returns 409), records the decision without touching money. Mock payments can't be "verified with Chapa". User search with booking counts and no password hashes. Role and suspend guards: invalid role, unknown fields, self-change and last active admin are all refused, including on the legacy `PATCH /users/:id`. A suspended user can't log in. Audit log entries carry the actor's email. |
 | assistant | 29 | Travel assistant (RAG). Retrieval handles typos and transliterations ("goder" finds Gondar, "beynuna" finds Beynouna Village, plus Logo Hayk and Entoto), and off-topic questions retrieve nothing. Validation (empty, too long, bad history). Search-only mode without a key: answers, citations, Google Maps links, and the "what to see" fallback leads with the overview. Draft hotels never reach the assistant. LLM mode uses a **stubbed transport, no network and no real key**: it calls Groq's endpoint, the key goes only in the header, the system prompt is grounded on numbered context, client-supplied system turns are dropped, only cited sources are returned, and the key is never echoed. A provider error falls back to search-only without leaking the provider's response body. The daily cap works, and queries are logged. |
-| **Total** | **390** | |
+| email | 16 | Email transport. Brevo HTTPS API (stubbed, fake key): transport selection (Brevo over SMTP; no sender means not configured), request shape, key sent only in the header and never logged, 401 and timeout errors reported clearly. Signup sends the verification email through Brevo, and the link in it verifies the account. |
+| **Total** | **406** | |
 
 Bugs found and fixed while building these suites:
 - Reconciliation in Prisma mode called Mongoose (`Booking.findById`, `Refund.findOne`), so stale bookings were never expired.

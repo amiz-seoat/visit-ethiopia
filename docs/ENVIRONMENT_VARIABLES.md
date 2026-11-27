@@ -73,9 +73,14 @@ These are the existing policy parameters. Changing them changes business rules, 
 
 ### Email
 
+**Render free instances block outbound SMTP (ports 25/465/587)**, so Gmail/SMTP times out there. On Render free, use the Brevo HTTPS API, which is free for 300 emails a day. When `BREVO_API_KEY` is set it takes precedence over SMTP.
+
 | Variable | Prod value | Notes |
 |---|---|---|
-| `EMAIL_USER` | 🔒👤 optional | A Gmail address (with an app password), or the SMTP username. |
+| `BREVO_API_KEY` | 🔒👤 recommended | From Brevo → SMTP & API → API keys. Never commit it. |
+| `EMAIL_FROM` | 👤 with Brevo | The sender address. It must be **verified in Brevo** (Senders, Domains & Dedicated IPs → Senders). Falls back to `EMAIL_USER`. |
+| `EMAIL_TIMEOUT_MS` | optional | Default 15000. Send timeout for both transports. |
+| `EMAIL_USER` | 🔒👤 optional | A Gmail address (with an app password), or the SMTP username. SMTP works locally and on paid instances only. |
 | `EMAIL_PASS` | 🔒👤 optional | Gmail **app password** or SMTP password. |
 | `EMAIL_HOST` / `EMAIL_PORT` | optional | Generic SMTP. If unset, the Gmail service is used. |
 | `EMAIL_FROM` / `EMAIL_FROM_NAME` | optional | Sender. The name defaults to "Visit Ethiopia". |

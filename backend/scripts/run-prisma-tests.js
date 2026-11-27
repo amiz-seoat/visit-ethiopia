@@ -26,6 +26,7 @@ const SUITES = [
   ['tour-visibility', 'tour-visibility-prisma.js'],
   ['admin-console', 'admin-console-prisma.js'],
   ['assistant', 'assistant-prisma.js'],
+  ['email', 'email-transport-prisma.js'],
 ]
 
 const filter = process.argv[2]
