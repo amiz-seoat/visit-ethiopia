@@ -17,12 +17,20 @@ function Read-Secret([string]$prompt) {
   finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr) }
 }
 
-$dbUrl = (Read-Secret 'Neon DIRECT connection string (postgresql://...)').Trim().Trim("'").Trim('"')
-if ($dbUrl -notmatch '^postgres(ql)?://') { throw 'That does not look like a postgresql:// connection string.' }
+# Pasting into a hidden prompt is unreliable in some terminals (e.g. VS Code),
+# so the connection string is read from the clipboard and the clipboard is cleared.
+Write-Host 'Copy the Neon DIRECT connection string (postgresql://...) to the clipboard.'
+$null = Read-Host -Prompt 'Then press Enter here (do not paste)'
+$dbUrl = ((Get-Clipboard -Raw) -as [string])
+if ($dbUrl) { $dbUrl = $dbUrl.Trim().Trim("'").Trim('"') }
+Set-Clipboard -Value ' '
+if ($dbUrl -notmatch '^postgres(ql)?://') { throw 'The clipboard does not contain a postgresql:// connection string. Copy it and run the script again.' }
+Write-Host "Connection string read from clipboard ($($dbUrl.Length) characters); clipboard cleared."
 
 $email = (Read-Host -Prompt 'Admin email').Trim()
 if ($email -notmatch '^[^@\s]+@[^@\s]+\.[^@\s]+$') { throw 'Invalid email address.' }
 
+Write-Host 'Type the admin password (input is hidden; type it, do not paste).'
 $pw1 = Read-Secret 'Admin password (min 12 characters)'
 $pw2 = Read-Secret 'Repeat admin password'
 if ($pw1 -ne $pw2) { throw 'Passwords do not match.' }
