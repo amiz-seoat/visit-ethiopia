@@ -38,7 +38,9 @@ These steps are already done. They're listed here so the setup can be reproduced
 4. Optional demo content, idempotent and safe to re-run (it skips rows that already exist):
    ```powershell
    node scripts/seedDemoMarketplace.js
-   # optional admin account (password 12+ chars, typed by you, never committed):
+   # optional admin account — easiest: prompts for the connection string and password
+   # (nothing is echoed or saved):  powershell -ExecutionPolicy Bypass -File scripts\create-admin.ps1
+   # or manually (password 12+ chars, typed by you, never committed):
    $env:ADMIN_EMAIL='you@example.com'; $env:ADMIN_PASSWORD='<strong password>'; node scripts/seedDemoMarketplace.js
    ```
 
