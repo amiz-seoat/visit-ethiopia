@@ -151,6 +151,7 @@ app.use(
     '/api/v1/users/signup',
     '/api/v1/users/forgotPassword',
     '/api/v1/users/resetPassword',
+    '/api/v1/users/resend-verification',
   ],
   authLimiter
 )

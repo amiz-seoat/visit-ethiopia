@@ -63,6 +63,17 @@ try {
   check('"beynuna village" retrieves Beynouna Village', (await top('beynuna village')) === 'beynouna-village-lake-beseka')
   check('"logo hayk" retrieves Logo Hayk Resort', (await top('logo hayk resort')) === 'logo-hayk-resort')
   check('"entoto" retrieves Entoto Park', (await top('tell me about entoto')) === 'entoto-park-addis-ababa')
+  // Expanded guide: festivals, museums, food, south/west and north/east places.
+  check('"timket" retrieves the Timket festival', (await top('when is timket')) === 'timket-ethiopian-epiphany')
+  check('"lucy" retrieves the National Museum', (await top('where can I see lucy')) === 'national-museum-of-ethiopia')
+  check('"injera" retrieves the cuisine guide', (await top('what is injera')) === 'ethiopian-cuisine-guide')
+  check('typo "irecha" retrieves Irreecha', (await top('irecha festival')) === 'irreecha-festival')
+  check('"flamingos" retrieves Abijatta-Shalla', (await top('where to see flamingos')) === 'abijatta-shalla-national-park')
+  check('"babile" retrieves the elephant sanctuary', (await top('babile elephants')) === 'babile-elephant-sanctuary')
+  const listQ = await retrieve('Which places do you know?')
+  check('"which places do you know" leads with the full guide index',
+    listQ.kb[0]?.doc.id === 'index#all' && /Festivals and events/.test(listQ.kb[0]?.doc.text) && /New tourism projects/.test(listQ.kb[0]?.doc.text))
+  check('festival question pulls the festivals index', (await retrieve('what festivals are there')).kb.some((r) => r.doc.id === 'index#festival'))
   const off = await retrieve('quantum physics homework')
   check('off-topic question retrieves nothing', off.kb.length === 0 && off.topScore === 0)
 
@@ -73,7 +84,7 @@ try {
 
   // --- retrieval-only mode (no LLM key) ----------------------------------------
   const st = await fetch(`${BASE}/assistant/status`).then((r) => r.json())
-  check('status reports LLM off and a loaded knowledge base', st.data?.llm === false && st.data?.places >= 30, JSON.stringify(st.data))
+  check('status reports LLM off and a loaded knowledge base', st.data?.llm === false && st.data?.places >= 90, JSON.stringify(st.data))
   const r1 = await ask('What is there to see in Lalibela?')
   check('retrieval mode answers 200', r1.status === 200 && r1.body?.data?.mode === 'retrieval', JSON.stringify(r1.body).slice(0, 160))
   check('retrieval answer mentions Lalibela and cites sources', /Lalibela/.test(r1.body?.data?.answer) && /\[\d+\]/.test(r1.body?.data?.answer))

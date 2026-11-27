@@ -123,6 +123,45 @@ try {
   check('email contains a verification link', Boolean(link), link ? link.replace(/verify\/.*/, 'verify/…') : 'none')
   const before = await prisma.user.findUnique({ where: { email: signupEmail } })
   check('account starts unverified', before && before.isVerified === false)
+  check('verification email escapes HTML and has a 24h note', /valid for 24 hours/.test(mail?.htmlContent || ''))
+
+  // --- unverified login + resend ---------------------------------------------------
+  const post = async (p, body) => {
+    const r = await fetch(`${BASE}${p}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    return { status: r.status, body: await r.json().catch(() => ({})) }
+  }
+  const pw = `Flow-${RUN}-Pass!1`
+  const badPw = await post('/users/login', { email: signupEmail, password: 'wrong-password' })
+  check('unverified + wrong password → generic 401 (no verification hint)', badPw.status === 401 && !badPw.body.code)
+  const unv = await post('/users/login', { email: signupEmail, password: pw })
+  check('unverified + correct password → 403 EMAIL_NOT_VERIFIED', unv.status === 403 && unv.body.code === 'EMAIL_NOT_VERIFIED', JSON.stringify(unv.body))
+
+  calls.length = 0
+  const rs1 = await post('/users/resend-verification', { email: signupEmail.toUpperCase() })
+  check('resend → 200 and a new verification email is sent', rs1.status === 200 && calls.length === 1 && calls[0].body.to[0].email === signupEmail)
+  const rs2 = await post('/users/resend-verification', { email: signupEmail })
+  check('resend within 60 s → same reply, no second email', rs2.status === 200 && rs2.body.message === rs1.body.message && calls.length === 1)
+  const rs3 = await post('/users/resend-verification', { email: `nobody.${RUN}@visitethiopia.test` })
+  check('resend for unknown email → identical reply, no email (no enumeration)', rs3.status === 200 && rs3.body.message === rs1.body.message && calls.length === 1)
+  check('resend with invalid email → 400', (await post('/users/resend-verification', { email: 'not-an-email' })).status === 400)
+
+  // Production: a failed send keeps the account so the user can resend later.
+  const failEmail = `email.fail.${RUN}@visitethiopia.test`
+  setEmailHttpTransport(async () => new Response('{}', { status: 500 }))
+  process.env.NODE_ENV = 'production'
+  let failRes
+  try {
+    failRes = await post('/users/signup', { FirstName: '<b>X</b>', LastName: 'Y', email: failEmail, password: pw, passwordConfirm: pw })
+  } finally {
+    process.env.NODE_ENV = 'development'
+  }
+  const kept = await prisma.user.findUnique({ where: { email: failEmail } })
+  check('prod: email failure keeps the unverified account and says so', failRes.status === 201 && failRes.body.emailSent === false && kept && kept.isVerified === false, JSON.stringify(failRes.body).slice(0, 160))
+  await prisma.user.deleteMany({ where: { email: failEmail } })
+  setEmailHttpTransport(async (url, init) => {
+    calls.push({ url, init, body: JSON.parse(init.body) })
+    return new Response(JSON.stringify({ messageId: '<verify@brevo>' }), { status: 201 })
+  })
   if (link) {
     const token = link.split('/verify/')[1]
     const v = await fetch(`${BASE}/users/verify/${token}`, { headers: { Accept: 'application/json' } })

@@ -125,6 +125,12 @@ Without these variables the seed creates **no usable logins**. The demo provider
 |---|---|---|
 | `VITE_API_URL` | ✅ committed in `frontend/.env.production`: `https://visit-ethiopia-api.onrender.com/api/v1` | Public, not a secret. Takes precedence over `VITE_API_BASE_URL`. |
 | `VITE_API_BASE_URL` | legacy | Fallback. A stale copy exists in Vercel project settings and points to an old, broken backend. `VITE_API_URL` overrides it, but you should delete it (see Production Deployment → outstanding actions). |
+| `VITE_CONTACT_EMAIL` | optional | Public support email shown in the footer and on the Contact page. Hidden when unset. |
+| `VITE_CONTACT_PHONE` | optional | Public phone number (e.g. `+251 ...`). Hidden when unset. |
+| `VITE_CONTACT_ADDRESS` | optional | Public office address. Hidden when unset. |
+| `VITE_SOCIAL_FACEBOOK`, `VITE_SOCIAL_INSTAGRAM`, `VITE_SOCIAL_X` | optional | Full profile URLs. Each icon appears only when its URL is set. |
+
+The contact and social values are shown on the public site, so put only public details in them. No placeholder phone numbers or addresses ship; the Contact page form works without any of them.
 
 A production build (`vite build`) **fails on purpose** if neither variable is set, so a misconfigured deploy can't silently call the wrong API.
 

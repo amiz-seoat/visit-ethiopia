@@ -101,9 +101,21 @@ export async function retrieve(question, history = []) {
     const words = new Set(tokenize(`${doc.text} ${doc.boostText || ''}`))
     return specific.some((t) => words.has(t))
   })
-  const topScore = Math.max(kbTop, ...liveKept.map((r) => r.score))
-  return { kb: kbPicked.slice(0, 5), live: liveKept.slice(0, 3), topScore }
+  let kbFinal = kbPicked.slice(0, 5)
+  let topScore = Math.max(kbTop, ...liveKept.map((r) => r.score))
+  // "Which places do you know?" → always lead with the full index of the guide.
+  if (LIST_INTENT.test(question)) {
+    const all = loadKnowledge().chunks.find((c) => c.id === 'index#all')
+    if (all) {
+      kbFinal = [{ doc: all, score: Math.max(topScore, MIN_SCORE) }, ...kbFinal.filter((r) => r.doc.id !== all.id)].slice(0, 5)
+      topScore = Math.max(topScore, MIN_SCORE)
+    }
+  }
+  return { kb: kbFinal, live: liveKept.slice(0, 3), topScore }
 }
+
+export const LIST_INTENT =
+  /\b(what|which|list|show|name|all)\b[^?]{0,40}\b(places|destinations|attractions|sites|spots|locations)\b|\bwhat (else )?do you (know|cover)\b|\bwhere (can|should) i (go|visit)\b|\bplaces (to visit|to go|you know)\b/i
 
 function toSource(doc, n) {
   if (doc.type) {
@@ -116,6 +128,7 @@ function toSource(doc, n) {
       mapUrl: doc.coordinates || doc.type !== 'tour' ? googleMapsUrl(doc.coordinates, doc.title) : undefined,
     }
   }
+  if (doc.category === 'index') return { n, id: doc.id, type: 'guide', title: doc.title, section: doc.section }
   return {
     n,
     id: doc.id,
@@ -129,7 +142,8 @@ function toSource(doc, n) {
 }
 
 const SYSTEM_PROMPT = `You are the Visit Ethiopia travel assistant on a tourism booking platform.
-Answer questions about places to visit in Ethiopia — historic sites (Lalibela, Gondar, Axum, Harar…), nature, and the new tourism projects (Unity Park, Entoto, Gorgora, Beynouna Village, Logo Hayk and others) — and the hotels, lodges and restaurants there.
+Answer questions about travel in Ethiopia: historic and religious sites (Lalibela, Gondar, Axum, Harar…), nature, lakes and wildlife, Addis Ababa's museums and sights, festivals (Timket, Meskel, Irreecha…), food and coffee culture, the new tourism projects (Unity Park, Entoto, Gorgora, Beynouna Village, Logo Hayk and others), and the hotels, lodges and restaurants there.
+When the context contains a "Guide index" list and the visitor asks what you know or where to go, summarise the list by group and offer to tell them more about any place.
 
 Rules:
 - Use ONLY the numbered context below. If it does not contain the answer, say you don't have that information and suggest what the visitor could ask or check instead. Never invent prices, phone numbers, opening hours or facts.
@@ -162,8 +176,10 @@ function retrievalAnswer(blocks, question) {
   const parts = []
   for (const group of [...byPlace.values()].slice(0, 2)) {
     const b = group.find((x) => x.doc.section === want) || group.find((x) => x.doc.section === 'overview') || group[0]
-    const body = b.text.split('\n').slice(1).join('\n').trim()
-    const short = body.length > 700 ? `${body.slice(0, 700).replace(/\s+\S*$/, '')}…` : body
+    const isIndex = b.doc.section === 'index'
+    const body = (isIndex ? b.text : b.text.split('\n').slice(1).join('\n')).trim()
+    const max = isIndex ? 4000 : 700
+    const short = body.length > max ? `${body.slice(0, max).replace(/\s+\S*$/, '')}…` : body
     parts.push(`**${b.doc.title}** [${b.n}]\n${short}`)
   }
   const live = blocks.filter((b) => b.doc.type)

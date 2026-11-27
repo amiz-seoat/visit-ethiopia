@@ -47,9 +47,9 @@ export function TravelCompaniesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-emerald-900 text-white py-16 px-4 text-center">
+      <div className="bg-amber-900 text-white py-16 px-4 text-center">
         <h1 className="text-4xl font-bold mb-2">Travel Companies</h1>
-        <p className="text-emerald-100 max-w-2xl mx-auto">
+        <p className="text-amber-100 max-w-2xl mx-auto">
           Browse verified Ethiopian travel companies and their curated tours
         </p>
       </div>
@@ -72,7 +72,7 @@ export function TravelCompaniesPage() {
                 />
                 <div className="p-5">
                   <div className="flex items-center gap-2 mb-2">
-                    <Building2 size={18} className="text-emerald-700" />
+                    <Building2 size={18} className="text-amber-700" />
                     <h2 className="font-bold text-lg text-gray-900">{c.name}</h2>
                   </div>
                   <p className="text-gray-600 text-sm line-clamp-2 mb-3">

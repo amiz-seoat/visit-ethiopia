@@ -43,7 +43,8 @@ This is an honest list of what the project does **not** do yet, or does only par
   - Restaurants and tours in the seed have no coordinates. Restaurants show Google Maps buttons by name; tours plot their destinations by matching names to the destinations catalogue.
   - Heavy production traffic should move to a commercial tile provider, as the OSM tile policy asks.
 - **Travel assistant (AI chatbot)**
-  - Answers only from the curated knowledge base (37 places: 18 classic sites, 19 new tourism projects) plus live public listings.
+  - Answers only from the curated knowledge base (92 places and topics: historic and religious sites, lakes, parks and wildlife, Addis Ababa museums and sights, festivals, food and coffee, and 24 new tourism projects) plus live public listings. Generated index chunks let it answer "which places do you know?" and "what festivals are there?" with complete lists.
+  - Many of the newer entries have no hotels, restaurants or coordinates listed, and several festival dates vary by a day between sources; these are flagged in each entry's `confidenceNotes`. Entries in Amhara, Tigray, Afar, Gambella and parts of Oromia carry the UK FCDO and US advisories as of November 2026.
   - Retrieval is keyword-based (BM25 with typo and transliteration tolerance), not semantic embeddings. Paraphrases that share no words with the guide may miss.
   - The knowledge base is static JSON, sourced and dated November 2026. Several entries carry caveats in `confidenceNotes`:
     - travel advisories for Tigray, Amhara and Afar;

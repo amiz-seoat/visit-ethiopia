@@ -58,7 +58,7 @@ export function ProviderRegisterPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
         <div className="bg-white rounded-xl shadow p-8 max-w-md text-center">
           <p className="text-gray-600 mb-4">Sign in to register as a provider.</p>
-          <Link to="/login" className="text-emerald-700 font-medium hover:underline">
+          <Link to="/login" className="text-amber-700 font-medium hover:underline">
             Go to login
           </Link>
         </div>
@@ -97,7 +97,7 @@ export function ProviderRegisterPage() {
     <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
-          <Building2 className="text-emerald-700" size={32} />
+          <Building2 className="text-amber-700" size={32} />
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Provider registration</h1>
             <p className="text-gray-500 text-sm">Your listing stays private until admin approval.</p>
@@ -109,7 +109,7 @@ export function ProviderRegisterPage() {
             <div
               key={label}
               className={`flex-1 text-center text-xs py-2 rounded ${
-                i === step ? 'bg-emerald-700 text-white' : i < step ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-500'
+                i === step ? 'bg-amber-600 text-white' : i < step ? 'bg-amber-100 text-amber-800' : 'bg-gray-200 text-gray-500'
               }`}
             >
               {label}
@@ -129,7 +129,7 @@ export function ProviderRegisterPage() {
                 <label
                   key={pt.value}
                   className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer ${
-                    providerTypes.includes(pt.value) ? 'border-emerald-600 bg-emerald-50' : 'border-gray-200'
+                    providerTypes.includes(pt.value) ? 'border-amber-600 bg-amber-50' : 'border-gray-200'
                   }`}
                 >
                   <input
@@ -269,7 +269,7 @@ export function ProviderRegisterPage() {
                 type="button"
                 onClick={() => setStep((s) => s + 1)}
                 disabled={step === 0 && providerTypes.length === 0}
-                className="flex items-center gap-1 bg-emerald-700 text-white px-5 py-2 rounded-lg disabled:opacity-50"
+                className="flex items-center gap-1 bg-amber-600 text-white px-5 py-2 rounded-lg disabled:opacity-50"
               >
                 Next <ChevronRight size={16} />
               </button>
@@ -278,7 +278,7 @@ export function ProviderRegisterPage() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={loading || !name.trim()}
-                className="bg-emerald-700 text-white px-5 py-2 rounded-lg disabled:opacity-50"
+                className="bg-amber-600 text-white px-5 py-2 rounded-lg disabled:opacity-50"
               >
                 {loading ? 'Creating…' : 'Create draft'}
               </button>

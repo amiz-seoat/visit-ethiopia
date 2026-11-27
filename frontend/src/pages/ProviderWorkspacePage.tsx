@@ -161,7 +161,7 @@ export function ProviderWorkspacePage() {
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <Link to="/dashboard" className="text-sm text-emerald-700 hover:underline">
+            <Link to="/dashboard" className="text-sm text-amber-700 hover:underline">
               ← Dashboard
             </Link>
             <h1 className="text-2xl font-bold text-gray-900 mt-2">{organization.name}</h1>
@@ -173,7 +173,7 @@ export function ProviderWorkspacePage() {
         </div>
 
         {isPublic && (
-          <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-lg text-sm">
+          <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg text-sm">
             Your approved profile is publicly visible.
             {approvedVersion && ` (v${approvedVersion.versionNumber})`}
           </div>
@@ -186,7 +186,7 @@ export function ProviderWorkspacePage() {
         )}
 
         {message && (
-          <div className="bg-emerald-50 text-emerald-800 px-4 py-3 rounded text-sm">{message}</div>
+          <div className="bg-amber-50 text-amber-800 px-4 py-3 rounded text-sm">{message}</div>
         )}
         {error && (
           <div className="bg-red-50 text-red-700 px-4 py-3 rounded text-sm">{error}</div>
@@ -304,7 +304,7 @@ export function ProviderWorkspacePage() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex items-center gap-2 bg-emerald-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                className="flex items-center gap-2 bg-amber-600 text-white px-4 py-2 rounded-lg disabled:opacity-50"
               >
                 <Send size={16} />
                 {submitting ? 'Submitting…' : 'Submit for approval'}

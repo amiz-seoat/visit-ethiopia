@@ -23,6 +23,19 @@ export const loginUser = async (credentials: { email: string; password: string }
   return res.data;
 };
 
+export const resendVerificationEmail = async (email: string): Promise<string> => {
+  const res = await api.post("/users/resend-verification", { email });
+  return res.data?.message as string;
+};
+
+/** True when a login failed only because the email isn't verified yet. */
+export const isEmailNotVerifiedError = (err: unknown): boolean =>
+  Boolean(
+    err &&
+      typeof err === "object" &&
+      (err as { response?: { data?: { code?: string } } }).response?.data?.code === "EMAIL_NOT_VERIFIED"
+  );
+
 export const verifyEmail = async (token: string) => {
   const res = await api.get(`/users/verify/${token}`);
   return res.data;

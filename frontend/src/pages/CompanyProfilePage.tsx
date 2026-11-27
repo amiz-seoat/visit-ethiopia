@@ -120,7 +120,7 @@ export function CompanyProfilePage() {
                       {tour.shortDescription}
                     </p>
                     <div className="flex justify-between items-center mt-3 text-sm">
-                      <span className="text-emerald-700 font-medium">
+                      <span className="text-amber-700 font-medium">
                         ETB {tour.price?.toLocaleString()}
                       </span>
                       <span className="text-gray-500">

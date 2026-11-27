@@ -2,11 +2,30 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Visit Ethiopia</title>
+    <title>Visit Ethiopia | Tours, Hotels, Transport and Travel Guide</title>
+    <meta
+      name="description"
+      content="Plan your trip to Ethiopia: book verified tours, hotels, transport and restaurants, explore destinations from Lalibela to the Simien Mountains, and ask the travel assistant."
+    />
+    <meta name="theme-color" content="#92400e" />
+    <meta property="og:title" content="Visit Ethiopia" />
+    <meta property="og:description" content="Book tours, hotels and transport across Ethiopia, and explore its destinations." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Apply the saved theme before first paint so night mode doesn't flash white.
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('ve-theme'); } catch (e) {}
+        var dark = t === 'dark' || (t !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+      })();
+    </script>
   </head>
   <body>
+    <noscript>Visit Ethiopia needs JavaScript enabled to run.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/index.tsx"></script>
   </body>

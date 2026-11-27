@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getErrorMessage } from '../services/api';
+import { VerifyEmailNotice } from '../components/auth/VerifyEmailNotice';
 
 export function RegisterPage() {
   const { signup } = useAuth();
@@ -10,6 +11,8 @@ export function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [registeredEmail, setRegisteredEmail] = useState('');
+  const [emailSent, setEmailSent] = useState(true);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -63,8 +66,15 @@ export function RegisterPage() {
         password: formData.password,
         passwordConfirm: formData.confirmPassword,
       });
-      setSuccess(res.message || 'Account created! Please check your email to verify your account.');
-      setTimeout(() => navigate('/login'), 3000);
+      if (res.emailSent === true || res.emailSent === false) {
+        // Verification required: show the inbox panel (with resend) instead of redirecting.
+        setRegisteredEmail(formData.email.trim());
+        setEmailSent(res.emailSent);
+      } else {
+        // Email verification not enforced (no provider configured): go straight to sign-in.
+        setSuccess(res.message || 'Account created! You can now sign in.');
+        setTimeout(() => navigate('/login'), 2000);
+      }
     } catch (err) {
       setError(getErrorMessage(err, 'Registration failed'));
     } finally {
@@ -105,6 +115,29 @@ export function RegisterPage() {
   };
   const passwordStrength = getPasswordStrength(formData.password);
   const passwordsMatch = formData.password === formData.confirmPassword && formData.password !== '';
+  if (registeredEmail) {
+    return <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-md mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-md px-6 py-8 border border-transparent dark:border-gray-800">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 text-center mb-6">
+              {emailSent ? 'Check your inbox' : 'Account created'}
+            </h1>
+            <VerifyEmailNotice
+              email={registeredEmail}
+              tone={emailSent ? 'green' : 'amber'}
+              title={emailSent ? 'One more step: verify your email' : "We couldn't send the verification email yet"}
+              intro={emailSent ? 'We sent a verification link to' : 'Your account is ready, but the email to'}
+            />
+            {!emailSent && <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                didn't go out. Wait a minute, then press "Resend verification email".
+              </p>}
+            <Link to="/login" className="block w-full text-center bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded-md">
+              Go to sign in
+            </Link>
+          </div>
+        </div>
+      </div>;
+  }
   return <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">

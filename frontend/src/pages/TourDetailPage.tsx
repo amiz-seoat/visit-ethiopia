@@ -101,7 +101,7 @@ export function TourDetailPage() {
           {tour.organization?.slug && (
             <Link
               to={`/companies/${tour.organization.slug}`}
-              className="text-emerald-200 hover:text-white text-sm mb-2 inline-block"
+              className="text-amber-200 hover:text-white text-sm mb-2 inline-block"
             >
               by {tour.organization.name}
             </Link>
@@ -138,7 +138,7 @@ export function TourDetailPage() {
                   className="w-full h-96 object-cover"
                 />
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4">
                 {images.map((image, index) => (
                   <button
                     type="button"
@@ -147,8 +147,10 @@ export function TourDetailPage() {
                       selectedImage === index ? 'ring-2 ring-amber-500' : ''
                     }`}
                     onClick={() => setSelectedImage(index)}
+                    aria-label={`Show photo ${index + 1}`}
+                    aria-pressed={selectedImage === index}
                   >
-                    <img src={image} alt="" className="w-full h-full object-cover" />
+                    <img src={image} alt="" loading="lazy" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

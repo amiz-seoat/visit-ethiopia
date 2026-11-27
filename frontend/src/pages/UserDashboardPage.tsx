@@ -195,12 +195,12 @@ export function UserDashboardPage() {
                 </button>
               </nav>
             </div>
-            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
               <h3 className="font-medium mb-1">Become a provider</h3>
               <p className="text-sm text-gray-600 mb-2">
                 Register your company and submit for admin approval.
               </p>
-              <Link to="/provider/register" className="text-emerald-800 font-medium text-sm underline">
+              <Link to="/provider/register" className="text-amber-800 font-medium text-sm underline">
                 Provider registration
               </Link>
             </div>

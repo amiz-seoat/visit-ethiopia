@@ -10,7 +10,7 @@ export function Layout({
 }: LayoutProps) {
   return <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow">{children}</main>
+      <main id="main-content" tabIndex={-1} className="flex-grow outline-none">{children}</main>
       <Footer />
       <TravelAssistant />
     </div>;

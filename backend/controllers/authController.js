@@ -62,8 +62,13 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401))
   }
 
+  // Only reached with the correct password, so this can't be used to probe emails.
   if (!user.isVerified) {
-    return next(new AppError('Please verify your email first.', 401))
+    return res.status(403).json({
+      status: 'fail',
+      code: 'EMAIL_NOT_VERIFIED',
+      message: 'Please verify your email address. We sent a verification link to your inbox when you signed up.',
+    })
   }
 
   createSendToken(user, 200, res)
@@ -157,18 +162,6 @@ export const signup = catchAsync(async (req, res, next) => {
     role: 'user',
   })
 
-  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-    expiresIn: '1d',
-  })
-
-  const backendUrl = (
-    process.env.PUBLIC_BACKEND_URL ||
-    (process.env.NODE_ENV === 'production'
-      ? process.env.PROD_BACKEND_URL || process.env.BACKEND_URL
-      : process.env.BACKEND_URL) ||
-    ''
-  ).replace(/\/$/, '')
-
   // Production without an email provider: verification email cannot be sent,
   // so accounts are activated immediately (documented limitation). Once
   // EMAIL_USER/EMAIL_PASS are configured, verification is enforced.
@@ -186,35 +179,16 @@ export const signup = catchAsync(async (req, res, next) => {
     })
   }
 
-  const verifyUrl = `${backendUrl}/api/v1/users/verify/${token}`
-
-  const message = `Please verify your email: ${verifyUrl}`
-
-  const htmlMessage = `
-  <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
-    <h2>Welcome, ${newUser.FirstName}! 🎉</h2>
-    <p>Thanks for signing up. Please verify your email by clicking the button below:</p>
-    <a href="${verifyUrl}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-      Verify Email
-    </a>
-    <p>If the button doesn't work, copy and paste this link in your browser:</p>
-    <p><a href="${verifyUrl}">${verifyUrl}</a></p>
-  </div>
-`
-
+  let verifyUrl
   try {
-    await sendEmail({
-      email: newUser.email,
-      subject: 'Verify your email',
-      message,
-      html: htmlMessage,
-    })
-
+    verifyUrl = await sendVerificationEmail(newUser)
     return res.status(201).json({
       status: 'success',
+      emailSent: true,
       message: 'User created! Please check your email to verify your account.',
     })
   } catch (err) {
+    verifyUrl = verificationUrl(newUser)
     if (process.env.NODE_ENV !== 'production') {
       newUser.isVerified = true
       if (isPrismaIdentity() && users.setVerified) {
@@ -235,14 +209,90 @@ export const signup = catchAsync(async (req, res, next) => {
       })
     }
 
-    await users.deleteById(newUser._id)
-    return next(
-      new AppError(
-        'There was an error sending the email. Try again later.',
-        500
-      )
-    )
+    // Keep the account: the user can request a new link from the sign-in page
+    // once email delivery works again (deleting it forced a full re-signup).
+    return res.status(201).json({
+      status: 'success',
+      emailSent: false,
+      message:
+        "Your account was created, but we couldn't send the verification email right now. Use \"Resend verification email\" on the sign-in page in a few minutes.",
+    })
   }
+})
+
+const escapeHtml = (s) =>
+  String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+
+function verificationUrl(user) {
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
+  const backendUrl = (
+    process.env.PUBLIC_BACKEND_URL ||
+    (process.env.NODE_ENV === 'production'
+      ? process.env.PROD_BACKEND_URL || process.env.BACKEND_URL
+      : process.env.BACKEND_URL) ||
+    ''
+  ).replace(/\/$/, '')
+  return `${backendUrl}/api/v1/users/verify/${token}`
+}
+
+/** Send (or re-send) the verification email. Returns the link. Throws if sending fails. */
+async function sendVerificationEmail(user) {
+  const verifyUrl = verificationUrl(user)
+  const name = escapeHtml(user.FirstName || user.firstName || 'traveler')
+  await sendEmail({
+    email: user.email,
+    subject: 'Verify your email',
+    message: `Welcome to Visit Ethiopia! Please verify your email (link valid for 24 hours): ${verifyUrl}`,
+    html: `
+  <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; color: #1f2937;">
+    <h2 style="color: #92400e; margin: 0 0 12px;">Welcome to Visit Ethiopia, ${name}!</h2>
+    <p>Please confirm your email address to start booking tours, hotels and transport.</p>
+    <p style="text-align: center; margin: 28px 0;">
+      <a href="${verifyUrl}" style="background: #d97706; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Verify my email</a>
+    </p>
+    <p style="font-size: 13px; color: #6b7280;">This link is valid for 24 hours. If the button doesn't work, copy this link into your browser:</p>
+    <p style="font-size: 13px; word-break: break-all;"><a href="${verifyUrl}">${verifyUrl}</a></p>
+    <p style="font-size: 13px; color: #6b7280;">If you didn't create an account, you can ignore this email.</p>
+  </div>`,
+  })
+  return verifyUrl
+}
+
+// Per-address cooldown so the resend endpoint can't be used to flood an inbox.
+const resendCooldown = new Map()
+const RESEND_COOLDOWN_MS = 60 * 1000
+
+/**
+ * POST /users/resend-verification { email }
+ * Always answers the same way so it can't be used to discover which emails
+ * have accounts.
+ */
+export const resendVerification = catchAsync(async (req, res) => {
+  const email = String(req.body?.email || '').trim().toLowerCase()
+  const generic = {
+    status: 'success',
+    message: 'If that account exists and is not verified yet, we have sent a new verification link. Check your inbox and spam folder.',
+  }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 254) {
+    return res.status(400).json({ status: 'fail', message: 'Please enter a valid email address.' })
+  }
+  const last = resendCooldown.get(email) || 0
+  if (Date.now() - last < RESEND_COOLDOWN_MS) {
+    return res.status(200).json(generic)
+  }
+  resendCooldown.set(email, Date.now())
+  if (resendCooldown.size > 5000) resendCooldown.clear()
+
+  const users = getUserRepository()
+  const user = await users.findByEmailForLogin(email)
+  if (user && !user.isVerified && user.active !== false) {
+    try {
+      await sendVerificationEmail(user)
+    } catch {
+      // Logged by the email layer; the response stays generic.
+    }
+  }
+  return res.status(200).json(generic)
 })
 
 export const verifyEmail = catchAsync(async (req, res, next) => {

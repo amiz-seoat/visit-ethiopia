@@ -27,7 +27,7 @@ export function TourCard({
   return <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
       <Link to={`/tours/${id}`}>
         <div className="relative h-48 overflow-hidden">
-          <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
+          <img src={image} alt={title} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
           <div className="absolute top-0 right-0 bg-amber-600 text-white px-3 py-1 m-2 rounded-full text-sm font-medium">
             {Number(price).toLocaleString()} {currency}
           </div>
@@ -35,14 +35,12 @@ export function TourCard({
       </Link>
       <div className="p-4">
         <div className="flex items-center mb-2">
-          <div className="flex text-amber-500">
-            {Array.from({
-            length: 5
-          }).map((_, i) => <Star key={i} size={16} fill={i < rating ? 'currentColor' : 'none'} className={i < rating ? 'text-amber-500' : 'text-gray-300'} />)}
-          </div>
-          <span className="ml-1 text-sm text-gray-600">
-            ({rating.toFixed(1)})
-          </span>
+          {rating > 0 ? <>
+              <div className="flex text-amber-500" aria-label={`Rated ${rating.toFixed(1)} out of 5`}>
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} aria-hidden="true" fill={i < Math.round(rating) ? 'currentColor' : 'none'} className={i < Math.round(rating) ? 'text-amber-500' : 'text-gray-300'} />)}
+              </div>
+              <span className="ml-1 text-sm text-gray-600">({rating.toFixed(1)})</span>
+            </> : <span className="text-xs font-medium uppercase tracking-wide bg-amber-100 text-amber-800 px-2 py-0.5 rounded">New</span>}
         </div>
         <Link to={`/tours/${id}`}>
           <h3 className="font-bold text-lg mb-1 hover:text-amber-600 transition-colors">

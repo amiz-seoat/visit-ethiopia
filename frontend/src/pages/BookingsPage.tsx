@@ -156,15 +156,15 @@ export function BookingsPage() {
                       {bookingStatusLabel(booking.status)}
                     </span>
                     {isV2Booking(booking) ? (
-                      <span className="text-xs text-gray-400">Tour v2</span>
+                      <span className="text-xs text-gray-500">Tour v2</span>
                     ) : (
-                      <span className="text-xs text-gray-400">Legacy</span>
+                      <span className="text-xs text-gray-500">Legacy</span>
                     )}
                   </div>
                   <p className="text-sm text-gray-600">
                     Departure: {bookingDate(booking)} · {bookingAmount(booking)}
                   </p>
-                  <p className="text-xs text-gray-400 mt-1 font-mono">
+                  <p className="text-xs text-gray-500 mt-1 font-mono">
                     Ref {booking._id.slice(-8).toUpperCase()}
                   </p>
                 </div>

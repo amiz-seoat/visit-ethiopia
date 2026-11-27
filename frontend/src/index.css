@@ -3,3 +3,104 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 /* DO NOT DELETE THESE TAILWIND IMPORTS, OTHERWISE THE STYLING WILL NOT RENDER AT ALL */
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-white text-gray-900 antialiased;
+  }
+  html.dark body {
+    @apply bg-gray-950 text-gray-100;
+  }
+  /* Visible keyboard focus everywhere (mouse clicks don't show it). */
+  :focus-visible {
+    outline: 2px solid #d97706;
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/*
+ * Night mode.
+ * Most pages are written with neutral light-theme utilities (bg-white, text-gray-700…).
+ * Instead of duplicating `dark:` classes on every element, these rules remap the
+ * neutral palette when <html class="dark"> is set. The amber brand colours are kept.
+ * They live in the components layer, so an explicit `dark:` utility on an element
+ * (same specificity, later layer) still wins.
+ */
+@layer components {
+  /* Surfaces */
+  .dark .bg-white { background-color: #111827; }          /* gray-900 */
+  .dark .bg-gray-50 { background-color: #0b1120; }        /* page background */
+  .dark .bg-gray-100 { background-color: #1f2937; }       /* gray-800 */
+  .dark .bg-gray-200 { background-color: #374151; }       /* gray-700 */
+  .dark .bg-white\/80 { background-color: rgb(17 24 39 / 0.8); }
+  .dark .bg-slate-100 { background-color: #1e293b; }
+  .dark .hover\:bg-gray-50:hover { background-color: #1f2937; }
+  .dark .hover\:bg-gray-100:hover { background-color: #374151; }
+  .dark .hover\:bg-gray-200:hover { background-color: #4b5563; }
+
+  /* Text */
+  .dark .text-gray-900, .dark .text-slate-800 { color: #f3f4f6; }
+  .dark .text-gray-800 { color: #e5e7eb; }
+  .dark .text-gray-700 { color: #d1d5db; }
+  .dark .text-gray-600 { color: #a1a8b3; }
+  .dark .text-gray-500 { color: #9ca3af; }
+  .dark .text-gray-400 { color: #8b93a1; }
+  .dark .hover\:text-gray-800:hover, .dark .hover\:text-gray-900:hover { color: #ffffff; }
+
+  /* Borders & dividers */
+  .dark .border-gray-100, .dark .border-gray-200 { border-color: #1f2937; }
+  .dark .border-gray-300 { border-color: #374151; }
+  .dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+  .dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]),
+  .dark .divide-y > :not([hidden]) ~ :not([hidden]) { border-color: #1f2937; }
+  .dark .border-b, .dark .border-t, .dark .border { border-color: #1f2937; }
+  .dark .ring-gray-200 { --tw-ring-color: #374151; }
+
+  /* Brand tints: keep amber, darken the pale backgrounds */
+  .dark .bg-amber-50 { background-color: rgb(120 53 15 / 0.22); }
+  .dark .bg-amber-100 { background-color: rgb(120 53 15 / 0.4); }
+  .dark .hover\:bg-amber-50:hover { background-color: rgb(120 53 15 / 0.3); }
+  .dark .hover\:bg-amber-100:hover { background-color: rgb(120 53 15 / 0.5); }
+  .dark .text-amber-900, .dark .text-amber-800 { color: #fcd34d; }
+  .dark .text-amber-700 { color: #fbbf24; }
+  .dark .border-amber-200 { border-color: rgb(180 83 9 / 0.5); }
+
+  /* Status tints (alerts, badges) */
+  .dark .bg-green-50, .dark .bg-green-100 { background-color: rgb(20 83 45 / 0.35); }
+  .dark .text-green-700, .dark .text-green-800 { color: #86efac; }
+  .dark .bg-red-50, .dark .bg-red-100 { background-color: rgb(127 29 29 / 0.35); }
+  .dark .text-red-600, .dark .text-red-700, .dark .text-red-800 { color: #fca5a5; }
+  .dark .bg-blue-50, .dark .bg-blue-100 { background-color: rgb(30 58 138 / 0.35); }
+  .dark .text-blue-700, .dark .text-blue-800 { color: #93c5fd; }
+  .dark .bg-orange-50 { background-color: rgb(124 45 18 / 0.3); }
+  .dark .text-orange-800 { color: #fdba74; }
+  .dark .bg-emerald-50 { background-color: rgb(6 78 59 / 0.35); }
+  .dark .text-emerald-700, .dark .text-emerald-800 { color: #6ee7b7; }
+
+  /* Form controls */
+  .dark input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  .dark select,
+  .dark textarea {
+    background-color: #111827;
+    color: #f3f4f6;
+    border-color: #374151;
+  }
+  .dark input::placeholder, .dark textarea::placeholder { color: #6b7280; }
+
+  /* Leaflet maps: dim the bright tiles a little, keep markers vivid */
+  .dark .leaflet-tile-pane { filter: brightness(0.75) contrast(1.1) saturate(0.85); }
+  .dark .leaflet-popup-content-wrapper, .dark .leaflet-popup-tip { background: #1f2937; color: #f3f4f6; }
+  .dark .leaflet-container { background: #0b1120; }
+}

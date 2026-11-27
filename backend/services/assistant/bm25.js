@@ -8,7 +8,8 @@ const STOPWORDS = new Set(
   `a an and are as at be by can could do does for from had has have how i if in into is it its
   me my of on or our so than that the their them then there these they this to us was we were
   what when where which who why will with would you your about any some get tell show give want
-  like near nearby around best good visit visiting go going see place places please also there's`
+  like near nearby around best good visit visiting go going see place places please also there's
+  help know need just really thing things lot much many more very`
     .split(/\s+/)
     .filter(Boolean)
 )

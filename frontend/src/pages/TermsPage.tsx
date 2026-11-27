@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { SITE } from '../config/site';
 export function TermsPage() {
   return <div className="w-full bg-gray-50">
       {/* Hero Section */}
@@ -8,7 +10,7 @@ export function TermsPage() {
             Terms and Conditions
           </h1>
           <p className="text-gray-600 text-center mt-4 max-w-3xl mx-auto">
-            Last updated: November 1, 2023
+            Last updated: {SITE.policiesUpdated}
           </p>
         </div>
       </div>
@@ -31,84 +33,36 @@ export function TermsPage() {
               Terms. If you disagree with any part of the terms then you may not
               access the Service.
             </p>
-            <h2 className="text-2xl font-bold mt-8 mb-4">
-              Booking and Reservations
-            </h2>
+            <h2 className="text-2xl font-bold mt-8 mb-4">Our role</h2>
             <p className="mb-6">
-              When making a booking through our Service, you agree to provide
-              accurate, current, and complete information. All bookings are
-              subject to availability and confirmation. Prices displayed are per
-              person unless otherwise stated and are subject to change without
-              prior notice until your booking is confirmed with payment.
+              Visit Ethiopia is a marketplace. Tours, accommodation, transport and restaurant services listed on the Service are
+              provided by independent businesses (“Providers”), not by Visit Ethiopia. When you book, your agreement for the
+              service itself is with the Provider. We operate the platform, review Provider profiles before their listings are
+              published, and process payments on the Provider’s behalf.
             </p>
+            <h2 className="text-2xl font-bold mt-8 mb-4">Booking and Reservations</h2>
             <p className="mb-6">
-              A contract between you and Visit Ethiopia will exist once we
-              accept your booking and send you a confirmation invoice. If your
-              booking cannot be confirmed, we will refund any payment made.
+              When making a booking you agree to provide accurate, current and complete information. All bookings are subject
+              to availability. The price, inclusions and any conditions shown on the listing at the time you book apply to your
+              booking. You can see the status of every booking under My bookings.
             </p>
             <h2 className="text-2xl font-bold mt-8 mb-4">Payment</h2>
             <p className="mb-6">
-              To secure your booking, we require a deposit of 25% of the total
-              tour price at the time of booking, with the remaining balance due
-              60 days before the tour start date. For bookings made within 60
-              days of the departure date, full payment is required at the time
-              of booking.
+              Prices are shown and charged in Ethiopian Birr (ETB). Payments are processed by our payment partner Chapa using the
+              methods Chapa offers at checkout. A booking is only marked as paid after the payment has been verified with Chapa;
+              returning to our site from the payment page does not by itself confirm payment. Your bank or payment method may
+              charge its own fees.
             </p>
-            <p className="mb-6">
-              We accept payments via credit card, bank transfer, or other
-              methods specified at the time of booking. All payments are to be
-              made in US dollars unless otherwise specified. You are responsible
-              for any bank charges or fees associated with your payment method.
-            </p>
-            <h2 className="text-2xl font-bold mt-8 mb-4">
-              Cancellation and Refund Policy
-            </h2>
-            <h3 className="text-xl font-bold mt-6 mb-3">
-              Cancellation by Client
-            </h3>
+            <h2 className="text-2xl font-bold mt-8 mb-4">Cancellation and Refund Policy</h2>
             <p className="mb-4">
-              If you need to cancel your booking, the following cancellation
-              fees apply:
+              You can request a cancellation from the booking’s page under My bookings. Whether a refund is due, and how much,
+              depends on the Provider’s cancellation terms shown on the listing and on how close the cancellation is to the
+              service date. Approved refunds are returned through Chapa to the original payment method; processing times depend
+              on Chapa and your bank.
             </p>
-            <ul className="list-disc pl-6 mb-6 space-y-2">
-              <li>
-                More than 60 days before departure: 10% of total tour cost
-              </li>
-              <li>60-30 days before departure: 25% of total tour cost</li>
-              <li>29-15 days before departure: 50% of total tour cost</li>
-              <li>14-7 days before departure: 75% of total tour cost</li>
-              <li>
-                Less than 7 days before departure or no-show: 100% of total tour
-                cost
-              </li>
-            </ul>
             <p className="mb-6">
-              All cancellations must be made in writing to
-              bookings@visitethiopia.com. The date on which the email is
-              received by us will determine the cancellation charges applicable.
-            </p>
-            <h3 className="text-xl font-bold mt-6 mb-3">
-              Cancellation by Visit Ethiopia
-            </h3>
-            <p className="mb-6">
-              We reserve the right to cancel any trip due to insufficient
-              enrollment or other factors that make operation unfeasible. If we
-              cancel a trip, all payments received will be refunded in full.
-              This is the limit of our liability. Visit Ethiopia is not
-              responsible for additional expenses incurred by participants in
-              preparing for the trip (e.g., non-refundable airline tickets, visa
-              fees, equipment, etc.).
-            </p>
-            <h2 className="text-2xl font-bold mt-8 mb-4">
-              Changes to Bookings
-            </h2>
-            <p className="mb-6">
-              If you wish to make changes to your confirmed booking, we will
-              make reasonable efforts to accommodate your request. An
-              administration fee of $50 may apply, in addition to any difference
-              in price for the altered arrangements. Changes requested less than
-              30 days before departure may be treated as a cancellation and
-              rebooking, subject to cancellation charges as outlined above.
+              If a Provider cancels a confirmed booking, or the service cannot be delivered for reasons within the Provider’s
+              control, you are entitled to a full refund of the amount paid for that booking.
             </p>
             <h2 className="text-2xl font-bold mt-8 mb-4">Travel Insurance</h2>
             <p className="mb-6">
@@ -197,10 +151,10 @@ export function TermsPage() {
             </p>
             <div className="mb-6">
               <p className="font-medium">Visit Ethiopia</p>
-              <p>123 Main Street</p>
-              <p>Addis Ababa, Ethiopia</p>
-              <p>Email: legal@visitethiopia.com</p>
-              <p>Phone: +251 123 456 789</p>
+              {SITE.contactAddress && <p>{SITE.contactAddress}</p>}
+              {SITE.contactEmail && <p>Email: <a href={`mailto:${SITE.contactEmail}`} className="text-amber-700 hover:underline">{SITE.contactEmail}</a></p>}
+              {SITE.contactPhone && <p>Phone: {SITE.contactPhone}</p>}
+              <p>Or use our <Link to="/contact" className="text-amber-700 hover:underline">contact form</Link> and choose “Other”.</p>
             </div>
           </div>
         </div>

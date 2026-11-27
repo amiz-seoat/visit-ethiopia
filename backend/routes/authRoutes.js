@@ -9,6 +9,7 @@ import {
   forgotPassword,
   resetPassword,
   updatePassword,
+  resendVerification,
 } from '../controllers/authController.js'
 import {
   getMyProfile,
@@ -29,6 +30,7 @@ const router = express.Router()
 router.post('/signup', signup)
 router.post('/login', login)
 router.get('/verify/:token', verifyEmail)
+router.post('/resend-verification', resendVerification)
 router.post('/logout', logOut)
 
 router.post('/forgotPassword', forgotPassword)

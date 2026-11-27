@@ -26,7 +26,6 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import { AboutPage } from './pages/AboutPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { TermsPage } from './pages/TermsPage'
-import { BlogPage } from './pages/BlogPage'
 import { BlogPostPage } from './pages/BlogPostPage'
 import { RestaurantsPage } from './pages/RestaurantsPage'
 import { RestaurantDetailPage } from './pages/RestaurantDetailPage'
@@ -36,6 +35,8 @@ import { ProviderBookingsPage } from './pages/ProviderBookingsPage'
 import { ProviderBookingDetailPage } from './pages/ProviderBookingDetailPage'
 import { TravelCompaniesPage } from './pages/TravelCompaniesPage'
 import { CompanyProfilePage } from './pages/CompanyProfilePage'
+import { NotFoundPage } from './pages/NotFoundPage'
+import { RouteTitle } from './components/layout/RouteTitle'
 
 function ProviderBookingsRedirect() {
   const orgId = localStorage.getItem('activeOrganizationId')
@@ -54,9 +55,15 @@ function ProviderBookingDetailRedirect() {
   return <Navigate to="/dashboard" replace />
 }
 
+function BlogRedirect() {
+  const { id } = useParams<{ id: string }>()
+  return <Navigate to={id ? `/news/${id}` : '/news'} replace />
+}
+
 export function App() {
   return (
     <BrowserRouter>
+      <RouteTitle />
       <Routes>
         <Route path="/" element={<Layout><HomePage /></Layout>} />
         <Route path="/tours" element={<Layout><ToursPage /></Layout>} />
@@ -95,8 +102,9 @@ export function App() {
         <Route path="/about" element={<Layout><AboutPage /></Layout>} />
         <Route path="/privacy" element={<Layout><PrivacyPolicyPage /></Layout>} />
         <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
-        <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
-        <Route path="/blog/:id" element={<Layout><BlogPostPage /></Layout>} />
+        {/* The blog was a duplicate of News: keep old links working. */}
+        <Route path="/blog" element={<Navigate to="/news" replace />} />
+        <Route path="/blog/:id" element={<BlogRedirect />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -105,7 +113,7 @@ export function App() {
           path="/provider/register"
           element={
             <ProtectedRoute>
-              <ProviderRegisterPage />
+              <Layout><ProviderRegisterPage /></Layout>
             </ProtectedRoute>
           }
         />
@@ -113,7 +121,7 @@ export function App() {
           path="/provider/workspace/:organizationId"
           element={
             <ProtectedRoute>
-              <ProviderWorkspacePage />
+              <Layout><ProviderWorkspacePage /></Layout>
             </ProtectedRoute>
           }
         />
@@ -153,7 +161,7 @@ export function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <UserDashboardPage />
+              <Layout><UserDashboardPage /></Layout>
             </ProtectedRoute>
           }
         />
@@ -173,6 +181,7 @@ export function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
       </Routes>
     </BrowserRouter>
   )

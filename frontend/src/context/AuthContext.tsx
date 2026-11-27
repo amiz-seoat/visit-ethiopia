@@ -25,7 +25,7 @@ interface AuthContextValue {
     email: string;
     password: string;
     passwordConfirm: string;
-  }) => Promise<{ message?: string }>;
+  }) => Promise<{ message?: string; emailSent?: boolean }>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   hasRole: (...roles: UserRole[]) => boolean;

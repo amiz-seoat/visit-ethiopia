@@ -193,7 +193,7 @@ export function ProviderBookingDetailPage() {
       <div className="max-w-3xl mx-auto">
         <Link
           to={`/provider/workspace/${organizationId}/bookings`}
-          className="text-sm text-emerald-700 hover:underline"
+          className="text-sm text-amber-700 hover:underline"
         >
           ← Bookings
         </Link>
@@ -426,7 +426,7 @@ export function ProviderBookingDetailPage() {
                   type="button"
                   disabled={busy}
                   onClick={() => setConfirmAction('check-out')}
-                  className="bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-medium px-4 py-2 rounded-md disabled:opacity-60"
+                  className="bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium px-4 py-2 rounded-md disabled:opacity-60"
                 >
                   Check out
                 </button>
@@ -436,7 +436,7 @@ export function ProviderBookingDetailPage() {
                   type="button"
                   disabled={busy}
                   onClick={() => setConfirmAction('complete')}
-                  className="bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-medium px-4 py-2 rounded-md disabled:opacity-60"
+                  className="bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium px-4 py-2 rounded-md disabled:opacity-60"
                 >
                   Mark completed
                 </button>

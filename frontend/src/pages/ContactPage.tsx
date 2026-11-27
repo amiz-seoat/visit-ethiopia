@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle, HelpCircle } from 'lucide-react';
+import { SITE } from '../config/site';
 import { submitContact } from '../api/contact';
 import { getErrorMessage } from '../services/api';
 
@@ -48,8 +50,7 @@ export function ContactPage() {
         <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
           <p className="text-xl max-w-3xl">
-            Get in touch with our travel experts to plan your Ethiopian
-            adventure
+            Questions about a booking, a listing or planning your trip? Send us a message.
           </p>
         </div>
       </div>
@@ -60,82 +61,52 @@ export function ContactPage() {
             {/* Contact Information */}
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold mb-6">Get In Touch</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-6">Get In Touch</h2>
                 <div className="space-y-6">
-                  <div className="flex items-start">
+                  {SITE.contactPhone && <div className="flex items-start">
                     <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center mr-4 flex-shrink-0">
                       <Phone className="h-5 w-5 text-amber-600" />
                     </div>
                     <div>
                       <h3 className="font-medium mb-1">Phone</h3>
-                      <p className="text-gray-600">+251 123 456 789</p>
-                      <p className="text-gray-600">+251 987 654 321</p>
+                      <a href={`tel:${SITE.contactPhone.replace(/\s+/g, "")}`} className="text-gray-600 hover:text-amber-700">{SITE.contactPhone}</a>
                     </div>
-                  </div>
-                  <div className="flex items-start">
+                  </div>}
+                  {SITE.contactEmail && <div className="flex items-start">
                     <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center mr-4 flex-shrink-0">
                       <Mail className="h-5 w-5 text-amber-600" />
                     </div>
                     <div>
                       <h3 className="font-medium mb-1">Email</h3>
-                      <p className="text-gray-600">info@visitethiopia.com</p>
-                      <p className="text-gray-600">
-                        bookings@visitethiopia.com
-                      </p>
+                      <a href={`mailto:${SITE.contactEmail}`} className="text-gray-600 hover:text-amber-700 break-all">{SITE.contactEmail}</a>
                     </div>
-                  </div>
-                  <div className="flex items-start">
+                  </div>}
+                  {SITE.contactAddress && <div className="flex items-start">
                     <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center mr-4 flex-shrink-0">
                       <MapPin className="h-5 w-5 text-amber-600" />
                     </div>
                     <div>
                       <h3 className="font-medium mb-1">Address</h3>
-                      <p className="text-gray-600">123 Main Street</p>
-                      <p className="text-gray-600">Addis Ababa, Ethiopia</p>
+                      <p className="text-gray-600">{SITE.contactAddress}</p>
                     </div>
-                  </div>
+                  </div>}
                   <div className="flex items-start">
                     <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center mr-4 flex-shrink-0">
                       <Clock className="h-5 w-5 text-amber-600" />
                     </div>
                     <div>
-                      <h3 className="font-medium mb-1">Office Hours</h3>
-                      <p className="text-gray-600">
-                        Monday - Friday: 9AM - 5PM
-                      </p>
-                      <p className="text-gray-600">Saturday: 10AM - 2PM</p>
-                      <p className="text-gray-600">Sunday: Closed</p>
+                      <h3 className="font-medium mb-1">Response time</h3>
+                      <p className="text-gray-600">We reply to messages by email, usually within one to two business days.</p>
                     </div>
                   </div>
-                </div>
-                {/* Social Media Links */}
-                <div className="mt-8">
-                  <h3 className="font-medium mb-3">Follow Us</h3>
-                  <div className="flex space-x-4">
-                    <a href="#" className="h-10 w-10 rounded-full bg-gray-100 hover:bg-amber-100 flex items-center justify-center text-gray-600 hover:text-amber-600 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                      </svg>
-                    </a>
-                    <a href="#" className="h-10 w-10 rounded-full bg-gray-100 hover:bg-amber-100 flex items-center justify-center text-gray-600 hover:text-amber-600 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                      </svg>
-                    </a>
-                    <a href="#" className="h-10 w-10 rounded-full bg-gray-100 hover:bg-amber-100 flex items-center justify-center text-gray-600 hover:text-amber-600 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                      </svg>
-                    </a>
-                    <a href="#" className="h-10 w-10 rounded-full bg-gray-100 hover:bg-amber-100 flex items-center justify-center text-gray-600 hover:text-amber-600 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                        <rect x="2" y="9" width="4" height="12"></rect>
-                        <circle cx="4" cy="4" r="2"></circle>
-                      </svg>
-                    </a>
+                  <div className="flex items-start">
+                    <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center mr-4 flex-shrink-0">
+                      <HelpCircle className="h-5 w-5 text-amber-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-1">About an existing booking?</h3>
+                      <p className="text-gray-600">Include your booking reference from <Link to="/bookings" className="text-amber-700 hover:underline">My bookings</Link> so we can help faster.</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -155,7 +126,7 @@ export function ContactPage() {
                       </h3>
                       <p className="text-green-700">
                         We have received your inquiry and will get back to you
-                        as soon as possible, usually within 24 hours.
+                        as soon as possible, usually within one to two business days.
                       </p>
                     </div>
                   </div> : <form onSubmit={handleSubmit} className="space-y-6">
@@ -215,54 +186,10 @@ export function ContactPage() {
               </div>
             </div>
           </div>
-          {/* Map */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-6">Find Us</h2>
-            <div className="h-96 bg-gray-200 rounded-lg overflow-hidden">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125773.44812393177!2d38.68991121640625!3d9.010787199999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b8f7e44a3539f%3A0xf3f8c2355f8d3f98!2sAddis%20Ababa%2C%20Ethiopia!5e0!3m2!1sen!2sus!4v1651234567890!5m2!1sen!2sus" width="100%" height="100%" style={{
-              border: 0
-            }} allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Visit Ethiopia Office Location"></iframe>
-            </div>
-          </div>
-          {/* FAQ Section */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-6">
-              Frequently Asked Questions
-            </h2>
-            <div className="space-y-4">
-              <div className="bg-white rounded-lg shadow-sm p-5">
-                <h3 className="font-bold text-lg mb-2">
-                  What are your office hours?
-                </h3>
-                <p className="text-gray-700">
-                  Our office in Addis Ababa is open Monday through Friday from
-                  9AM to 5PM, Saturday from 10AM to 2PM, and closed on Sundays.
-                  However, our emergency contact line is available 24/7 for
-                  travelers already in Ethiopia.
-                </p>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm p-5">
-                <h3 className="font-bold text-lg mb-2">
-                  How quickly do you respond to inquiries?
-                </h3>
-                <p className="text-gray-700">
-                  We aim to respond to all inquiries within 24 hours during
-                  business days. For urgent matters, please call our phone
-                  number directly.
-                </p>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm p-5">
-                <h3 className="font-bold text-lg mb-2">
-                  Can I visit your office to discuss my travel plans?
-                </h3>
-                <p className="text-gray-700">
-                  Yes, we welcome in-person visits to our office in Addis Ababa.
-                  For the best experience, we recommend scheduling an
-                  appointment in advance so we can prepare for your visit and
-                  ensure the appropriate travel specialist is available.
-                </p>
-              </div>
-            </div>
+          <div className="mt-12 bg-white rounded-lg shadow-sm p-6 text-center">
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Looking for quick answers?</h2>
+            <p className="text-gray-600 mb-4">Booking, payment and cancellation questions are covered in our FAQ.</p>
+            <Link to="/faq" className="inline-block bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-6 rounded-md">Read the FAQ</Link>
           </div>
         </div>
       </div>

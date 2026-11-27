@@ -156,14 +156,14 @@ export function ProviderToursPanel({ organizationId, canManage, isApproved }: Pr
           <button
             type="button"
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-1 text-sm bg-emerald-700 text-white px-3 py-1.5 rounded-lg"
+            className="flex items-center gap-1 text-sm bg-amber-600 text-white px-3 py-1.5 rounded-lg"
           >
             <Plus size={16} /> New tour
           </button>
         )}
       </div>
 
-      {message && <div className="text-emerald-700 text-sm bg-emerald-50 px-3 py-2 rounded">{message}</div>}
+      {message && <div className="text-green-700 text-sm bg-green-50 px-3 py-2 rounded">{message}</div>}
       {error && <div className="text-red-700 text-sm bg-red-50 px-3 py-2 rounded">{error}</div>}
 
       {showForm && canManage && (
@@ -214,7 +214,7 @@ export function ProviderToursPanel({ organizationId, canManage, isApproved }: Pr
           <button
             type="submit"
             disabled={saving}
-            className="bg-emerald-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+            className="bg-amber-600 text-white px-4 py-2 rounded-lg disabled:opacity-50"
           >
             {saving ? 'Creating…' : 'Create draft'}
           </button>
@@ -238,7 +238,7 @@ export function ProviderToursPanel({ organizationId, canManage, isApproved }: Pr
                       <>
                         {' '}
                         ·{' '}
-                        <Link to={`/tours/${tour.slug}`} className="text-emerald-700 hover:underline">
+                        <Link to={`/tours/${tour.slug}`} className="text-amber-700 hover:underline">
                           View public
                         </Link>
                       </>
@@ -281,12 +281,12 @@ export function ProviderToursPanel({ organizationId, canManage, isApproved }: Pr
                   <button
                     type="button"
                     onClick={() => loadDepartures(tour._id)}
-                    className="text-xs text-emerald-700 flex items-center gap-1"
+                    className="text-xs text-amber-700 flex items-center gap-1"
                   >
                     <Calendar size={12} /> Manage departures
                   </button>
                   {selectedTour === tour._id && (
-                    <div className="mt-2 pl-4 border-l-2 border-emerald-200 space-y-2">
+                    <div className="mt-2 pl-4 border-l-2 border-amber-200 space-y-2">
                       {departures.map((d) => (
                         <p key={d._id} className="text-xs text-gray-600">
                           {new Date(d.departureDate).toLocaleDateString()} — {d.availableSpots}/

@@ -43,6 +43,8 @@ export function TransportDetailPage() {
   const [availError, setAvailError] = useState('');
   const [bookError, setBookError] = useState('');
   const [booking, setBooking] = useState(false);
+  const [contactPhone, setContactPhone] = useState('');
+  const today = new Date().toISOString().slice(0, 10);
 
   const load = async () => {
     if (!id) return;
@@ -118,6 +120,10 @@ export function TransportDetailPage() {
       setBookError('Select a route and travel date');
       return;
     }
+    if (!/^\+?[0-9\s-]{9,16}$/.test(contactPhone.trim())) {
+      setBookError('Enter a phone number the provider can reach you on (e.g. +251 91 234 5678)');
+      return;
+    }
     setBooking(true);
     setBookError('');
     try {
@@ -131,7 +137,7 @@ export function TransportDetailPage() {
           contactInfo: {
             fullName: `${user?.FirstName || ''} ${user?.LastName || ''}`.trim() || 'Guest',
             email: user?.email || '',
-            phone: transport.contact?.phone || user?.email || '+251900000000',
+            phone: contactPhone.trim(),
           },
         },
         idempotencyKey
@@ -182,8 +188,7 @@ export function TransportDetailPage() {
                 {route.duration ? ` · ${route.duration}` : ''}
               </p>
               <p className="text-amber-800 font-medium mt-1">
-                {route.price.toLocaleString()} ETB · {route.availableSeats} seats
-                (template)
+                {route.price.toLocaleString()} ETB per seat · up to {route.availableSeats} seats
               </p>
             </div>
           ))}
@@ -212,6 +217,7 @@ export function TransportDetailPage() {
             Travel date
             <input
               type="date"
+              min={today}
               className="mt-1 w-full border rounded px-3 py-2"
               value={travelDate}
               onChange={(e) => setTravelDate(e.target.value)}
@@ -227,6 +233,19 @@ export function TransportDetailPage() {
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value) || 1)}
             />
+          </label>
+          <label className="block text-sm">
+            Your phone number
+            <input
+              type="tel"
+              autoComplete="tel"
+              inputMode="tel"
+              placeholder="+251 9X XXX XXXX"
+              className="mt-1 w-full border rounded px-3 py-2"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+            />
+            <span className="text-xs text-gray-500">Shared with the transport provider for this trip only.</span>
           </label>
           <button
             type="button"

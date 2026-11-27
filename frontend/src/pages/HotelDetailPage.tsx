@@ -237,7 +237,8 @@ export function HotelDetailPage() {
                 <img
                   key={i}
                   src={img}
-                  alt=""
+                  alt={`${hotel.name} photo ${i + 1}`}
+                  loading="lazy"
                   className="h-40 w-full object-cover rounded-lg"
                 />
               ))}

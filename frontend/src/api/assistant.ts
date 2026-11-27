@@ -3,7 +3,7 @@ import api from '../services/api';
 export interface AssistantSource {
   n: number;
   id: string;
-  type: 'place' | 'new_project' | 'hotel' | 'tour' | 'restaurant' | 'destination';
+  type: 'place' | 'guide' | 'new_project' | 'hotel' | 'tour' | 'restaurant' | 'destination';
   title: string;
   section?: string;
   href?: string;

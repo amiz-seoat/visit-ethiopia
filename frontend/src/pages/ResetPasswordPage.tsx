@@ -42,7 +42,7 @@ export function ResetPasswordPage() {
         }
       }
       setSuccess('Password updated successfully. Redirecting...');
-      setTimeout(() => navigate('/dashboard'), 1500);
+      setTimeout(() => navigate('/', { replace: true }), 1500);
     } catch (err) {
       setError(
         getErrorMessage(

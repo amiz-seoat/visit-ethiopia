@@ -1,0 +1,466 @@
+[
+  {
+    "id": "national-museum-of-ethiopia",
+    "name": "National Museum of Ethiopia (home of Lucy)",
+    "category": "museum",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": {"lat": 9.0386, "lng": 38.7614},
+    "summary": "Ethiopia's national museum, best known for the fossil hominid 'Lucy' (Australopithecus afarensis) and the child fossil 'Selam', plus four floors of archaeology, royal regalia, art and ethnography.",
+    "details": "The National Museum of Ethiopia stands near the Addis Ababa University graduate school, between Arat Kilo and Sidist Kilo in the north of the city. It grew out of the Institute of Archaeology, founded in 1958 to support French-led excavations in northern Ethiopia, and its first displays came from those digs.\n\nThe basement holds the palaeoanthropology gallery with Lucy, a partial skeleton of Australopithecus afarensis, and Selam, a fossil found between 2000 and 2004 and estimated at about 3.3 million years old, along with other hominid fossils.\n\nThe first floor covers ancient and medieval Ethiopia, including objects from D'mt and the Kingdom of Aksum, a 6th–5th century BCE stone statue from Addi-Galamo in Tigray with a South Arabian inscription, and regalia of former rulers including emperors' crowns and items belonging to Haile Selassie.\n\nThe second floor shows Ethiopian art from traditional to contemporary, including Afewerk Tekle's 'African Heritage', plus weapons, jewellery, clothing and musical instruments. The third floor has an ethnographic display on the country's many peoples.",
+    "highlights": ["Lucy and Selam hominid fossils in the basement", "Aksumite and pre-Aksumite artefacts", "Imperial crowns and Haile Selassie memorabilia", "Afewerk Tekle's 'African Heritage' painting", "Ethnographic gallery on the top floor"],
+    "bestTimeToVisit": "Any time of year; go early in the day to see the Lucy gallery before it gets busy. Most sources say the museum is closed on Mondays.",
+    "gettingThere": "Located in the Arat Kilo/Sidist Kilo area of central Addis Ababa, a short taxi or ride-hail trip from Piassa, Meskel Square or Bole. It is easily combined with the Holy Trinity Cathedral and the Ethnological Museum nearby.",
+    "tips": ["Opening hours and foreigner entry fees differ between sources; confirm locally and carry cash in birr.", "Some galleries may be closed for renovation, so ask at the entrance.", "Combine with the Ethnological Museum and Holy Trinity Cathedral for a half-day north-Addis itinerary.", "Ask before photographing exhibits; rules can change."],
+    "hotels": [
+      {"name": "Taitu Hotel (Itegue Taitu)", "area": "Piassa", "description": "Ethiopia's oldest hotel, founded by Empress Taitu in the early 1900s (1898 in the Ethiopian calendar) in the historic Piassa district; restored after a 2015 fire.", "sourceUrl": "https://en.wikipedia.org/wiki/Taitu_Hotel"},
+      {"name": "Sheraton Addis, a Luxury Collection Hotel", "area": "Taitu Street, opposite the National Palace", "description": "Large luxury hotel (opened 1998, 293 rooms plus villas) on a hilltop opposite the former Jubilee Palace, with pools, spa and several restaurants.", "sourceUrl": "https://www.marriott.com/en-us/hotels/addlc-sheraton-addis-a-luxury-collection-hotel-addis-ababa/experiences"}
+    ],
+    "restaurants": [
+      {"name": "Lucy Lounge & Restaurant (Lucy Gazebo)", "area": "Beside/in front of the National Museum", "description": "Garden restaurant next to the museum serving Ethiopian dishes alongside pastas and Western food; popular after a museum visit, though some reviewers find it pricey.", "sourceUrl": "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/dining/lucy-lounge-restaurant-122433"}
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/National_Museum_of_Ethiopia", "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/doandsee/national-museum-of-ethiopia-122402", "https://www.lonelyplanet.com/pois/455957", "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/dining/lucy-lounge-restaurant-122433"],
+    "confidenceNotes": "Wikipedia gives two slightly different coordinates (9°02′18–19″N, 38°45′41–43″E). Opening hours (e.g. Tue–Sun 9am–5pm vs 8:30am–4:30pm) and entry fees vary widely between sources, so no fee is given. Whether the original Lucy fossil or a cast is on display at a given time is not confirmed by the sources used. Addis Ababa itself has no separate UK FCDO advisory (checked Nov 2026)."
+  },
+  {
+    "id": "holy-trinity-cathedral-addis-ababa",
+    "name": "Holy Trinity Cathedral (Kidist Selassie)",
+    "category": "religious",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": {"lat": 9.0308, "lng": 38.7667},
+    "summary": "Addis Ababa's most important Orthodox cathedral, built to mark liberation from Italian occupation and the burial place of Emperor Haile Selassie, Empress Menen and Sylvia Pankhurst.",
+    "details": "Holy Trinity Cathedral, known in Amharic as Kidist Selassie, stands in the Arat Kilo area. It was founded on 22 December 1931 under Emperor Haile Selassie; work stopped during the Italian invasion and the cathedral was completed in 1942 to commemorate Ethiopia's liberation and honour resistance fighters.\n\nUnlike the round churches common in Ethiopia, it is a square, basilica-style building. Its layout follows the threefold plan of Solomon's Temple, with an inner sanctuary that only priests may enter, where the tabot (replica of the Ark of the Covenant) is kept. The chapel of Archangel Michael holds a tabot returned from Edinburgh in 2002, having been taken by the British in 1868.\n\nHaile Selassie and Empress Menen Asfaw rest in the north transept, with other members of the imperial family in the crypt. The churchyard contains the grave of British suffragette and anti-fascist campaigner Sylvia Pankhurst, patriarchs Abune Tekle Haymanot and Abune Paulos, and former Prime Minister Meles Zenawi.\n\nThe compound also includes the older Bale Wold church from the reign of Menelik II, a museum, a theological college, and memorials to victims of the 1937 Italian massacre and to officials executed by the Derg. It is the seat of the Orthodox Archdiocese of Addis Ababa, where patriarchs are enthroned.",
+    "highlights": ["Tombs of Emperor Haile Selassie and Empress Menen", "Grave of Sylvia Pankhurst", "Square basilica design unusual for Ethiopia", "Cathedral museum", "Memorials to 1937 massacre victims"],
+    "bestTimeToVisit": "Year-round. Weekday mornings are calmer; Sunday mornings and major feasts are busy with worshippers.",
+    "gettingThere": "In Arat Kilo, central-north Addis Ababa, a short walk or taxi ride from the National Museum and Arat Kilo Plaza.",
+    "tips": ["Dress modestly; women usually cover their heads and everyone removes shoes inside the church.", "Do not enter the inner sanctuary, which is reserved for priests.", "Be quiet and discreet during services, and ask before photographing people praying.", "There is usually an entry fee for foreigners; carry cash."],
+    "hotels": [
+      {"name": "Sheraton Addis, a Luxury Collection Hotel", "area": "Taitu Street, opposite the National Palace", "description": "Hilltop luxury hotel with pools, spa and several restaurants, a short drive from Arat Kilo.", "sourceUrl": "https://www.marriott.com/en-us/hotels/addlc-sheraton-addis-a-luxury-collection-hotel-addis-ababa/experiences"},
+      {"name": "Taitu Hotel (Itegue Taitu)", "area": "Piassa", "description": "Historic hotel founded by Empress Taitu, the oldest in Ethiopia.", "sourceUrl": "https://en.wikipedia.org/wiki/Taitu_Hotel"}
+    ],
+    "restaurants": [
+      {"name": "Castelli's Restaurant (Ristorante Castelli)", "area": "Piassa", "description": "Long-running Italian restaurant opened by the Castelli family (1948 or 1957 depending on the source), famous for celebrity diners; worth visiting for its history.", "sourceUrl": "https://www.afar.com/places/castellis-restaurant-addis-ababa"}
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Holy_Trinity_Cathedral_(Addis_Ababa)", "https://en.wikipedia.org/wiki/Taitu_Hotel", "https://www.afar.com/places/castellis-restaurant-addis-ababa"],
+    "confidenceNotes": "The Wikipedia article is flagged as needing more citations. No entry fee or opening hours are given because no reliable source was found."
+  },
+  {
+    "id": "ethnological-museum-addis-ababa",
+    "name": "Ethnological Museum (Institute of Ethiopian Studies, Genete Leul Palace)",
+    "category": "museum",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": {"lat": 9.0467, "lng": 38.7578},
+    "summary": "A museum of Ethiopian cultures in Haile Selassie's former Genete Leul Palace on Addis Ababa University's Sidist Kilo campus, including the emperor's preserved bedroom and a mirror marked by a bullet from the 1960 coup attempt.",
+    "details": "The Ethnological Museum is part of the Institute of Ethiopian Studies on the main (Sidist Kilo) campus of Addis Ababa University. It is often described as Ethiopia's first university museum. The idea came from Stanislaw Chojnacki, then chief librarian of the University College, and sources date its beginnings to around 1950 (one source says 1945).\n\nThe building is the Genete Leul Palace, which Emperor Haile Selassie built around 1930 and later gave to the university then named after him; it was renamed Addis Ababa University in 1974.\n\nVisitors can see Haile Selassie's bedroom, bathroom and changing room, including a mirror with a bullet hole from the 1960 coup attempt. Other items include the emperor's bed, Lion of Judah symbols and ceremonial robes.\n\nThe collections, about 13,000 objects, cover anthropology, ethnomusicology (traditional instruments), an art gallery, stamps and coins. The Institute of Ethiopian Studies library is in the same building.",
+    "highlights": ["Haile Selassie's preserved bedroom and bullet-marked mirror", "Ethnographic displays on the life stages of Ethiopia's peoples", "Traditional musical instruments", "Religious art gallery", "Palace setting on the university campus"],
+    "bestTimeToVisit": "Year-round; weekdays are quieter. Check opening times locally because they may follow the university calendar.",
+    "gettingThere": "Enter through the main gate of Addis Ababa University at Sidist Kilo in north-central Addis Ababa. It is a short taxi ride from the National Museum and Arat Kilo; there is parking on site.",
+    "tips": ["Bring ID; you may be asked for it at the university gate.", "Combine with the nearby National Museum for a half-day visit.", "Buy a ticket at the museum and carry cash."],
+    "hotels": [
+      {"name": "Taitu Hotel (Itegue Taitu)", "area": "Piassa", "description": "Ethiopia's oldest hotel, in the historic Piassa district a short taxi ride away.", "sourceUrl": "https://en.wikipedia.org/wiki/Taitu_Hotel"}
+    ],
+    "restaurants": [
+      {"name": "Lucy Lounge & Restaurant (Lucy Gazebo)", "area": "Next to the National Museum", "description": "Garden restaurant serving Ethiopian and Western dishes, convenient between the two museums.", "sourceUrl": "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/dining/lucy-lounge-restaurant-122433"}
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Ethnological_Museum,_Addis_Ababa", "https://www.lonelyplanet.com/pois/455951", "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/doandsee/ethnological-museum-122398", "https://www.gpsmycity.com/attractions/ethnological-museum-44135.html"],
+    "confidenceNotes": "Founding date is uncertain (1945 vs 1950) and Wikipedia's article needs more citations. Its infobox oddly lists the location as 'Finifine, Oromia', which is wrong for the Sidist Kilo campus in Addis Ababa. No fees or hours are given."
+  },
+  {
+    "id": "red-terror-martyrs-memorial-museum",
+    "name": "Red Terror Martyrs' Memorial Museum",
+    "category": "museum",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": {"lat": 9.010204, "lng": 38.76323},
+    "summary": "A museum on Meskel Square documenting the Derg regime's 'Red Terror' of the late 1970s through photographs, victims' belongings, torture instruments and human remains.",
+    "details": "The Red Terror Martyrs' Memorial Museum opened in 2010 at the eastern side of Meskel Square, next to a national monument to victims of the Red Terror, many of whom are buried there.\n\nThe Red Terror was the campaign of killings and repression carried out under the Derg military government that took power after the monarchy fell in 1974.\n\nExhibits include torture instruments, skulls and bones, coffins, bloodstained clothing, photographs of victims, a sculpture and a pictorial history of the period. Guided tours are free, and guides are often survivors or relatives of victims.",
+    "highlights": ["Personal stories and photographs of victims", "Remains and belongings of victims", "Free guided tours", "Location on historic Meskel Square"],
+    "bestTimeToVisit": "Year-round. Allow about an hour, and visit on a day when you have time to reflect afterwards.",
+    "gettingThere": "On the edge of Meskel Square in central Addis Ababa, a short walk from the Hyatt Regency and easy to reach by taxi or light rail.",
+    "tips": ["Exhibits include human remains and graphic material; it may not suit young children.", "Guided tours are free, but a donation is a respectful gesture.", "Be sensitive when asking guides about their own experiences.", "Check before taking photographs."],
+    "hotels": [
+      {"name": "Hyatt Regency Addis Ababa", "area": "Meskel Square", "description": "188-room hotel directly on Meskel Square, about 5.5 km from Bole Airport, with a pool, spa and terrace overlooking the square.", "sourceUrl": "https://www.hyatt.com/hyatt-regency/en-US/addra-hyatt-regency-addis-ababa"}
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Red_Terror_Martyrs%27_Memorial_Museum", "https://en.wikipedia.org/wiki/Meskel_Square", "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/doandsee/red-terror-martyrs-memorial-museum-122403", "https://www.hyatt.com/hyatt-regency/en-US/addra-hyatt-regency-addis-ababa"],
+    "confidenceNotes": "The exact opening day in 2010 is not given in the sources (Meskel Square article says February 2010). The claim that guides are survivors is common in travel guides and should be treated as typical rather than guaranteed. No restaurant with a source was found right beside the museum."
+  },
+  {
+    "id": "merkato-addis-ababa",
+    "name": "Merkato (Addis Mercato)",
+    "category": "market",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": {"lat": 9.03056, "lng": 38.73889},
+    "summary": "A huge, mainly wholesale open-air market in Addis Ketema district, often called the largest open-air market in Africa, selling everything from coffee and spices to recycled metal and electronics.",
+    "details": "Merkato covers several square miles of the Addis Ketema district west of Piassa. Before the Italian occupation of the 1930s the city's main market was near St George's Cathedral; the Italians reserved that area for Europeans (it became Piazza/Piassa) and moved the African market west, where it became Merkato. Local shopkeepers have dominated it since the 1960s.\n\nThe market grew without a plan, and goods are grouped into sections called 'terras'. It mainly trades local agricultural produce, especially coffee, along with spices and grain, scrap-metal recycling, furniture and household electronics, mostly wholesale.\n\nFor visitors the most interesting parts are the coffee, spice and grain areas, where you can find berbere, mitmita, lentils, teff and coffee beans, plus street snacks. Merkato is not a souvenir market, and there are very few shops aimed at tourists.",
+    "highlights": ["Spice and grain sections (berbere, mitmita, teff)", "Coffee traders", "Recycling workshops", "Everyday life of one of Africa's largest markets"],
+    "bestTimeToVisit": "Weekday mornings, when trading is busy but before the midday heat. Expect it to be crowded at all times.",
+    "gettingThere": "In Addis Ketema, west of Piassa. Go by taxi or ride-hail and agree the fare first, or join a guided walking tour; it is easy to get lost on your own.",
+    "tips": ["Pickpocketing is the main risk: carry little, keep valuables out of sight and watch for 'bump' distractions.", "A local guide helps with navigation, prices and photo permission; agree the guide's fee in advance, even if they first offer to help for free.", "Bargaining is expected; starting prices are often high.", "Always ask before photographing people or their stalls."],
+    "hotels": [
+      {"name": "Taitu Hotel (Itegue Taitu)", "area": "Piassa", "description": "Ethiopia's oldest hotel, in Piassa on the eastern side of the Merkato area.", "sourceUrl": "https://en.wikipedia.org/wiki/Taitu_Hotel"}
+    ],
+    "restaurants": [
+      {"name": "Tomoca Coffee (Piassa)", "area": "Piassa, Wawel Street", "description": "Historic roastery café founded in 1953, known for strong macchiato and packaged beans; a good stop before or after Merkato.", "sourceUrl": "https://www.afar.com/places/tomoca-coffee-shop-addis-ababa"}
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Merkato", "https://afktravel.com/89424/travel-tip-of-the-day-how-to-navigate-the-addis-mercato/", "https://escapewithannualleave.com/?p=2009", "https://www.smartertravel.com/tips-addis-ababa-warnings-dangers-stay-safe/"],
+    "confidenceNotes": "Statistics on size and number of businesses (about 13,000 workers, 7,100 businesses) are marked 'citation needed' on Wikipedia and are left out. Names of individual 'terras' were not verified."
+  },
+  {
+    "id": "st-georges-cathedral-addis-ababa",
+    "name": "St. George's Cathedral (Kidus Giorgis)",
+    "category": "religious",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": {"lat": 9.0367, "lng": 38.7514},
+    "summary": "An octagonal Orthodox cathedral at the top of Churchill Road in Piassa, linked to the victory at Adwa and the place where Empress Zewditu and Emperor Haile Selassie were crowned.",
+    "details": "St. George's Cathedral stands at the northern end of Churchill Road in Piassa. It is named after St. George because the church's tabot was carried to the Battle of Adwa, where Ethiopia defeated Italy in 1896.\n\nThe current octagonal building was designed and built by the Italian engineer Sebastiano Castagna in 1911, on the site of an older church (sources disagree on some dates). Italian Fascist forces set it on fire in 1937, and Haile Selassie restored it after liberation in 1941.\n\nEmpress Zewditu was crowned here in 1917 and Haile Selassie in 1930. The church has also become a pilgrimage site for Rastafarians.\n\nThe cathedral museum displays an imperial throne, weapons from the wars against Italy (curved swords, tridents and lion-mane helmets) and stained glass by the artist Afewerk Tekle.",
+    "highlights": ["Octagonal cathedral building", "Coronation church of Zewditu and Haile Selassie", "Museum with Adwa-era weapons and imperial throne", "Afewerk Tekle stained glass"],
+    "bestTimeToVisit": "Year-round. St. George's feast days and Sunday mornings are busy with worshippers.",
+    "gettingThere": "At the top of Churchill Road in Piassa, near the Adwa Victory Memorial and Menelik II Square; reachable by taxi or on foot from Piassa hotels.",
+    "tips": ["Dress modestly and remove shoes inside the church.", "There is usually a separate fee for the museum; carry cash.", "Ask before photographing worshippers or priests.", "Combine with the Adwa Victory Memorial, Taitu Hotel and Tomoca in Piassa."],
+    "hotels": [
+      {"name": "Taitu Hotel (Itegue Taitu)", "area": "Piassa", "description": "Ethiopia's oldest hotel, a short walk away in historic Piassa.", "sourceUrl": "https://en.wikipedia.org/wiki/Taitu_Hotel"}
+    ],
+    "restaurants": [
+      {"name": "Castelli's Restaurant (Ristorante Castelli)", "area": "Piassa, near the Adwa Victory Memorial", "description": "Historic Italian restaurant run by the Castelli family since the mid-20th century.", "sourceUrl": "https://www.afar.com/places/castellis-restaurant-addis-ababa"},
+      {"name": "Tomoca Coffee (Piassa)", "area": "Piassa, Wawel Street", "description": "1953 coffee roastery and stand-up café.", "sourceUrl": "https://www.afar.com/places/tomoca-coffee-shop-addis-ababa"}
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/St._George%27s_Cathedral,_Addis_Ababa", "https://en.wikipedia.org/wiki/Taitu_Hotel", "https://www.afar.com/places/castellis-restaurant-addis-ababa"],
+    "confidenceNotes": "Construction dates conflict on Wikipedia (1896 vs 1911). Museum fees and hours are not given."
+  },
+  {
+    "id": "zoma-museum-addis-ababa",
+    "name": "Zoma Museum",
+    "category": "museum",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": null,
+    "summary": "A contemporary art museum in Mekanisa created by artist Elias Sime and curator Meskerem Assegued, known for buildings made of mud and straw, gardens and changing exhibitions.",
+    "details": "Zoma Museum, formerly the Zoma Contemporary Art Center, was created by the artist Elias Sime and the curator Meskerem Assegued. It is named after Zoma Shifferaw, a young Ethiopian artist who died in 1979. The project began in 2002, and the museum site in Mekanisa opened to the public in March 2019.\n\nIts buildings use traditional mud-and-straw building methods, and the house built by Elias Sime took about seven years to finish. The New York Times Magazine called it 'a voluptuous dream, a swirl of ancient technique and ecstatic imagination'.\n\nThe site includes exhibition spaces, studios for visiting artists, gardens and the Zoma School, which has an organic 'edible schoolyard' garden inspired by Alice Waters' Edible Schoolyard project. There is a sister site at Harla near Dire Dawa.",
+    "highlights": ["Mud-and-straw architecture", "Contemporary Ethiopian art exhibitions", "Gardens and edible schoolyard", "Café and terrace"],
+    "bestTimeToVisit": "Dry season (October–May) is best for the gardens. Sources say it is open Tuesday to Sunday and closed on Mondays.",
+    "gettingThere": "In Mekanisa, south-west Addis Ababa (Nifas Silk-Lafto sub-city). Take a taxi or ride-hail; it is roughly 20–30 minutes from Bole depending on traffic.",
+    "tips": ["Hours differ between sources (closing 6:30pm or 8pm); check zomamuseum.org or its social media before going.", "It may close on some public holidays.", "Leave time to walk the gardens, not just the galleries."],
+    "hotels": [],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Zoma_Museum", "https://www.jamescohan.com/public-exhibitions/zoma-museum", "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/doandsee/zoma-museum-132898", "https://www.alladdisevents.com/venue/zoma-museum/"],
+    "confidenceNotes": "Opening date (23 March 2019) comes from the James Cohan gallery page. A user-generated listing gives admission of 150 birr for adults and 25 birr for children; not verified, so left out of the main text. The 20–30 minute travel time from Bole is an estimate. No sourced nearby hotels or restaurants were found; the café on site is mentioned in guides, but not verified by name."
+  },
+  {
+    "id": "tomoca-addis-coffee-culture",
+    "name": "Addis Ababa Coffee Houses (Tomoca and the city's café culture)",
+    "category": "experience",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": null,
+    "summary": "Addis Ababa has a strong café culture that mixes the Ethiopian coffee tradition with Italian-era espresso and macchiato, best known at the historic Tomoca roastery in Piassa.",
+    "details": "Tomoca (TO.MO.CA, from Torrefazione Moderna Café) was founded on 8 February 1953. Accounts say Zewdu Meshesha bought the roastery from an Italian family in 1953 and kept the name. The flagship café is on Wawel Street in Piassa.\n\nTomoca serves Italian-style coffee made with Ethiopian arabica beans and is especially known for its macchiato, with dark roast as the default. It also sells packaged whole beans and ground coffee such as its Dark Roasted Harar. It had 22 branches in Addis Ababa by 2015 and later opened in Tokyo (2015) and Nairobi (2020).\n\nCoffee drinking in Addis covers both espresso bars like Tomoca and the traditional coffee ceremony (buna), which many cultural restaurants and hotels perform for guests. See the separate 'Ethiopian coffee ceremony' entry.",
+    "highlights": ["Tomoca's 1953 Piassa roastery café", "Ethiopian macchiato", "Packaged Ethiopian beans to take home", "Traditional ceremonies at cultural restaurants"],
+    "bestTimeToVisit": "Any time; mornings are busiest at the Piassa Tomoca.",
+    "gettingThere": "Tomoca's flagship is on Wawel Street in Piassa; there are branches across the city, including Bole.",
+    "tips": ["Ethiopian coffee is strong; order 'macchiato' for a smaller milky coffee.", "Buy beans from the roastery counter as a gift.", "At a traditional ceremony, accepting at least one cup is polite; tea is usually offered if you decline coffee."],
+    "hotels": [
+      {"name": "Taitu Hotel (Itegue Taitu)", "area": "Piassa", "description": "Historic hotel a short walk from the Piassa Tomoca.", "sourceUrl": "https://en.wikipedia.org/wiki/Taitu_Hotel"}
+    ],
+    "restaurants": [
+      {"name": "Tomoca Coffee (Piassa)", "area": "Piassa, Wawel Street", "description": "Historic 1953 roastery and café, known for macchiato.", "sourceUrl": "https://www.afar.com/places/tomoca-coffee-shop-addis-ababa"}
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Tomoca_Coffee", "https://qz.com/africa/1560013/ethiopias-coffee-ritual-is-being-exported-to-china-japan", "https://www.afar.com/places/tomoca-coffee-shop-addis-ababa", "https://www.lonelyplanet.com/pois/1316185", "https://en.wikipedia.org/wiki/Coffee_ceremony"],
+    "confidenceNotes": "The founding story (Italian roastery, Zewdu Meshesha purchase, an inauguration by Haile Selassie) comes from single sources. Some sources place the original roastery just off Churchill Avenue rather than Wawel Street. The current number of branches is not confirmed. Other Addis cafés were not verified, so they are not listed."
+  },
+  {
+    "id": "timket-ethiopian-epiphany",
+    "name": "Timket (Ethiopian Epiphany)",
+    "category": "festival",
+    "region": "Amhara (main celebration Gondar); also nationwide incl. Addis Ababa and Lalibela",
+    "nearestCity": "Gondar",
+    "coordinates": null,
+    "summary": "The Orthodox celebration of Christ's baptism, held on 19 January (20 January in leap years), with church tabots carried in colourful processions to water; inscribed by UNESCO as intangible heritage in 2019.",
+    "details": "Timket commemorates the baptism of Jesus by John the Baptist in the River Jordan. It is celebrated by the Ethiopian and Eritrean Orthodox Tewahedo churches on 11 Terr in the Ethiopian calendar, which is 19 January (20 January in leap years). UNESCO added 'Ethiopian epiphany' to its Representative List of the Intangible Cultural Heritage of Humanity in 2019.\n\nOn the eve, called Ketera (18 January), priests carry each parish's tabot, a replica of the Ark of the Covenant wrapped in rich cloth, in procession to a pool, river or reservoir known as Timkete-Bahir. People spend the night in prayers, hymns and the liturgy.\n\nBefore dawn on Timket day the water is blessed and sprinkled on the crowd, and some people go into the water to renew their baptismal vows. From about 10 a.m. the tabots return to their churches with singing, drumming and dancing, and families go home to feast. Hundreds of thousands of people take part across the country.\n\nThe most famous celebration is at Fasilides' Bath in Gondar, where the pool is filled for the occasion. Large celebrations also take place in Lalibela and in Addis Ababa, notably at Jan Meda.",
+    "highlights": ["Tabot processions in brocade and colourful umbrellas", "Water blessing at Fasilides' Bath, Gondar", "Jan Meda celebration in Addis Ababa", "Overnight vigil and singing on Ketera"],
+    "bestTimeToVisit": "18–19 January each year (19–20 January in leap years). Arrive by 17 January to secure a place.",
+    "gettingThere": "Fly to Gondar (or Lalibela) with Ethiopian Airlines from Addis Ababa. In Addis, Jan Meda is in the north-east of the city and reachable by taxi.",
+    "tips": ["Book accommodation months ahead; towns fill up.", "Wear modest, preferably white or light clothing as a sign of respect.", "Do not push into processions or touch the tabot; only priests handle it.", "Ask before photographing priests and worshippers, and keep a respectful distance during prayers.", "Expect to be splashed with holy water at the blessing."],
+    "hotels": [
+      {"name": "Goha Hotel", "area": "Gondar hilltop", "description": "Three-star hotel on a hill above Gondar with views over the town, two restaurants and a pool; some reviews say rooms need updating and it is a walk into town.", "sourceUrl": "https://www.expedia.com/Gondar-Hotels-Goha-Hotel.h5984222.Hotel-Information"}
+    ],
+    "restaurants": [],
+    "sources": ["https://ich.unesco.org/en/RL/ethiopian-epiphany-01491", "https://ich.unesco.org/en/decisions/14.COM/10.B.11", "https://en.wikipedia.org/wiki/Timkat", "https://www.rainbowtours.co.uk/ethiopia/gondar/hotels/goha-hotel"],
+    "confidenceNotes": "IMPORTANT ADVISORY: as of the UK FCDO update of 23 November 2026, the FCDO advises against all travel to the Amhara region, which includes Gondar and Lalibela, because of conflict. Travellers should check their own government's advice; the Addis Ababa celebration may be the safer option. Leap-year date shifts follow Wikipedia."
+  },
+  {
+    "id": "meskel-festival",
+    "name": "Meskel (Finding of the True Cross)",
+    "category": "festival",
+    "region": "Addis Ababa City Administration (celebrated nationwide)",
+    "nearestCity": "Addis Ababa",
+    "coordinates": {"lat": 9.01028, "lng": 38.76111},
+    "summary": "A 1,600-year-old Orthodox festival marking the finding of the True Cross, centred on the huge Demera bonfire in Addis Ababa's Meskel Square each late September; inscribed by UNESCO in 2013.",
+    "details": "Meskel commemorates the finding of the True Cross on which Christ was crucified. It falls on 17 Meskerem in the Ethiopian calendar: the Demera bonfire is lit on the eve, around 26 September, and Meskel day itself is about 27 September (dates shift by a day in some years). UNESCO inscribed it on the Representative List of the Intangible Cultural Heritage of Humanity in 2013 under the name 'Commemoration feast of the finding of the True Holy Cross of Christ'.\n\nThe largest celebration is in Meskel Square, Addis Ababa. In the afternoon, processions with flaming torches converge on the square. Priests in robes, deacons, students, brass bands and crowds circle a tall pyramid of poles decorated with yellow Meskel daisies. The Patriarch of the Ethiopian Orthodox Tewahedo Church lights the Demera, which burns into the night.\n\nUNESCO notes that Meskel is a time of reconciliation, when disputes are meant to be settled and families and migrant workers return home. Smaller Demera fires are lit in towns and villages across the country.",
+    "highlights": ["Demera bonfire lit by the Patriarch in Meskel Square", "Torch-lit processions and church choirs", "Yellow Meskel daisies (adey abeba) in bloom", "Family reunions and feasts"],
+    "bestTimeToVisit": "Around 26–27 September each year, at the end of the rainy season.",
+    "gettingThere": "Meskel Square is in central Addis Ababa, about 15 minutes from Bole Airport by car; the light rail stops nearby. Roads close on the day, so walk the last part.",
+    "tips": ["Arrive early in the afternoon to find a spot; the square becomes very crowded.", "Hotels overlooking the square, like the Hyatt Regency, offer good views.", "Watch your belongings in the crowd.", "Dress modestly and stay respectful during the prayers."],
+    "hotels": [
+      {"name": "Hyatt Regency Addis Ababa", "area": "Meskel Square", "description": "188-room hotel directly on Meskel Square with a terrace overlooking it.", "sourceUrl": "https://www.hyatt.com/hyatt-regency/en-US/addra-hyatt-regency-addis-ababa"}
+    ],
+    "restaurants": [],
+    "sources": ["https://ich.unesco.org/en/RL/commemoration-feast-of-the-finding-of-the-true-holy-cross-of-christ-00858", "https://en.wikipedia.org/wiki/Meskel_Square", "https://www.hyatt.com/hyatt-regency/en-US/addra-hyatt-regency-addis-ababa"],
+    "confidenceNotes": "UNESCO gives 26 September; Wikipedia gives 27 September (17 Meskerem); the bonfire is on the eve. The Hyatt's festival-night access and viewing arrangements are not confirmed. Addis Ababa itself has no specific UK FCDO restriction (Nov 2026)."
+  },
+  {
+    "id": "genna-ethiopian-christmas-lalibela",
+    "name": "Genna (Ethiopian Christmas) in Lalibela",
+    "category": "festival",
+    "region": "Amhara",
+    "nearestCity": "Lalibela",
+    "coordinates": null,
+    "summary": "Ethiopian Orthodox Christmas on 7 January, celebrated most famously by tens of thousands of white-robed pilgrims at the rock-hewn churches of Lalibela.",
+    "details": "Genna is the Ethiopian Orthodox celebration of Christmas, held on 7 January (29 Tahsas in the Ethiopian calendar). It ends a period of fasting, and families break the fast with dishes such as doro wat.\n\nLalibela is the best-known place to see it. The town's population grows several times over in early January as pilgrims arrive, many dressed in white shawls (netela). Estimates of pilgrim numbers range from more than 50,000 to much higher, so treat figures as rough.\n\nThe main ceremonies run through the night and at sunrise around the churches, with the celebration at Bete Maryam the centrepiece; priests and deacons chant and pilgrims fill the trenches and ledges around the churches. One source notes that in leap years Lalibela celebrates on 8 January.\n\nGenna is also celebrated in churches across the country, including Addis Ababa, with all-night services on Christmas Eve.",
+    "highlights": ["Night-long services at the rock-hewn churches", "Chanting priests at Bete Maryam", "Thousands of pilgrims in white", "Breaking the fast with doro wat"],
+    "bestTimeToVisit": "6–7 January (possibly 8 January in leap years in Lalibela).",
+    "gettingThere": "Ethiopian Airlines flies from Addis Ababa to Lalibela; the airport is outside town.",
+    "tips": ["Book flights and rooms many months ahead; prices rise at Genna.", "Wear modest clothing and remove shoes inside the churches.", "Do not use flash or block worshippers for photos; ask first.", "Nights at Lalibela's altitude are cold; bring warm layers."],
+    "hotels": [
+      {"name": "Mezena Resort & Spa (Mezena Lodge)", "area": "Lalibela, near the rock-hewn churches", "description": "Listed as a short walk from Bet Abba Libanos and Bet Emmanuel, with a pool, spa and restaurant.", "sourceUrl": "https://www.expedia.com/Lalibela-Hotels-Mezena-Resort-And-Spa.h28782980.Hotel-Information"}
+    ],
+    "restaurants": [],
+    "sources": ["https://www.voanews.com/a/6908589.html", "https://www.africanews.com/2018/01/07/photos-orthodox-ethiopians-gather-at-lailebla-for-christmas-leaders-calls-for", "https://www.jaynemclean.com/blog/ethiopian-christmas-celebrations-in-lalibela-ethiopia", "https://allafrica.com/stories/202401190093.html", "https://en.wikipedia.org/wiki/Ethiopian_cuisine"],
+    "confidenceNotes": "IMPORTANT ADVISORY: as of 23 November 2026 the UK FCDO advises against all travel to the Amhara region, including Lalibela. Check current advice before planning. Pilgrim numbers and the leap-year date come from non-official sources. The Smithsonian article on Christmas in Lalibela could not be fetched."
+  },
+  {
+    "id": "irreecha-festival",
+    "name": "Irreecha (Oromo Thanksgiving Festival)",
+    "category": "festival",
+    "region": "Oromia (Bishoftu) and Addis Ababa City Administration",
+    "nearestCity": "Bishoftu",
+    "coordinates": null,
+    "summary": "The Oromo people's thanksgiving festival at the end of the rainy season, when huge crowds carry fresh grass and flowers to sacred lakes at Hora Finfinne (Addis Ababa) and Hora Arsadi (Bishoftu).",
+    "details": "Irreecha (also Irreessa) is the Oromo thanksgiving festival, giving thanks to God (Waaqa) for the past year and welcoming the new season after the rains. It is linked to the Gadaa system, the Oromo system of self-government inscribed by UNESCO in 2016.\n\nCelebrants carry green grass and flowers to the water, dip them and sprinkle themselves and others. Abbaa Gadaa leaders bless the crowds, and people wear traditional Oromo dress and sing.\n\nIt is held on a weekend in late September or early October. In 2025 it took place on Saturday 4 October at Hora Finfinne in Addis Ababa and on Sunday 5 October at Hora Arsadi in Bishoftu; reports for 2026 indicate 3–4 October. ENA reported millions of participants.\n\nOn 2 October 2016 a stampede at Bishoftu killed many people (estimates range from 55 to 300). Recent celebrations have passed peacefully under heavy security.",
+    "highlights": ["Grass-and-flower blessings at the lakes", "Abbaa Gadaa elders' blessings", "Traditional Oromo dress and songs", "Hora Arsadi crater lake at Bishoftu"],
+    "bestTimeToVisit": "A weekend in late September or early October; Hora Finfinne (Addis) is usually the Saturday and Hora Arsadi (Bishoftu) the Sunday.",
+    "gettingThere": "Bishoftu is about 45 km south-east of Addis Ababa via the Addis–Adama expressway. Hora Finfinne is in central Addis Ababa.",
+    "tips": ["Crowds are enormous; stay with a local companion and agree a meeting point.", "Follow security instructions and avoid political slogans or displays.", "Ask before photographing people, especially elders.", "Book Bishoftu accommodation well ahead."],
+    "hotels": [
+      {"name": "Kuriftu Resort & Spa Bishoftu", "area": "Bishoftu lakeside", "description": "Lakeside resort a few minutes' drive from Lake Hora, with pools, three restaurants, spa and kayaking.", "sourceUrl": "https://www.hotels.com/ho602587424/kuriftu-resort-spa-bishoftu-bishoftu-ethiopia"}
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Irreechaa", "https://www.ena.et/web/eng/w/eng_7460360", "https://www.ena.et/web/eng/w/eng_7459302", "https://allafrica.com/stories/202510060238.html", "https://ich.unesco.org/en/state/ethiopia-ET?info=elements-on-the-lists"],
+    "confidenceNotes": "The 2026 date (3–4 October) comes from search snippets of AllAfrica/ENA reports, not a fetched article. The distance to Bishoftu is approximate. UK FCDO (23 Nov 2026) advises against all but essential travel to most of East Shewa, but exempts the area within 10 km of the Addis–Bishoftu expressway; check current advice."
+  },
+  {
+    "id": "fichee-chambalaalaa-sidama-new-year",
+    "name": "Fichee-Chambalaalla (Sidama New Year)",
+    "category": "festival",
+    "region": "Sidama Region",
+    "nearestCity": "Hawassa",
+    "coordinates": null,
+    "summary": "The New Year festival of the Sidama people, with communal singing, dancing and the shared dish buurisame; inscribed by UNESCO in 2015 and celebrated mainly in Hawassa.",
+    "details": "Fichee-Chambalaalla is the New Year festival of the Sidama people of southern Ethiopia. UNESCO inscribed it on the Representative List of the Intangible Cultural Heritage of Humanity in 2015.\n\nIts date is not fixed: Sidama astrologers work it out each year using traditional knowledge, and elders announce it to the clans. In 2026 it was celebrated in Hawassa in mid-March (14–15 March according to reports).\n\nAccording to oral tradition, the festival honours a Sidama woman who visited her family every year after marrying, bringing buurisame, a dish made from false banana (enset), milk and butter, which she shared with neighbours. On the first day, children go from house to house greeting neighbours and are served buurisame.\n\nThe celebration includes communal singing and dancing in which everyone takes part, Ketala performances, and horse racing. Clan leaders use the occasion to encourage hard work, respect for elders and protection of indigenous trees.",
+    "highlights": ["Communal singing and dancing in Hawassa", "Buurisame dish made from enset, milk and butter", "Ketala performances", "Traditional horse racing"],
+    "bestTimeToVisit": "The date changes each year (often around March); check announcements by the Sidama regional government.",
+    "gettingThere": "Hawassa is about 275 km south of Addis Ababa by road via the expressway, or by Ethiopian Airlines flight to Hawassa.",
+    "tips": ["Confirm the date close to the time, since it is announced annually.", "Accept buurisame if offered; refusing hospitality can seem rude.", "Ask before photographing elders and ceremonies."],
+    "hotels": [
+      {"name": "Haile Resort Hawassa", "area": "Lake Hawassa", "description": "Four-star lakeside resort founded by Haile Gebrselassie, with 126 rooms, four restaurants, pool and spa; offers boat trips to see hippos.", "sourceUrl": "https://www.expedia.com/Awassa-Hotels-Haile-Resort-Hawassa.h17904636.Hotel-Information"}
+    ],
+    "restaurants": [],
+    "sources": ["https://ich.unesco.org/en/RL/fichee-chambalaalla-new-year-festival-of-the-sidama-people-01054", "https://www.ena.et/web/eng/w/eng_8490306", "https://www.ethiopianquadrants.com/?p=1213"],
+    "confidenceNotes": "The exact 2026 date conflicts (14 or 15 March); one travel guide wrongly suggests May–June. The road distance to Hawassa is approximate. UK FCDO (Nov 2026) has no specific restriction on Hawassa itself and exempts the A7 road to Hawassa from Oromia restrictions."
+  },
+  {
+    "id": "ashenda-ashendye-festival",
+    "name": "Ashenda / Ashendye / Shadey / Solel (Northern girls' festival)",
+    "category": "festival",
+    "region": "Tigray and Amhara",
+    "nearestCity": "Mekelle",
+    "coordinates": null,
+    "summary": "A festival of girls and young women in northern Ethiopia in late August, marking the end of the Filseta fast for the Virgin Mary with singing, dancing and grass skirts.",
+    "details": "Ashenda is celebrated by girls and women in Tigray and Amhara at the end of the 16-day Filseta fast and the Dormition of the Virgin Mary. It is named after a tall thin grass (ashenda) that girls tie around their dresses as skirts. It has different names by area: Ashenda in Tigray, Ashendye in Lasta (Lalibela) and Gondar, Shadey in Wag Himra and Sekota, and Solel in Raya-Kobo.\n\nGirls wear traditional Habesha dresses and jewellery, and go through the streets in groups singing, dancing and drumming, visiting homes and receiving small gifts. Organisers present it as a time when girls can speak freely, and a celebration of women's strength.\n\nThe main days are around 22–24 August, though celebrations can run from about mid-August to 1 September. The largest celebration is in Mekelle, with others in Axum, Adigrat, Shire, Gondar, Wollo, Lalibela and Sekota, and some in Addis Ababa.",
+    "highlights": ["Girls' song-and-dance groups in the streets", "Ashenda grass skirts and traditional dress", "Regional styles (Ashendye, Shadey, Solel)", "Celebrations in Mekelle and Lalibela"],
+    "bestTimeToVisit": "Around 22–24 August (some festivities from mid-August to 1 September).",
+    "gettingThere": "Mekelle and Lalibela have airports served from Addis Ababa, but see the travel advisory before planning.",
+    "tips": ["Give small cash gifts when groups sing for you; it is part of the tradition.", "Ask before photographing girls and young women, and respect a refusal.", "Some celebrations in Addis Ababa are an option when the north is unsafe."],
+    "hotels": [],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Ashenda", "https://www.thereporterethiopia.com/46539/", "https://www.africanews.com/2019/08/23/ethiopia-prez-joins-ashenda-uniquely-female-festival-in-tigray-region/", "https://africanews.com/2026/08/23/ethiopia-tigrayan-women-celebrate-ashenda-amid-fears-of-new-war", "https://webarchive.unesco.org/web/20201204224125/https://ich.unesco.org/doc/src/49106-EN.pdf"],
+    "confidenceNotes": "IMPORTANT ADVISORY: as of 23 November 2026 the UK FCDO advises against all travel to both Tigray and Amhara; in August 2026 Africanews reported Ashenda being celebrated 'amid fears of new war'. Dates differ between sources (22–24 Aug per a UNESCO document; 16–21 Aug or 22 Aug–1 Sep per The Reporter). No hotels are listed because of the advisory."
+  },
+  {
+    "id": "ethiopian-coffee-ceremony",
+    "name": "Ethiopian Coffee Ceremony (Buna)",
+    "category": "experience",
+    "region": "Nationwide (easily experienced in Addis Ababa)",
+    "nearestCity": "Addis Ababa",
+    "coordinates": null,
+    "summary": "The traditional ceremony of roasting, grinding and brewing coffee in a clay jebena and serving three rounds, a central act of hospitality in Ethiopian homes.",
+    "details": "The coffee ceremony is an everyday ritual for gathering with family, neighbours and guests. It is usually carried out by the woman of the house, and hosting it is considered an honour.\n\nFresh grass, sometimes with small yellow flowers, is spread on the floor and incense is burned. The host roasts green coffee beans over a flame and carries the smoking pan around so guests can enjoy the aroma. The beans are ground in a wooden mortar (mukecha), then boiled in a jebena, a round clay pot with a long neck and spout.\n\nThe coffee is poured from a height into small handleless cups. Grounds are brewed three times: the first round is abol, the second tona and the third baraka ('blessing'). Guests add sugar; in the countryside salt or spiced butter may be added. Popcorn, peanuts or bread (himbasha) are often served alongside.\n\nVisitors can join a ceremony at many cultural restaurants and hotels in Addis Ababa, or when invited into a home.",
+    "highlights": ["Bean roasting and aroma shared with guests", "Clay jebena pot", "Three rounds: abol, tona, baraka", "Incense, grass and popcorn"],
+    "bestTimeToVisit": "Any time; ceremonies often follow a meal and can take an hour or more.",
+    "gettingThere": "Offered at cultural restaurants such as Yod Abyssinia and 2000 Habesha in Bole, Addis Ababa, and as part of many city tours.",
+    "tips": ["Staying for all three rounds is polite, especially when invited to a home.", "If you do not want coffee, decline politely; tea is usually offered.", "Compliment the host on the aroma when the roasted beans are brought round.", "Take the cup with your right hand."],
+    "hotels": [],
+    "restaurants": [
+      {"name": "Yod Abyssinia Traditional Restaurant", "area": "Bole (Bole Medhanialem area)", "description": "Large cultural restaurant with nightly traditional music and dance from about 7:30pm.", "sourceUrl": "https://shebamiles.ethiopianairlines.com/partner/dining/yod-abyssinia-traditional-restaurant"},
+      {"name": "2000 Habesha Cultural Restaurant", "area": "Bole", "description": "Cultural restaurant with musicians, singers and dancers every night from 8pm; evening tour packages to it include a coffee ceremony.", "sourceUrl": "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/dining/2000-habesha-cultural-restaurant-122430"},
+      {"name": "Tomoca Coffee (Piassa)", "area": "Piassa, Wawel Street", "description": "Historic 1953 roastery for Italian-style Ethiopian coffee and beans to take home.", "sourceUrl": "https://www.afar.com/places/tomoca-coffee-shop-addis-ababa"}
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Coffee_ceremony", "https://en.wikipedia.org/wiki/Ethiopian_cuisine", "https://www.lonelyplanet.com/pois/1554426", "https://www.lonelyplanet.com/pois/1554427"],
+    "confidenceNotes": "Whether each restaurant holds a ceremony every evening is not confirmed; tour listings say evening packages include one. The 'right hand' tip is general etiquette rather than from the cited sources."
+  },
+  {
+    "id": "ethiopian-cuisine-guide",
+    "name": "Ethiopian Cuisine Guide (injera, wat, kitfo, tibs and fasting food)",
+    "category": "food",
+    "region": "Nationwide (restaurants listed in Addis Ababa)",
+    "nearestCity": "Addis Ababa",
+    "coordinates": null,
+    "summary": "An introduction to Ethiopian food, eaten by hand with the sourdough flatbread injera, and where to try it in Addis Ababa.",
+    "details": "Injera is the base of most meals: a large, spongy sourdough flatbread, about 50 cm across, made from fermented teff, a grain native to Ethiopia. Stews and side dishes are served on top, and diners tear off pieces with the right hand to scoop up food.\n\nWat is a thick stew. Spicy versions (key wat) use berbere, a chilli blend with spices such as fenugreek, cardamom and ginger; milder versions are called alicha. Doro wat, spicy chicken stew with boiled eggs, is a festive dish often used to break religious fasts. Many dishes are cooked with niter kibbeh, a spiced clarified butter.\n\nKitfo, from the Gurage people, is minced beef served raw or lightly cooked, mixed with mitmita chilli powder and niter kibbeh. Tibs is sautéed meat (beef, mutton or goat) with vegetables, often for celebrations.\n\nOrthodox Christians fast on Wednesdays and Fridays and during Lent and other fasting periods, avoiding all animal products, so vegan 'fasting food' is easy to find. Beyaynetu is a platter of several vegetable stews on injera. Tej, a honey wine, is served in tej houses and at special occasions.",
+    "highlights": ["Injera made from teff", "Doro wat on holidays", "Kitfo and tibs", "Vegan beyaynetu on fasting days", "Tej honey wine"],
+    "bestTimeToVisit": "Year-round. Fasting food is everywhere on Wednesdays, Fridays and in Lent; meat dishes are especially popular at Easter (Fasika) and Genna.",
+    "gettingThere": "Most listed restaurants are in Bole and central Addis Ababa, reachable by taxi or ride-hail.",
+    "tips": ["Eat with your right hand.", "Gursha, being hand-fed a mouthful by your host, is a sign of friendship; accept it with good humour.", "Raw kitfo carries some food-safety risk; you can ask for it lightly cooked (leb leb) or fully cooked.", "Ask for 'fasting' (tsom) food for a vegan meal."],
+    "hotels": [],
+    "restaurants": [
+      {"name": "Kategna Restaurant", "area": "Cameroon Street / Bole area", "description": "Modern take on a traditional Ethiopian restaurant, praised for its injera, doro wat and kitfo.", "sourceUrl": "https://migrationology.com/kategna-restaurant-addis-ababa-ethiopia"},
+      {"name": "Yod Abyssinia Traditional Restaurant", "area": "Bole", "description": "Cultural restaurant with traditional food and nightly music and dance shows.", "sourceUrl": "https://shebamiles.ethiopianairlines.com/partner/dining/yod-abyssinia-traditional-restaurant"},
+      {"name": "2000 Habesha Cultural Restaurant", "area": "Bole", "description": "Traditional food with nightly cultural performances from 8pm.", "sourceUrl": "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/dining/2000-habesha-cultural-restaurant-122430"},
+      {"name": "Lucy Lounge & Restaurant", "area": "Beside the National Museum", "description": "Garden restaurant with Ethiopian and Western dishes.", "sourceUrl": "https://www.arrivalguides.com/en/Travelguide/ADDISABABA/dining/lucy-lounge-restaurant-122433"}
+    ],
+    "sources": ["https://en.wikipedia.org/wiki/Ethiopian_cuisine", "https://migrationology.com/kategna-restaurant-addis-ababa-ethiopia", "https://www.lonelyplanet.com/pois/1554428", "https://www.lonelyplanet.com/pois/1554426", "https://www.lonelyplanet.com/pois/1554427"],
+    "confidenceNotes": "Gursha and 'leb leb' are common knowledge but were not on the fetched Wikipedia section. One Lonely Planet listing wrongly calls Kategna Italian. Kategna's address is given as Cameroon Street or Bole depending on the source. Menus and prices are not given."
+  },
+  {
+    "id": "great-ethiopian-run",
+    "name": "Great Ethiopian Run",
+    "category": "experience",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": {"lat": 9.01028, "lng": 38.76111},
+    "summary": "Africa's biggest road race: a 10 km mass run through Addis Ababa every November, founded by Haile Gebrselassie, starting and finishing at Meskel Square.",
+    "details": "The Great Ethiopian Run was founded by Olympic champion Haile Gebrselassie with Peter Middlebrook and Abi Masefield, and the first race was held in 2001. It is described as the biggest road race in Africa, with over 45,000 runners in 2023.\n\nThe main race is 10 km on a loop through central Addis Ababa, starting and finishing at Meskel Square; there is also a women-only 5 km race. Elite Ethiopian athletes race alongside tens of thousands of fun-runners, many in the event's coloured T-shirts.\n\nThe 26th edition was held on Sunday 22 November 2026, with organisers reporting a record 60,000 registrations and Bank of America as presenting partner. Registration was through the Telebirr app, with entry fees of 790 birr for the Red Start from Meskel Square and 950 birr for the Green Start outside the Ghion Hotel. The next edition is expected in November 2027.",
+    "highlights": ["10 km mass race with elite Ethiopian runners", "Start and finish at Meskel Square", "Women-only 5 km race", "Festive street atmosphere"],
+    "bestTimeToVisit": "Usually a Sunday in late November (22 November in 2026; 23 November in 2025).",
+    "gettingThere": "Meskel Square is in central Addis Ababa; many roads close on race morning, so walk or take the light rail.",
+    "tips": ["Addis Ababa is at about 2,350 m altitude; take it easy if you have just arrived.", "Register early; places sell out.", "Spectators should arrive early and keep belongings secure in the crowds."],
+    "hotels": [
+      {"name": "Hyatt Regency Addis Ababa", "area": "Meskel Square", "description": "Hotel directly on the start/finish square.", "sourceUrl": "https://www.hyatt.com/hyatt-regency/en-US/addra-hyatt-regency-addis-ababa"}
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Great_Ethiopian_Run", "https://fatmarathoner.com/great-ethiopian-run/", "https://capitalethiopia.com/2026/08/02/great-ethiopian-run-launches-record-60000-registrations-as-bank-of-america-joins-as-presenting-partner/", "https://worldathletics.org/heritage/news/mayor-abiebie-gebrselassie-heritage-plaque-great-ethiopian-run"],
+    "confidenceNotes": "The 2026 date, fees and Ghion Hotel Green Start come from search-result snippets of Capital Ethiopia and a running blog rather than fetched pages. Wikipedia's winners list for 2025/2026 looked inconsistent and is left out. The altitude figure for Addis is common knowledge, not from the cited sources."
+  },
+  {
+    "id": "addis-international-convention-center",
+    "name": "Addis International Convention Center (AICC)",
+    "category": "new_project",
+    "status": "open — as of November 2026 (inaugurated by PM Abiy Ahmed on 1 March 2025)",
+    "initiative": "Addis Ababa City Administration and state-linked shareholders; part of the government's MICE (meetings, conferences and exhibitions) tourism push",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": null,
+    "summary": "Ethiopia's largest conference and exhibition venue, a 40-hectare complex for up to 10,000 delegates, opened in March 2025 to grow conference tourism.",
+    "details": "Prime Minister Abiy Ahmed inaugurated the Addis International Convention Center on 1 March 2025. It is built on 40 hectares and is described by ENA as the largest conference centre in Ethiopia.\n\nIt has two large halls holding 3,000–4,000 people each and eight small and medium meeting halls, for a total capacity of up to 10,000 people. Addis Fortune reports two hectares of exhibition space, an outdoor exhibition area for up to 50,000 people, and banks, shops, cafés and restaurants, plus two hotels planned with about 1,000 beds in total.\n\nShareholders include the Addis Ababa City Administration, Ethiopian Tourist & Trading Enterprises, the Commercial Bank of Ethiopia, the Public Servants Social Security Agency and the Ethiopian Insurance Corporation; Ethiopian Airlines also signed an equity investment agreement.\n\nThe venue hosts trade fairs, business conventions, cultural festivals and diplomatic events, including an international AI conference and exhibition. China Daily reported in April 2026 that it had hosted eight major events and that an expansion with Chinese investors was being discussed.",
+    "highlights": ["Two 3,000–4,000-seat halls", "Capacity of up to 10,000 delegates", "Large indoor and outdoor exhibition areas", "Venue for international trade fairs and conferences"],
+    "bestTimeToVisit": "Visit for a specific event; check the event calendar before going.",
+    "gettingThere": "In Addis Ababa; reach it by taxi or ride-hail. The exact neighbourhood was not confirmed in the sources used.",
+    "tips": ["Entry is usually by event registration rather than open public access.", "Allow extra time for traffic and security checks on big event days."],
+    "hotels": [],
+    "restaurants": [],
+    "sources": ["https://www.ena.et/web/eng/w/eng_6076988", "https://fanabc.com/english/pm-abiy-ahmed-inaugurates-addis-international-convention-center-ethiopias-largest", "https://addisfortune.news/addis-international-convention-centre-inaugurates/", "https://aviationweek.com/air-transport/safety-ops-regulation/ethiopian-aaicec-signs-equity-investment-agreement", "https://global.chinadaily.com.cn/a/202604/24/WS69eadcb5a310d6866eb45570.html"],
+    "confidenceNotes": "The exact location (sub-city/road) and the construction cost were not found. ENA's headline calls it Africa's largest, while its text says Ethiopia's largest. Whether the two planned hotels are open is unknown."
+  },
+  {
+    "id": "meskel-square-renovation",
+    "name": "Meskel Square (renovated plaza)",
+    "category": "new_project",
+    "status": "open — as of November 2026 (renovation inaugurated by PM Abiy Ahmed on 13 June 2021)",
+    "initiative": "Addis Ababa City Administration 'Grand Meskel Square – City Hall' project, built by China Communications Construction Company (CCCC)",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": {"lat": 9.01028, "lng": 38.76111},
+    "summary": "Addis Ababa's main public square, rebuilt in 2020–2021 with underground parking for about 1,400 vehicles, shops and public facilities; the stage for Meskel, Timket and the Great Ethiopian Run.",
+    "details": "Meskel Square ('Cross Square') was known as Estifanos Square until the early 1950s and as Revolution Square under the Derg from 1974 to 1991. It is the setting for the Meskel Demera bonfire each September, for Timket events, and for parades, concerts and the Great Ethiopian Run.\n\nThe city announced a major upgrade in mid-2020, and Prime Minister Abiy Ahmed inaugurated the renovated square on 13 June 2021. The project, built by China Communications Construction Company at a reported cost of about 2.5–2.6 billion birr, added two floors of underground parking for about 1,400 cars (open 24 hours), six LED screens, shops and offices, and public toilets and showers.\n\nThe Ethiopian Orthodox Church raised concerns about the square's religious value, and the Association of Ethiopian Architects criticised the lack of transparency in the design process. The Red Terror Martyrs' Memorial Museum stands at the eastern edge of the square.",
+    "highlights": ["Venue of the Meskel Demera bonfire", "Large stepped seating terraces", "Underground parking and shops", "Red Terror Martyrs' Memorial Museum next door"],
+    "bestTimeToVisit": "Late September for Meskel, or late November for the Great Ethiopian Run; any evening for city life.",
+    "gettingThere": "Central Addis Ababa, about 15 minutes by car from Bole Airport; served by the Addis Ababa light rail.",
+    "tips": ["The square gets very crowded during festivals; keep valuables secure.", "Ask before photographing worshippers during religious events.", "Use the underground car park if driving."],
+    "hotels": [
+      {"name": "Hyatt Regency Addis Ababa", "area": "Meskel Square", "description": "188-room hotel on the square with a terrace overlooking it.", "sourceUrl": "https://www.hyatt.com/hyatt-regency/en-US/addra-hyatt-regency-addis-ababa"}
+    ],
+    "restaurants": [],
+    "sources": ["https://en.wikipedia.org/wiki/Meskel_Square", "https://ethiopianembassy.org/grand-meskel-square-addis-ababa-city-hall-project-inaugurated-in-attendance-of-pm-deputy-mayor-june-13-2021/", "https://constructionreviewonline.com/meskel-square-in-addis-ababa-ethiopia-inaugurated/", "https://www.2merkato.com/news/alerts/6234-ethiopia-underground-parking-space-at-meskel-square-goes-operational", "https://www.hyatt.com/hyatt-regency/en-US/addra-hyatt-regency-addis-ababa"],
+    "confidenceNotes": "Figures for retail units (24 per Wikipedia), toilets (140) and showers (220) vary across reports. The 'stepped seating terraces' highlight is a general description of the square. A 2026 Capital Ethiopia headline suggests management being handed to the Addis Chamber (AACCSA), not verified."
+  },
+  {
+    "id": "arada-park-addis-ababa",
+    "name": "Arada Park",
+    "category": "new_project",
+    "status": "open — as of November 2026 (inaugurated with PM Abiy Ahmed at the end of April 2026)",
+    "initiative": "Addis Ababa City Administration urban renewal / corridor development",
+    "region": "Addis Ababa City Administration",
+    "nearestCity": "Addis Ababa",
+    "coordinates": null,
+    "summary": "A 40-hectare redevelopment of a run-down part of Arada district in central Addis Ababa, with 15 hectares of green space, plazas, sports halls, playgrounds, shops and cafés.",
+    "details": "Arada Park was officially opened in the presence of Prime Minister Abiy Ahmed, with ENA coverage dated 30 April 2026. Abiy described it as turning an area once considered neglected and hazardous into a modern urban space.\n\nThe 40-hectare project renovated more than 700 existing homes and buildings instead of clearing them. Fifteen hectares are green space. It has 5 km of asphalt roads, a 6 km pedestrian walkway and 5 km of cycling and running tracks.\n\nFacilities include a sports arena with a gym and seven halls, eight plazas and amphitheatres for arts and social events, four playgrounds and a 'Miniature City' attraction. There are 131 shops (with priority for traders displaced from Piassa), seven cafés and restaurants, a supermarket and a bank branch, arranged on several levels with shops beneath public plazas.\n\nThe park has started hosting events, such as the Addis Cake & Bake Expo in August 2026.",
+    "highlights": ["15 ha of green space in the old city", "Walking, running and cycling tracks", "Plazas and amphitheatres for events", "'Miniature City' attraction and playgrounds", "Cafés and shops"],
+    "bestTimeToVisit": "Dry season (October–May); weekends and evenings are lively.",
+    "gettingThere": "In Arada sub-city in central Addis Ababa, the historic area that includes Piassa; reach it by taxi or ride-hail.",
+    "tips": ["Check event listings; the plazas host expos and performances.", "Combine with Piassa sights such as St. George's Cathedral and the Adwa Victory Memorial.", "Ask before photographing residents in the renovated housing areas."],
+    "hotels": [
+      {"name": "Taitu Hotel (Itegue Taitu)", "area": "Piassa (Arada)", "description": "Ethiopia's oldest hotel, in the same historic district.", "sourceUrl": "https://en.wikipedia.org/wiki/Taitu_Hotel"}
+    ],
+    "restaurants": [
+      {"name": "Castelli's Restaurant (Ristorante Castelli)", "area": "Piassa", "description": "Historic Italian restaurant in the Arada/Piassa area.", "sourceUrl": "https://www.afar.com/places/castellis-restaurant-addis-ababa"}
+    ],
+    "sources": ["https://www.ena.et/web/eng/w/eng_8754710", "https://www.ena.et/web/eng/w/eng_8754328", "https://allafrica.com/stories/202605010212.html", "https://addisinsight.net/2026/04/30/inside-the-new-addis-ababas-expanding-urban-green-space/", "https://kanatelevision.com/news/ethiopia-s-bakers-get-a-new-stage-arada-park-to-host-the-addis-cake-and-bake-expo/"],
+    "confidenceNotes": "The exact boundaries and entrances of the park were not stated, and no coordinates were found. Figures come from state media (ENA) with no independent check. Whether the Taitu Hotel and Castelli's are next to the park, rather than just in the same district, is not confirmed."
+  },
+  {
+    "id": "felege-gion-eco-resort-bahir-dar",
+    "name": "Felege Gion Eco Resort (Bahir Dar)",
+    "category": "new_project",
+    "status": "open — as of May 2026 (inaugurated by Deputy PM Temesgen Tiruneh on 4 May 2026)",
+    "initiative": "Gebeta Le Hager (Dine for the Nation); Lake Tana tourism corridor",
+    "region": "Amhara",
+    "nearestCity": "Bahir Dar",
+    "coordinates": null,
+    "summary": "A new resort on the Lake Tana waterfront in Bahir Dar with accommodation, an amphitheatre, shops and a small boat port, opened in May 2026 and managed by Roda Hospitality Group.",
+    "details": "Deputy Prime Minister Temesgen Tiruneh inaugurated the Felege Gion (Felege Ghion) Eco Resort in Bahir Dar in early May 2026, at the same event as the launch of a Four Points by Sheraton hotel in the city. Reports say it was developed under the government's Gebeta Le Hager (Dine for the Nation) initiative.\n\nAddis Insight reports an investment of about 4.5 billion birr and roughly two and a half years of construction. Facilities include upscale rooms, recreation and entertainment areas, retail spaces for local crafts, an amphitheatre for cultural events, and a waterfront with a port for up to 12 boats; five 30-passenger boats serve the resort.\n\nThe resort is managed by Roda Hospitality Group, which also helps operate the Gorgora Eco Resort, and is presented as part of a plan to develop a Lake Tana tourism corridor linking Bahir Dar and Gorgora.",
+    "highlights": ["Lake Tana waterfront", "Boat port with passenger boats for lake trips", "Amphitheatre for cultural performances", "Crafts and retail area"],
+    "bestTimeToVisit": "October to May (dry season), subject to the security situation.",
+    "gettingThere": "Bahir Dar is served by Ethiopian Airlines flights from Addis Ababa; the resort is on the city's Lake Tana shore.",
+    "tips": ["Check current security advice for Amhara before booking.", "Ask the resort about boat trips to Lake Tana's island monasteries.", "Dress modestly when visiting monasteries; some do not admit women."],
+    "hotels": [
+      {"name": "Four Points by Sheraton Bahir Dar", "area": "Bahir Dar", "description": "New Marriott-brand hotel launched in Bahir Dar on 4 May 2026 (reported investment 3.3 billion birr).", "sourceUrl": "https://atta.travel/resource/ethiopia-s-bahir-dar-attracts-major-tourism-investment-with-sheraton-hotel-launch.html"}
+    ],
+    "restaurants": [],
+    "sources": ["https://addisinsight.net/2026/05/04/ethiopia-unveils-felege-gion-eco-resort-a-4-5-billion-birr-tourism-bet/", "https://atta.travel/resource/ethiopia-s-bahir-dar-attracts-major-tourism-investment-with-sheraton-hotel-launch.html", "https://allafrica.com/stories/202605050037.html", "https://atqnews.com/africa-ethiopia-inaugurates-felege-gion-eco-resort-to-boost-lake-tana-corridor-into-a-global-tourism-destination/"],
+    "confidenceNotes": "IMPORTANT ADVISORY: as of 23 November 2026 the UK FCDO advises against all travel to the Amhara region, including Bahir Dar. The number of rooms, exact shore location and coordinates were not found. The 'Gebeta Le Hager' label comes from ATTA's summary of ENA; Addis Insight names no initiative. The monastery tip is general knowledge about Lake Tana."
+  },
+  {
+    "id": "sorga-eco-lodge-nekemte",
+    "name": "Sorga Eco Lodge (near Nekemte)",
+    "category": "new_project",
+    "status": "under construction — as of February 2026 (no inauguration found by November 2026)",
+    "initiative": "Prime Minister's Office tourism development projects (programme name not confirmed)",
+    "region": "Oromia",
+    "nearestCity": "Nekemte",
+    "coordinates": null,
+    "summary": "An eco-lodge being built on 14 hectares on the shore of Lake Sorga, about 6 km from Nekemte in western Oromia.",
+    "details": "Prime Minister Abiy Ahmed said in February 2026 that construction of the Sorga Eco Lodge was advancing 'with remarkable momentum'. The lodge sits on the shore of Lake Sorga, about 6 km from Nekemte, and covers 14 hectares.\n\nIt is designed to combine modern hospitality with care for the environment. According to the Prime Minister, it will create jobs in construction and hospitality, support the local community and promote sustainable tourism in the region.\n\nNo inauguration had been reported in the sources found as of November 2026, so the lodge should be treated as not yet open.",
+    "highlights": ["Lakeside setting at Lake Sorga", "14-hectare eco-lodge site", "Gateway to western Oromia"],
+    "bestTimeToVisit": "Not yet open; check for an official opening announcement.",
+    "gettingThere": "Nekemte is in western Oromia, on the main road west from Addis Ababa; the lodge site is about 6 km from the city.",
+    "tips": ["Confirm the lodge is open before travelling.", "Check current security advice for the Wollega zones."],
+    "hotels": [],
+    "restaurants": [],
+    "sources": ["https://www.ena.et/web/eng/w/eng_8343860", "https://fr.allafrica.com/stories/202602190629.html"],
+    "confidenceNotes": "ADVISORY: as of 23 November 2026 the UK FCDO advises against all travel to West and East Wollega zones of Oromia; Nekemte is in East Wollega. It is not confirmed whether Sorga is part of 'Dine for Generations'. Facilities and opening date are unknown."
+  }
+]

@@ -22,7 +22,7 @@ export function HotelCard({
   return <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
       <Link to={`/hotels/${id}`}>
         <div className="relative h-48 overflow-hidden">
-          <img src={image} alt={name} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
+          <img src={image} alt={name} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
         </div>
       </Link>
       <div className="p-4">

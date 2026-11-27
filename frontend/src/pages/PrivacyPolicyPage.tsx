@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { SITE } from '../config/site';
 export function PrivacyPolicyPage() {
   return <div className="w-full bg-gray-50">
       {/* Hero Section */}
@@ -8,7 +10,7 @@ export function PrivacyPolicyPage() {
             Privacy Policy
           </h1>
           <p className="text-gray-600 text-center mt-4 max-w-3xl mx-auto">
-            Last updated: November 1, 2023
+            Last updated: {SITE.policiesUpdated}
           </p>
         </div>
       </div>
@@ -185,10 +187,10 @@ export function PrivacyPolicyPage() {
             </p>
             <div className="mb-6">
               <p className="font-medium">Visit Ethiopia</p>
-              <p>123 Main Street</p>
-              <p>Addis Ababa, Ethiopia</p>
-              <p>Email: privacy@visitethiopia.com</p>
-              <p>Phone: +251 123 456 789</p>
+              {SITE.contactAddress && <p>{SITE.contactAddress}</p>}
+              {SITE.contactEmail && <p>Email: <a href={`mailto:${SITE.contactEmail}`} className="text-amber-700 hover:underline">{SITE.contactEmail}</a></p>}
+              {SITE.contactPhone && <p>Phone: {SITE.contactPhone}</p>}
+              <p>Or use our <Link to="/contact" className="text-amber-700 hover:underline">contact form</Link> and choose “Other”.</p>
             </div>
           </div>
         </div>

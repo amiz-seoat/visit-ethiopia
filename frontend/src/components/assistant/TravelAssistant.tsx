@@ -12,10 +12,11 @@ interface Msg extends ChatTurn {
 
 const STORAGE_KEY = 've-assistant-chat';
 const SUGGESTIONS = [
+  'Which places do you know?',
+  'When is Timket and where should I see it?',
   'What should I see in Lalibela?',
-  'Tell me about Beynouna Village',
-  'Where can I stay near Logo Hayk?',
-  'Which new parks opened in Addis Ababa?',
+  'Best lakes near Hawassa and Langano?',
+  'Which museums are in Addis Ababa?',
 ];
 
 function loadSaved(): Msg[] {
@@ -126,6 +127,13 @@ export function TravelAssistant() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, busy]);
 
+  // Other parts of the page can open the guide: window.dispatchEvent(new Event('open-assistant')).
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener('open-assistant', onOpen);
+    return () => window.removeEventListener('open-assistant', onOpen);
+  }, []);
+
   useEffect(() => {
     if (open) inputRef.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
@@ -185,7 +193,7 @@ export function TravelAssistant() {
           <div ref={listRef} className="flex-1 overflow-y-auto px-3 py-3 space-y-3 text-sm" aria-live="polite">
             {!messages.length && (
               <div className="text-gray-600">
-                <p className="mb-3">Selam! Ask me about places to visit in Ethiopia, from Lalibela and Gondar to new destinations like Entoto Park, Gorgora and Logo Hayk, and where to stay and eat.</p>
+                <p className="mb-3">Selam! Ask me about more than 90 places and topics: historic sites like Lalibela and Gondar, lakes and national parks, Addis Ababa's museums, festivals like Timket and Meskel, Ethiopian food and coffee, new destinations like Entoto and Gorgora, and where to stay and eat.</p>
                 <div className="flex flex-col gap-2">
                   {SUGGESTIONS.map((s) => (
                     <button key={s} onClick={() => send(s)} className="text-left border border-amber-200 bg-amber-50/60 rounded-lg px-3 py-2 hover:bg-amber-100 text-amber-900">

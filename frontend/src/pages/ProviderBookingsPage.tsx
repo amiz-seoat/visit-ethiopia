@@ -134,7 +134,7 @@ export function ProviderBookingsPage() {
         <div className="mb-6">
           <Link
             to={`/provider/workspace/${organizationId}`}
-            className="text-sm text-emerald-700 hover:underline"
+            className="text-sm text-amber-700 hover:underline"
           >
             ← Provider workspace
           </Link>

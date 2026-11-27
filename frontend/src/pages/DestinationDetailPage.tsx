@@ -80,7 +80,7 @@ export function DestinationDetailPage() {
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
               {images.map((img, i) => (
-                <img key={i} src={img} alt="" className="h-40 w-full object-cover rounded-lg" />
+                <img key={i} src={img} alt={`${destination.name} photo ${i + 1}`} loading="lazy" className="h-40 w-full object-cover rounded-lg" />
               ))}
             </div>
           </div>
